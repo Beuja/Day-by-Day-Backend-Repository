@@ -15,9 +15,10 @@ from rest_framework.views import APIView
 from .models import Diary, DiaryEmotion
 from .serializers import (
     DiarySerializer, RegisterSerializer, LoginSerializer, 
-    UserSerializer, UserUpdateSerializer, AnalyzeEmotionRequestSerializer
+    UserSerializer, UserUpdateSerializer, AnalyzeEmotionRequestSerializer,
+    DiaryCreateRequestSerializer
 )
-from .services import analyze_emotion_with_gemini
+from . import services
 
 # ===== 회원가입 API =====
 @swagger_auto_schema(
@@ -43,8 +44,12 @@ def register(request):
     serializer = RegisterSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     
-    user = serializer.save()
-    token, _ = Token.objects.get_or_create(user=user)
+    # 비즈니스 로직(서비스)을 호출하여 유저 생성 및 토큰 발급
+    user, token = services.create_user_account(
+        username=serializer.validated_data['username'],
+        password=serializer.validated_data['password'],
+        email=serializer.validated_data.get('email', '')
+    )
 
     return Response(
         {'id': user.id, 'token': token.key, 'username': user.username},
@@ -176,9 +181,15 @@ def manage_user(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
-        serializer = UserUpdateSerializer(user, data=request.data, partial=True)
+        serializer = UserUpdateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        updated_user = serializer.save()
+        
+        # 비즈니스 로직(서비스)을 호출하여 유저 정보 업데이트
+        updated_user = services.update_user_account(
+            user=user,
+            email=serializer.validated_data.get('email'),
+            password=serializer.validated_data.get('password')
+        )
         return Response(UserSerializer(updated_user).data, status=status.HTTP_200_OK)
 
     elif request.method == 'DELETE':
@@ -186,19 +197,40 @@ def manage_user(request):
         return Response({'message': '계정이 성공적으로 삭제되었습니다.'}, status=status.HTTP_204_NO_CONTENT)
 
 
+# ===== 일기 작성 API =====
+@swagger_auto_schema(
+    method='post',
+    operation_summary="일기 작성",
+    operation_description="사용자가 일기를 작성하여 DB에 저장합니다.",
+    security=[{'Token': []}],
+    request_body=DiaryCreateRequestSerializer,
+    responses={
+        201: openapi.Response('일기 작성 성공', DiarySerializer),
+        400: '잘못된 요청',
+        401: '인증되지 않은 사용자'
+    }
+)
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def create_diary(request):
+    serializer = DiaryCreateRequestSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    
+    # 생성 로직은 services 로 분리
+    diary = services.create_diary_entry(user=request.user, content=serializer.validated_data['content'])
+    
+    # 응답용 시리얼라이저로 래핑 (ID와 함께 반환)
+    response_serializer = DiarySerializer(diary)
+    return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
 # ===== 일기 감정 분석 API =====
 @swagger_auto_schema(
     method='post',
     operation_summary="일기 감정 분석",
     operation_description="저장되어 있는 일기 ID를 받아와 Gemini API로 감정을 분석하고 결과를 DB에 저장/업데이트 합니다.",
     security=[{'Token': []}],  # Swagger 자물쇠 아이콘 연동
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'diary_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='분석할 일기의 ID'),
-        },
-        required=['diary_id']
-    ),
+    request_body=AnalyzeEmotionRequestSerializer,
     responses={
         200: openapi.Response('감정 분석 성공', DiarySerializer),
         404: '일기를 찾을 수 없거나 접근 권한 없음'
@@ -209,30 +241,16 @@ def manage_user(request):
 @permission_classes([IsAuthenticated])
 @transaction.atomic # 비즈니스 로직 도중 실패 시 DB 롤백 보장
 def analyze_diary_emotion(request):
-    diary_id = request.data.get('diary_id')
-    if not diary_id:
-        return Response({'message': '분석할 일기의 ID를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+    serializer = AnalyzeEmotionRequestSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    diary_id = serializer.validated_data['diary_id']
         
     try:
-        # 1. DB에서 로그인한 유저 본인이 작성한 일기인지 확인하고 찾아옵니다. (보안 목적)
-        diary = Diary.objects.get(id=diary_id, user=request.user)
+        # 비즈니스 로직(서비스)으로 모두 이관
+        diary = services.process_diary_emotion(diary_id=diary_id, user=request.user)
     except Diary.DoesNotExist:
         return Response({'message': '해당 일기를 찾을 수 없거나 권한이 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
     
-    # 2. 서비스 레이어(Gemini API) 호출하여 일기 내용을 기반으로 감정 분석을 수행합니다.
-    emotion_dict = analyze_emotion_with_gemini(diary.content)
-    
-    # 3. 감정 데이터 저장 (DB) 
-    # update_or_create: 기존 감정이 있으면 덮어쓰고, 없으면 새로 생성합니다. 
-    DiaryEmotion.objects.update_or_create(
-        diary=diary,
-        defaults={
-            'valence': emotion_dict.get('valence', 0.0),
-            'arousal': emotion_dict.get('arousal', 0.0),
-            'primary_emotion': emotion_dict.get('primary_emotion', '알수없음')
-        }
-    )
-    
-    # 4. 분석 결과(하위 Emotion 포함)를 직렬화하여 반환
+    # 분석 결과(하위 Emotion 포함)를 직렬화하여 반환
     serializer = DiarySerializer(diary)
     return Response(serializer.data, status=status.HTTP_200_OK)

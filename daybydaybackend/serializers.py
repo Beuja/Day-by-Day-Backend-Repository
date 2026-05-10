@@ -40,31 +40,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'email': {'required': False}
         }
 
-    def update(self, instance, validated_data):
-        if 'email' in validated_data:
-            instance.email = validated_data['email']
-            
-        # 비밀번호는 단순 저장이 아니라 set_password로 해시화 필요
-        if 'password' in validated_data:
-            instance.set_password(validated_data['password'])
-            
-        instance.save()
-        return instance
-
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password', 'email')
         extra_kwargs = {'password': {'write_only': True}} # 비밀번호는 읽기 금지
-
-    # 회원가입 시 비밀번호 암호화를 위해 create 오버라이딩
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            password=validated_data['password'],
-            email=validated_data.get('email', '')
-        )
-        return user
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -78,3 +58,8 @@ class LoginSerializer(serializers.Serializer):
 
 class AnalyzeEmotionRequestSerializer(serializers.Serializer):
     diary_id = serializers.IntegerField()
+
+class DiaryCreateRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Diary
+        fields = ['content']

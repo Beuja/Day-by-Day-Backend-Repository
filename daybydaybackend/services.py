@@ -2,6 +2,60 @@ from google import genai
 import json
 import re
 from django.conf import settings
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from .models import Diary, DiaryEmotion
+
+# ===== 유저 관련 비즈니스 로직 =====
+def create_user_account(username, password, email=''):
+    """새로운 사용자 계정을 생성하고 토큰을 발급하는 비즈니스 로직"""
+    user = User.objects.create_user(
+        username=username,
+        password=password,
+        email=email
+    )
+    token, _ = Token.objects.get_or_create(user=user)
+    return user, token
+
+def update_user_account(user, email=None, password=None):
+    """기존 사용자의 정보를 안전하게 수정하는 비즈니스 로직"""
+    if email is not None:
+        user.email = email
+        
+    if password is not None:
+        user.set_password(password) # 비밀번호는 반드시 해시화하여 저장
+        
+    user.save()
+    return user
+
+# ===== 일기 및 감정 분석 비즈니스 로직 =====
+def create_diary_entry(user, content):
+    """
+    새로운 일기를 작성하여 저장하는 로직
+    """
+    diary = Diary.objects.create(user=user, content=content)
+    return diary
+
+def process_diary_emotion(diary_id, user):
+    """
+    일기 ID를 기반으로 AI 분석을 수행하고 DB에 결과를 반영하는 비즈니스 로직
+    """
+    # 1. 유저 권한 및 일기 존재 여부 확인
+    diary = Diary.objects.get(id=diary_id, user=user) 
+    
+    # 2. Gemini API 호출
+    emotion_dict = analyze_emotion_with_gemini(diary.content)
+    
+    # 3. 데이터 갱신 또는 생성
+    DiaryEmotion.objects.update_or_create(
+        diary=diary,
+        defaults={
+            'valence': emotion_dict.get('valence', 0.0),
+            'arousal': emotion_dict.get('arousal', 0.0),
+            'primary_emotion': emotion_dict.get('primary_emotion', '알수없음')
+        }
+    )
+    return diary
 
 # Gemini API를 사용하여 일기 텍스트에서 감정 분석을 수행하는 함수
 def analyze_emotion_with_gemini(text: str) -> dict:
