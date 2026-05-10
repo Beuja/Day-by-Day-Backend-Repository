@@ -7,7 +7,7 @@ from drf_yasg import openapi
 schema_view = get_schema_view(
     openapi.Info(
         title="Day by Day API",
-        default_version='v1',
+        default_version='1.0',
         description="Day by Day 프로젝트의 API 문서입니다.",
     ),
     public=True,

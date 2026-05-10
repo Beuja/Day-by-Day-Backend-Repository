@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import environ, os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -139,3 +140,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+# .env 파일에서 환경 변수 읽기
+env = environ.Env(DEBUG=(bool, False))  # DEBUG 환경 변수는 bool 타입으로, 기본값은 False
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # .env 파일에서 환경 변수 읽기
+
+# Gemini API KEY
+GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
