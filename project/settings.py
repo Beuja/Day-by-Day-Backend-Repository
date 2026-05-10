@@ -35,11 +35,12 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
+    'django.contrib.messages', 
     'django.contrib.staticfiles',
     'rest_framework',              # 추가
-    'rest_framework.authtoken',    # 추가 (토큰 인증용)
-    'corsheaders',                 # 추가
+    'rest_framework.authtoken',    # 추가
+    'drf_yasg',
+    'corsheaders',                # 추가
     'daybydaybackend',
 ]
 
