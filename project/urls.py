@@ -18,6 +18,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('daybydaybackend.urls')),
 
+    # swagger 문서 URL (개발자용)
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    #path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+
+    # redoc 문서 URL (개발자용)
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

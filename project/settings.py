@@ -141,6 +141,20 @@ REST_FRAMEWORK = {
     ],
 }
 
+# Swagger(drf-yasg) 보안 설정: 토큰 방식 인증 UI 활성화
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': DEBUG,  # 세션 인증 비활성화 (토큰 인증만 사용)
+    'DEFAULT_MODEL_RENDERING': 'example',
+    'SECURITY_DEFINITIONS': {
+        'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': "로그인 후 발급받은 Token을 입력하세요(중요! Token 앞에 'Token '을 붙여야 합니다. 예: 'Token abcdef123456')"
+        }
+    }
+}
+
 # .env 파일에서 환경 변수 읽기
 env = environ.Env(DEBUG=(bool, False))  # DEBUG 환경 변수는 bool 타입으로, 기본값은 False
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # .env 파일에서 환경 변수 읽기
