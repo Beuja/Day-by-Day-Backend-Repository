@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Diary, DiaryEmotion
 
+
 # 일기 관리 모델
 @admin.register(Diary)
 class DiaryAdmin(admin.ModelAdmin):
@@ -14,6 +15,7 @@ class DiaryAdmin(admin.ModelAdmin):
         return obj.content[:30] + '...' if len(obj.content) > 30 else obj.content
     short_content.short_description = '일기 내용 요약'
 
+
 # 일기 감정 분석 결과 관리 모델
 @admin.register(DiaryEmotion)
 class DiaryEmotionAdmin(admin.ModelAdmin):
@@ -25,4 +27,3 @@ class DiaryEmotionAdmin(admin.ModelAdmin):
         # 어떤 일기인지 아이디와 요약을 보여줍니다
         return f"일기 #{obj.diary.id}: {obj.diary.content[:15]}..."
     diary_link.short_description = '연결된 일기'
-

@@ -6,19 +6,16 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status
-from django.db import transaction
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from rest_framework.views import APIView
 
-from .models import Diary, DiaryEmotion
 from .serializers import (
-    DiarySerializer, RegisterSerializer, LoginSerializer, 
-    UserSerializer, UserUpdateSerializer, AnalyzeEmotionRequestSerializer,
-    DiaryCreateRequestSerializer
+    RegisterSerializer, LoginSerializer, 
+    UserSerializer, UserUpdateSerializer
 )
 from . import services
+
 
 # ===== 회원가입 API =====
 @swagger_auto_schema(
@@ -127,8 +124,8 @@ def login(request):
     }
 )
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication]) # 토큰 기반 인증 사용
-@permission_classes([IsAuthenticated])         # 로그인된 사용자만 접근 가능
+@authentication_classes([TokenAuthentication])  # 토큰 기반 인증 사용
+@permission_classes([IsAuthenticated])          # 로그인된 사용자만 접근 가능
 def logout(request):
     # 로그인된 사용자의 토큰을 삭제하여 더 이상 인증 불가 상태로 만듦
     request.user.auth_token.delete()
@@ -137,7 +134,8 @@ def logout(request):
         status=status.HTTP_200_OK
     )
 
-#==== 사용자 정보 조회, 수정 및 탈퇴 API =====
+
+# ==== 사용자 정보 조회, 수정 및 탈퇴 API =====
 @swagger_auto_schema(
     method='get',
     operation_summary="사용자 정보 조회",
@@ -195,62 +193,3 @@ def manage_user(request):
     elif request.method == 'DELETE':
         user.delete()
         return Response({'message': '계정이 성공적으로 삭제되었습니다.'}, status=status.HTTP_204_NO_CONTENT)
-
-
-# ===== 일기 작성 API =====
-@swagger_auto_schema(
-    method='post',
-    operation_summary="일기 작성",
-    operation_description="사용자가 일기를 작성하여 DB에 저장합니다.",
-    security=[{'Token': []}],
-    request_body=DiaryCreateRequestSerializer,
-    responses={
-        201: openapi.Response('일기 작성 성공', DiarySerializer),
-        400: '잘못된 요청',
-        401: '인증되지 않은 사용자'
-    }
-)
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def create_diary(request):
-    serializer = DiaryCreateRequestSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    
-    # 생성 로직은 services 로 분리
-    diary = services.create_diary_entry(user=request.user, content=serializer.validated_data['content'])
-    
-    # 응답용 시리얼라이저로 래핑 (ID와 함께 반환)
-    response_serializer = DiarySerializer(diary)
-    return Response(response_serializer.data, status=status.HTTP_201_CREATED)
-
-# ===== 일기 감정 분석 API =====
-@swagger_auto_schema(
-    method='post',
-    operation_summary="일기 감정 분석",
-    operation_description="저장되어 있는 일기 ID를 받아와 Gemini API로 감정을 분석하고 결과를 DB에 저장/업데이트 합니다.",
-    security=[{'Token': []}],  # Swagger 자물쇠 아이콘 연동
-    request_body=AnalyzeEmotionRequestSerializer,
-    responses={
-        200: openapi.Response('감정 분석 성공', DiarySerializer),
-        404: '일기를 찾을 수 없거나 접근 권한 없음'
-    }
-)
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-@transaction.atomic # 비즈니스 로직 도중 실패 시 DB 롤백 보장
-def analyze_diary_emotion(request):
-    serializer = AnalyzeEmotionRequestSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    diary_id = serializer.validated_data['diary_id']
-        
-    try:
-        # 비즈니스 로직(서비스)으로 모두 이관
-        diary = services.process_diary_emotion(diary_id=diary_id, user=request.user)
-    except Diary.DoesNotExist:
-        return Response({'message': '해당 일기를 찾을 수 없거나 권한이 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
-    
-    # 분석 결과(하위 Emotion 포함)를 직렬화하여 반환
-    serializer = DiarySerializer(diary)
-    return Response(serializer.data, status=status.HTTP_200_OK)

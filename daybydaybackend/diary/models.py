@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Diary(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='diaries', null=True, blank=True)
     content = models.TextField()
@@ -8,6 +9,10 @@ class Diary(models.Model):
 
     def __str__(self):
         return f"Diary {self.id}"
+
+    class Meta:
+        ordering = ['-created_at']
+
 
 class DiaryEmotion(models.Model):
     diary = models.OneToOneField(Diary, on_delete=models.CASCADE, related_name='emotion')

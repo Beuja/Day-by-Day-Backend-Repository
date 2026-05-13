@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import environ, os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,12 +36,18 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
+    'django.contrib.messages', 
     'django.contrib.staticfiles',
-    'rest_framework',              # 추가
-    'rest_framework.authtoken',    # 추가 (토큰 인증용)
-    'corsheaders',                 # 추가
-    'daybydaybackend',
+    'rest_framework',              # DRF
+    'rest_framework.authtoken',    # DRF 토큰 인증
+    'drf_yasg',                    # Swagger/Redoc
+    'corsheaders',                 # CORS
+    
+    # daybydaybackend 앱 (기능별 분리)
+    'daybydaybackend.accounts.apps.AccountsConfig',  # 인증
+    'daybydaybackend.diary.apps.DiaryConfig',        # 일기 & 감정 분석
+    'daybydaybackend.books.apps.BooksConfig',        # 도서 추천
+    'daybydaybackend.music_movie.apps.MusicMovieConfig',  # 음악/영화 추천
 ]
 
 MIDDLEWARE = [
@@ -138,3 +145,31 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+# Swagger(drf-yasg) 보안 설정: 토큰 방식 인증 UI 활성화
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': DEBUG,  # 세션 인증 비활성화 (토큰 인증만 사용)
+    'DEFAULT_MODEL_RENDERING': 'example',
+    'SECURITY_DEFINITIONS': {
+        'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': "로그인 후 발급받은 Token을 입력하세요(중요! Token 앞에 'Token '을 붙여야 합니다. 예: 'Token abcdef123456')"
+        }
+    }
+}
+
+# .env 파일에서 환경 변수 읽기
+env = environ.Env(DEBUG=(bool, False))  # DEBUG 환경 변수는 bool 타입으로, 기본값은 False
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # .env 파일에서 환경 변수 읽기
+
+# ===== API 키 설정 =====
+# Gemini API KEY (일기 감정 분석용)
+GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
+
+# Aladin TTB API KEY (도서 추천용)
+ALADIN_TTB_KEY = env('ALADIN_TTB_KEY', default='')
+
+# LLM API KEY (책 감정 태깅용 - Gemini)
+LLM_API_KEY = env('GEMINI_API_KEY', default='')
