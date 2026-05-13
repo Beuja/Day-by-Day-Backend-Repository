@@ -38,11 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages', 
     'django.contrib.staticfiles',
-    'rest_framework',              # 추가
-    'rest_framework.authtoken',    # 추가
-    'drf_yasg',
-    'corsheaders',                # 추가
-    'daybydaybackend',
+    'rest_framework',              # DRF
+    'rest_framework.authtoken',    # DRF 토큰 인증
+    'drf_yasg',                    # Swagger/Redoc
+    'corsheaders',                 # CORS
+    
+    # daybydaybackend 앱 (기능별 분리)
+    'daybydaybackend.accounts.apps.AccountsConfig',  # 인증
+    'daybydaybackend.diary.apps.DiaryConfig',        # 일기 & 감정 분석
+    'daybydaybackend.books.apps.BooksConfig',        # 도서 추천
+    'daybydaybackend.music_movie.apps.MusicMovieConfig',  # 음악/영화 추천
 ]
 
 MIDDLEWARE = [
@@ -159,5 +164,12 @@ SWAGGER_SETTINGS = {
 env = environ.Env(DEBUG=(bool, False))  # DEBUG 환경 변수는 bool 타입으로, 기본값은 False
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # .env 파일에서 환경 변수 읽기
 
-# Gemini API KEY
+# ===== API 키 설정 =====
+# Gemini API KEY (일기 감정 분석용)
 GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
+
+# Aladin TTB API KEY (도서 추천용)
+ALADIN_TTB_KEY = env('ALADIN_TTB_KEY', default='')
+
+# LLM API KEY (책 감정 태깅용 - Gemini)
+LLM_API_KEY = env('GEMINI_API_KEY', default='')

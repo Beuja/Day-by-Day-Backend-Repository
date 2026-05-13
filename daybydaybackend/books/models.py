@@ -1,0 +1,21 @@
+# books/models.py
+from django.db import models
+
+
+class Book(models.Model):
+    # ISBN을 기본키로 사용
+    isbn = models.CharField(max_length=13, unique=True, primary_key=True)
+    title = models.CharField(max_length=255)
+    author = models.CharField(max_length=255, null=True, blank=True)
+    category = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField()
+    
+    # 2차원 감정 벡터
+    valence = models.FloatField(null=True, blank=True)
+    arousal = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        ordering = ['-title']
