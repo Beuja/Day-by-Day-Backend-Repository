@@ -1,22 +1,15 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
 
 urlpatterns = [
-    # 회원 가입 API
-    path('auth/register/', views.register, name='register'),
+    # 인증 관련 API
+    path('auth/', include('daybydaybackend.accounts.urls')),
 
-    # 로그인 API
-    path('auth/login/', views.login, name='login'),
+    # 일기 관련 API
+    path('diary/', include('daybydaybackend.diary.urls')),
 
-    # 로그아웃 API
-    path('auth/logout/', views.logout, name='logout'),
+    # 도서 추천 API
+    path('books/', include('daybydaybackend.books.urls')),
 
-    # 사용자 정보 관리 API (GET: 조회, PATCH: 수정, DELETE: 탈퇴)
-    path('users/', views.manage_user, name='manage_user'),
-
-    # 일기를 작성해서 DB에 저장하는 API
-    path('diary/create/', views.create_diary, name='create_diary'),
-
-    # 일기를 ai 한테 보내는 API (Diary + Gemini API 기반 감정 추출)
-    path('diary/send/', views.analyze_diary_emotion, name='analyze_diary_emotion'),
+    # 음악/영화 추천 API
+    path('music-movie/', include('daybydaybackend.music_movie.urls')),
 ]
