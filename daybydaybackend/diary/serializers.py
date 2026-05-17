@@ -5,7 +5,10 @@ from .models import Diary, DiaryEmotion
 class DiaryEmotionSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiaryEmotion
-        fields = ['valence', 'arousal', 'primary_emotion']
+        fields = [
+            'joy', 'sadness', 'anger', 'fear', 'trust', 'surprise',
+            'valence', 'arousal', 'primary_emotion'
+        ]
 
 
 class DiarySerializer(serializers.ModelSerializer):
