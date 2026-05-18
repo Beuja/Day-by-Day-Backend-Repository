@@ -39,15 +39,19 @@ def process_diary_emotion(diary_id, user):
     )
     return diary
 
+_analyzer = None
 
-ANALYZER = EmotionAnalyzer()
-
+def get_analyzer():
+    global _analyzer
+    if _analyzer is None:
+        _analyzer = EmotionAnalyzer()
+    return _analyzer
 
 def analyze_emotion_hybrid(text: str) -> dict:
     """
     Kiwi 형태소 분석 + NRC/KNU 사전 + 선택적 Gemini fallback 기반 감정 분석
     """
-    emotion_6d = ANALYZER.analyze(text)
+    emotion_6d = get_analyzer().analyze(text)
     valence = _compute_valence(emotion_6d)
     arousal = _compute_arousal(emotion_6d)
     primary_emotion = _primary_emotion(emotion_6d)
