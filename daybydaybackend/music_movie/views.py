@@ -8,7 +8,7 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .serializers import RecommendationRequestSerializer, MusicSerializer, MovieSerializer
+from .serializers import RecommendationRequestSerializer
 from . import services
 
 
@@ -55,18 +55,18 @@ def recommend_content(request):
     
     # 음악 추천
     if content_type in ['music', 'both']:
-        music_list = services.recommend_music(valence, arousal, mode, count)
-        result['music'] = MusicSerializer(music_list, many=True).data
-    
-    # 영화 추천
+        music_result = services.recommend_music(valence, arousal, mode, count)
+        result['music'] = music_result['recommendations']
+        result['music_strategy'] = music_result['strategy']
+
     if content_type in ['movie', 'both']:
-        movie_list = services.recommend_movies(valence, arousal, mode, count)
-        result['movies'] = MovieSerializer(movie_list, many=True).data
-    
-    result['strategy'] = mode
+        movie_result = services.recommend_movies(valence, arousal, mode, count)
+        result['movies'] = movie_result['recommendations']
+        result['movie_strategy'] = movie_result['strategy']
+    target_valence, target_arousal = services.get_target_emotion(valence, arousal, mode)
     result['target_emotion'] = {
-        'valence': valence,
-        'arousal': arousal
+        'valence': target_valence,
+        'arousal': target_arousal
     }
     
     return Response(result, status=status.HTTP_200_OK)
