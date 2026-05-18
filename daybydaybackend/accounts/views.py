@@ -22,7 +22,20 @@ from . import services
     method='post',
     operation_summary="회원가입",
     operation_description="새로운 사용자를 등록하고 즉시 로그인 상태(토큰 발급)로 만듭니다.",
-    request_body=RegisterSerializer,
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['username', 'password'],
+        properties={
+            'username': openapi.Schema(type=openapi.TYPE_STRING, description='사용자 아이디'),
+            'password': openapi.Schema(type=openapi.TYPE_STRING, description='비밀번호'),
+            'email': openapi.Schema(type=openapi.TYPE_STRING, description='이메일')
+        },
+        example={
+            "username": "newuser",
+            "password": "newpassword123",
+            "email": "newuser@example.com"
+        }
+    ),
     responses={
         201: openapi.Response('회원가입 성공', openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -30,6 +43,11 @@ from . import services
                 'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='사용자 고유 ID'),
                 'token': openapi.Schema(type=openapi.TYPE_STRING, description='인증 토큰'),
                 'username': openapi.Schema(type=openapi.TYPE_STRING, description='사용자 이름')
+            },
+            example={
+                "id": 1,
+                "token": "0123456789abcdef0123456789abcdef01234567",
+                "username": "newuser"
             }
         )),
         400: '잘못된 요청'

@@ -19,9 +19,26 @@ class DiaryAdmin(admin.ModelAdmin):
 # 일기 감정 분석 결과 관리 모델
 @admin.register(DiaryEmotion)
 class DiaryEmotionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'diary_link', 'primary_emotion', 'valence', 'arousal')
-    list_filter = ('primary_emotion',)
+    list_display = (
+        'id', 'diary_link', 'primary_emotion',
+        'joy', 'sadness', 'anger', 'fear', 'trust', 'surprise',
+        'valence', 'arousal'
+    )
+    list_filter = ('primary_emotion', 'joy', 'sadness', 'anger', 'fear', 'trust', 'surprise')
     search_fields = ('primary_emotion', 'diary__content')
+    readonly_fields = ('diary_link',)
+
+    fieldsets = (
+        ('연결 정보', {
+            'fields': ('diary_link', 'primary_emotion')
+        }),
+        ('6차원 감정 점수', {
+            'fields': ('joy', 'sadness', 'anger', 'fear', 'trust', 'surprise')
+        }),
+        ('파생 값', {
+            'fields': ('valence', 'arousal')
+        }),
+    )
 
     def diary_link(self, obj):
         # 어떤 일기인지 아이디와 요약을 보여줍니다

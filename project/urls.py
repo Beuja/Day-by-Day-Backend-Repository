@@ -16,21 +16,9 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+
     # API 엔드포인트 (기능별 라우팅)
-    path('api/', include([
-        # 인증 관련 API
-        path('auth/', include('daybydaybackend.accounts.urls')),
-        
-        # 일기 관련 API
-        path('diary/', include('daybydaybackend.diary.urls')),
-        
-        # 도서 추천 API
-        path('books/', include('daybydaybackend.books.urls')),
-        
-        # 음악/영화 추천 API
-        path('music-movie/', include('daybydaybackend.music_movie.urls')),
-    ])),
+    path('api/', include('daybydaybackend.urls')),
 
     # swagger 문서 URL (개발자용)
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
