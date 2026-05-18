@@ -174,4 +174,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Emotion Lexicon Data (각 서버에서 별도 관리)
+daybydaybackend/diary/data/nrc_lexicon_ko.json
+daybydaybackend/diary/data/knu_lexicon_ko.json
+
 # End of https://www.toptal.com/developers/gitignore/api/django
