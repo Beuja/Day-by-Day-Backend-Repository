@@ -88,13 +88,15 @@ WSGI_APPLICATION = 'project.wsgi.application'
 IS_RENDER = 'RENDER' in os.environ
 
 if IS_RENDER:
+    # Render 무료 티어 환경: 디스크가 없으므로 서버 임시 보존 경로 사용 (재배포 시 데이터 리셋됨)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': '/data/db.sqlite3',  # Render Persistent Disk 경로
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 else:
+    # 로컬 개발 환경
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -200,7 +202,9 @@ LLM_API_KEY = env('GEMINI_API_KEY', default='')
 MEDIA_URL = '/media/'
 
 if IS_RENDER:
-    MEDIA_ROOT = '/data/media'  # Render Persistent Disk 미디어 경로
+    # Render 무료 티어 환경: 임시 미디어 보존 경로 사용
+    MEDIA_ROOT = BASE_DIR / 'media'
 else:
     MEDIA_ROOT = BASE_DIR / 'media'
+
 
