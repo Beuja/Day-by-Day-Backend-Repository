@@ -48,7 +48,7 @@ def create_diary(request):
 @swagger_auto_schema(
     method='post',
     operation_summary="일기 감정 분석",
-    operation_description="저장되어 있는 일기 ID를 받아와 Gemini API로 감정을 분석하고 결과를 DB에 저장/업데이트 합니다.",
+    operation_description="저장되어 있는 일기 ID를 받아와 감정을 분석하고 결과를 DB에 저장/업데이트 합니다.",
     security=[{'Token': []}],  # Swagger 자물쇠 아이콘 연동
     request_body=AnalyzeEmotionRequestSerializer,
     responses={

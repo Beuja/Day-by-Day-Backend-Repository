@@ -17,11 +17,12 @@ class MovieSerializer(serializers.ModelSerializer):
 
 class RecommendationRequestSerializer(serializers.Serializer):
     """추천 요청용 시리얼라이저"""
-    valence = serializers.FloatField(min_value=-1.0, max_value=1.0)
-    arousal = serializers.FloatField(min_value=-1.0, max_value=1.0)
-    content_type = serializers.ChoiceField(choices=['music', 'movie', 'both'])
+    valence = serializers.FloatField(min_value=-1.0, max_value=1.0, default=0.0, required=False)
+    arousal = serializers.FloatField(min_value=-1.0, max_value=1.0, default=0.0, required=False)
+    content_type = serializers.ChoiceField(choices=['music', 'movie', 'both'], default='both', required=False)
     mode = serializers.ChoiceField(
         choices=['maintain', 'shift', 'amplify', 'release', 'energize'],
+        required=False,
         default='maintain'
     )
-    count = serializers.IntegerField(default=5, min_value=1, max_value=20)
+    count = serializers.IntegerField(default=5, min_value=1, max_value=20, required=False)
