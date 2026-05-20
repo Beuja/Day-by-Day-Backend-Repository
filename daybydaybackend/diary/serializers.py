@@ -16,7 +16,7 @@ class DiarySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Diary
-        fields = ['id', 'content', 'created_at', 'emotion']
+        fields = ['id', 'content', 'created_at', 'emotion', 'weather', 'image']
 
 
 class AnalyzeEmotionRequestSerializer(serializers.Serializer):
@@ -26,4 +26,5 @@ class AnalyzeEmotionRequestSerializer(serializers.Serializer):
 class DiaryCreateRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diary
-        fields = ['content']
+        fields = ['content', 'weather', 'image']
+

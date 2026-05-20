@@ -173,3 +173,8 @@ ALADIN_TTB_KEY = env('ALADIN_TTB_KEY', default='')
 
 # LLM API KEY (책 감정 태깅용 - Gemini)
 LLM_API_KEY = env('GEMINI_API_KEY', default='')
+
+# ===== 미디어 파일 저장 설정 =====
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
