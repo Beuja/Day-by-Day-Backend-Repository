@@ -107,6 +107,9 @@ class Command(BaseCommand):
                         self.stdout.write(self.style.WARNING(f"    -> API 한도 초과. 30초 대기 후 재시도합니다... ({attempt+1}/{max_retries})"))
                         time.sleep(30) # 30초 쿨타임
                         continue
+                    else :
+                            self.stdout.write(self.style.ERROR("    -> API 한도 초과로 인해 최대 재시도 횟수를 초과했습니다."))
+                            return None, None
                             
                 # 429 에러가 아니거나, 재시도 횟수를 다 채웠을 경우
                 self.stdout.write(self.style.ERROR(f"    -> 감정 추출 실패: {e}"))
@@ -171,6 +174,7 @@ class Command(BaseCommand):
                             if valence is not None and arousal is not None:
                                 self.update_book_emotion(book, valence, arousal)
                                 self.stdout.write(self.style.SUCCESS(f"    -> 태깅 완료 (valence: {valence}, arousal: {arousal})"))
+
                             else:
                                 self.stdout.write(self.style.WARNING("    -> 감정 벡터 추출 실패"))
 
@@ -182,3 +186,5 @@ class Command(BaseCommand):
 
                 time.sleep(4)
             browser.close()
+
+       
