@@ -9,6 +9,8 @@ class Book(models.Model):
     author = models.CharField(max_length=255, null=True, blank=True)
     category = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField()
+    link = models.URLField(null=True, blank=True)
+    is_review_crawled = models.BooleanField(default=False)
     
     # 2차원 감정 벡터
     valence = models.FloatField(null=True, blank=True)
