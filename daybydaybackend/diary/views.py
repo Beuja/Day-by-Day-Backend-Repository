@@ -1,9 +1,11 @@
 from django.db import transaction
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -32,12 +34,19 @@ from . import services
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
 def create_diary(request):
     serializer = DiaryCreateRequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     
     # 생성 로직은 services 로 분리
-    diary = services.create_diary_entry(user=request.user, content=serializer.validated_data['content'])
+    diary = services.create_diary_entry(
+        user=request.user,
+        content=serializer.validated_data['content'],
+        weather=serializer.validated_data.get('weather'),
+        image=serializer.validated_data.get('image')
+    )
+
     
     # 응답용 시리얼라이저로 래핑 (ID와 함께 반환)
     response_serializer = DiarySerializer(diary)

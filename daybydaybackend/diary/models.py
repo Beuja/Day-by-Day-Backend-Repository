@@ -3,8 +3,30 @@ from django.contrib.auth.models import User
 
 
 class Diary(models.Model):
+    WEATHER_CHOICES = [
+        ('SUNNY', '맑음'),
+        ('CLOUDY', '흐림'),
+        ('RAINY', '비'),
+        ('SNOWY', '눈'),
+        ('WINDY', '바람'),
+        ('THUNDER', '천둥'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='diaries', null=True, blank=True)
     content = models.TextField()
+    weather = models.CharField(
+        max_length=10,
+        choices=WEATHER_CHOICES,
+        null=True,
+        blank=True,
+        help_text='일기 작성 당시 날씨'
+    )
+    image = models.ImageField(
+        upload_to='diaries/',
+        null=True,
+        blank=True,
+        help_text='일기에 첨부된 사진'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -12,6 +34,7 @@ class Diary(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
 
 
 class DiaryEmotion(models.Model):
