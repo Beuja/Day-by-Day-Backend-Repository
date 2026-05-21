@@ -1,7 +1,14 @@
 # music_movie/recommend_music_movie/recommend_music.py
+import os
+import json
 import math
-from .emotion_tags import TAG_EMOTION_MAP
 
+# emotion_tags.json 파일 경로 설정 및 로드
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+JSON_PATH = os.path.join(BASE_DIR, 'emotion_tags.json')
+
+with open(JSON_PATH, 'r', encoding='utf-8') as f:
+    TAG_EMOTION_MAP = json.load(f)
 
 def extract_user_emotion(user_emotion):
     if isinstance(user_emotion, dict):
