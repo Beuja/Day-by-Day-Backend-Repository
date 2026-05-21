@@ -9,9 +9,11 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
     # 계산을 위해 리스트 형태로 변경
     ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
     u_vec = np.array([user_emotion.get(key, 0.0) for key in ordered_keys])
+    u_norm = norm(u_vec)
+    if u_norm == 0:
+        u_norm - 1e-9
 
     w_vec = _get_direction_weights(u_vec, mode)
-
     all_books = Book.objects.filter(joy__isnull=False)
 
     filtered_and_scored = []
@@ -26,17 +28,37 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
     else:
         radius_limit = 0.7
 
+    # 코사인 유사도&유클리드 거리 결합 가중치 (1에 가까울 수록 유클리드 거리 중시)
+    alpha = 0.5
+
     for book in all_books:
         b_vec = np.array([
             book.joy, book.sadness, book.anger, 
             book.fear, book.trust, book.surprise
         ])
-
+        # 순수 유클리드 거리
         pure_distance = np.sqrt(np.sum((u_vec - b_vec) ** 2))
 
         if pure_distance <= radius_limit:
-            weighted_score = np.sqrt(np.sum(w_vec * (u_vec - b_vec) ** 2))
-            filtered_and_scored.append((weighted_score, book))
+            # 가중 유클리드 거리
+            euclidean_dist = np.sqrt(np.sum(w_vec * (u_vec - b_vec) ** 2))
+            
+            # normalization
+            # 0.0 ~ 1.0 범위 일 때 최대 유클리드 거리
+            max_euclidean = np.sqrt(np.sum(w_vec * (np.sum(w_vec * (1.0 ** 2)))))
+            norm_euclidean = euclidean_dist / max_euclidean
+
+            # 코사인 유사도
+            b_norm = norm(b_vec)
+            if b_norm == 0:
+                b_norm = 1e-9
+            
+            cosine_sim = np.dot(u_vec, b_vec) / (u_norm * b_norm)
+            cosine_dist = 1 - cosine_sim
+
+            # 최종 점수
+            final_score = (alpha * cosine_dist) + ((1 - alpha) * cosine_dist)
+            filtered_and_scored.append((final_score, book))
 
     filtered_and_scored.sort(key=lambda x: x[0])
 
