@@ -1,9 +1,10 @@
+# music_movie/services.py
 import json
 import os
 
-from .recommend_music_movie.recommend_by_emotion import (
-    EmotionRecommender,
-)
+# 쪼개진 두 파일에서 각각의 Recommender 임포트
+from .recommend_music_movie.recommend_music import MusicEmotionRecommender
+from .recommend_music_movie.recommend_movie import MovieEmotionRecommender
 
 PACKAGE_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -26,15 +27,6 @@ def load_movie_data():
 
 
 def convert_emotion_vector_to_russell(emotion_vector: dict) -> tuple:
-    """
-    10차원 감정 벡터를 Russell의 2차원 모델로 변환
-
-    Args:
-        emotion_vector: 10차원 감정 벡터 딕셔너리
-
-    Returns:
-        (valence, arousal) 튜플
-    """
     valence = (
         emotion_vector.get('joy', 0) * 1.0 +
         emotion_vector.get('romance', 0) * 0.7 +
@@ -44,7 +36,6 @@ def convert_emotion_vector_to_russell(emotion_vector: dict) -> tuple:
         emotion_vector.get('fear', 0) * -0.7 +
         emotion_vector.get('darkness', 0) * -0.6
     )
-
     arousal = (
         emotion_vector.get('energy', 0) * 1.0 +
         emotion_vector.get('anger', 0) * 0.7 +
@@ -52,15 +43,13 @@ def convert_emotion_vector_to_russell(emotion_vector: dict) -> tuple:
         emotion_vector.get('dreaminess', 0) * -0.2 +
         emotion_vector.get('calmness', 0) * -0.7
     )
-
     valence = max(-1.0, min(1.0, valence))
     arousal = max(-1.0, min(1.0, arousal))
-
     return (round(valence, 2), round(arousal, 2))
 
 
 def recommend_music(valence: float, arousal: float, mode: str = 'maintain', count: int = 5):
-    recommender = EmotionRecommender()
+    recommender = MusicEmotionRecommender()  # 음악 전용 클래스로 변경
 
     music_data = load_music_data()
     rec = recommender.recommend_music(
@@ -72,7 +61,7 @@ def recommend_music(valence: float, arousal: float, mode: str = 'maintain', coun
 
 
 def recommend_movies(valence: float, arousal: float, mode: str = 'maintain', count: int = 5):
-    recommender = EmotionRecommender()
+    recommender = MovieEmotionRecommender()  # 영화 전용 클래스로 변경
 
     movie_data = load_movie_data()
     rec = recommender.recommend_movies(

@@ -1,5 +1,5 @@
+# music_movie/recommend_music_movie/recommend_movie.py
 import math
-
 from .emotion_tags import TAG_EMOTION_MAP
 
 
@@ -9,10 +9,8 @@ def extract_user_emotion(user_emotion):
             float(user_emotion.get('valence', 0.0)),
             float(user_emotion.get('arousal', 0.0)),
         )
-
     if isinstance(user_emotion, (list, tuple)) and len(user_emotion) >= 2:
         return (float(user_emotion[0]), float(user_emotion[1]))
-
     raise ValueError(
         'user_emotion must be a dict or tuple/list containing (valence, arousal)'
     )
@@ -28,7 +26,6 @@ def convert_tag_vector_to_russell(tag_vector):
         tag_vector.get('fear', 0) * -0.7 +
         tag_vector.get('darkness', 0) * -0.6
     )
-
     arousal = (
         tag_vector.get('energy', 0) * 1.0 +
         tag_vector.get('anger', 0) * 0.7 +
@@ -36,10 +33,8 @@ def convert_tag_vector_to_russell(tag_vector):
         tag_vector.get('dreaminess', 0) * -0.2 +
         tag_vector.get('calmness', 0) * -0.7
     )
-
     valence = max(-1.0, min(1.0, valence))
     arousal = max(-1.0, min(1.0, arousal))
-
     return valence, arousal
 
 
@@ -57,18 +52,11 @@ def build_russell_emotion(tags):
             total_arousal += tag_arousal
 
     if matched_count == 0:
-        return {
-            'valence': 0.0,
-            'arousal': 0.0,
-        }
+        return {'valence': 0.0, 'arousal': 0.0}
 
     valence = max(-1.0, min(1.0, total_valence / matched_count))
     arousal = max(-1.0, min(1.0, total_arousal / matched_count))
-
-    return {
-        'valence': round(valence, 3),
-        'arousal': round(arousal, 3),
-    }
+    return {'valence': round(valence, 3), 'arousal': round(arousal, 3)}
 
 
 class EmotionStrategy:
@@ -124,6 +112,8 @@ class SimilarityCalculator:
         distance = SimilarityCalculator.euclidean_distance(current, target)
         distance_score = 1 / (1 + distance)
         emotion_score = cosine_weight * cos_sim + (1 - cosine_weight) * distance_score
+        
+        # 영화 popularity 기반 대중성 점수 계산
         popularity_score = min(1.0, popularity / 1000000)
         final_score = emotion_score * 0.8 + popularity_score * 0.2
         return round(final_score, 4)
@@ -143,26 +133,9 @@ def get_target_emotion(valence, arousal, mode):
     return (valence, arousal)
 
 
-class EmotionRecommender:
+class MovieEmotionRecommender:
     def __init__(self):
         self.calculator = SimilarityCalculator()
-
-    def recommend_music(self, user_emotion, music_data, top_n=10):
-        valence, arousal = extract_user_emotion(user_emotion)
-        strategy = EmotionStrategy.get_strategy(valence, arousal)
-        target_emotion = (strategy['target_valence'], strategy['target_arousal'])
-
-        scored_tracks = []
-        for track in music_data:
-            tags = track.get('tags', [])
-            emotion_vec = build_russell_emotion(tags)
-            track_emotion = (emotion_vec['valence'], emotion_vec['arousal'])
-            popularity = int(track.get('listeners', 0))
-            score = self.calculator.combined_score(track_emotion, target_emotion, popularity)
-            scored_tracks.append({'content': track, 'emotion': track_emotion, 'score': score})
-
-        scored_tracks.sort(key=lambda x: x['score'], reverse=True)
-        return {'strategy': strategy, 'target_emotion': target_emotion, 'recommendations': scored_tracks[:top_n]}
 
     def recommend_movies(self, user_emotion, movie_data, top_n=10):
         valence, arousal = extract_user_emotion(user_emotion)
@@ -179,4 +152,6 @@ class EmotionRecommender:
             scored_movies.append({'content': movie, 'emotion': movie_emotion, 'score': score})
 
         scored_movies.sort(key=lambda x: x['score'], reverse=True)
-        return {'strategy': strategy, 'target_emotion': target_emotion, 'recommendations': scored_movies[:top_n]}
+        return {'strategy': strategy, 
+                'target_emotion': target_emotion, 
+                'recommendations': scored_movies[:top_n]}
