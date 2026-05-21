@@ -9,7 +9,4 @@ urlpatterns = [
 
     # 일기를 ai 한테 보내는 API (Diary + Gemini API 기반 감정 추출)
     path('send/', views.analyze_diary_emotion, name='analyze_diary_emotion'),
-
-    # 달력 감정 이모지 조회 API
-    path('calendar/', views.get_emotion_calendar, name='get_emotion_calendar'),
 ]
