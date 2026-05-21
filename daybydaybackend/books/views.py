@@ -28,6 +28,30 @@ class BookViewSet(viewsets.ModelViewSet):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def recommend_books(request):
+    user_emotion = request.data.get('emotion')
+    mode = request.data.get('mode')
+    count = int(request.data.get('count'))
+
+    if not user_emotion:
+        return Response(
+            {'message': '사용자 감정 정보가 필요합니다.'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    recommend_books = recommend_books(
+        user_emotion=user_emotion,
+        mode=mode,
+        count=count
+    )
+
+    response_serializer = BookSerializer(recommend_books, many=True)
+    
+    return Response({
+            "status": "success",
+            "message": "도서 추천 완료",
+            "data": response_serializer.data
+        }, status=status.HTTP_200_OK)
+    """
     serializer = RecommendRequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
@@ -53,3 +77,4 @@ def recommend_books(request):
         {'books': serialized_books},
         status=status.HTTP_200_OK
     )
+    """

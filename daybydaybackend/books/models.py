@@ -15,6 +15,12 @@ class Book(models.Model):
     # 2차원 감정 벡터
     valence = models.FloatField(null=True, blank=True)
     arousal = models.FloatField(null=True, blank=True)
+    joy = models.FloatField(null=True, blank=True)
+    sadness = models.FloatField(null=True, blank=True)
+    anger = models.FloatField(null=True, blank=True)
+    fear = models.FloatField(null=True, blank=True)
+    trust = models.FloatField(null=True, blank=True)
+    surprise = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.title
