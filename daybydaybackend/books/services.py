@@ -50,7 +50,8 @@ def _get_direction_weights(u_vec: np.ndarray, mode: str) -> np.ndarray:
         return weights
     
     elif (mode == 'shift'):
-        # sadness/anger/fear 패널티, joy/trust 인센티브, surprise 유지
+        # sadness, anger, fear 패널티, joy, trust 인센티브, surprise 유지
+        # 추후 조정
         weights[0] = 0.5    # joy
         weights[1] = 2.0    # sadness
         weights[2] = 2.0    # anger
