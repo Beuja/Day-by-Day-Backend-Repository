@@ -9,10 +9,18 @@ class Book(models.Model):
     author = models.CharField(max_length=255, null=True, blank=True)
     category = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField()
+    link = models.URLField(null=True, blank=True)
+    is_review_crawled = models.BooleanField(default=False)
     
     # 2차원 감정 벡터
     valence = models.FloatField(null=True, blank=True)
     arousal = models.FloatField(null=True, blank=True)
+    joy = models.FloatField(null=True, blank=True)
+    sadness = models.FloatField(null=True, blank=True)
+    anger = models.FloatField(null=True, blank=True)
+    fear = models.FloatField(null=True, blank=True)
+    trust = models.FloatField(null=True, blank=True)
+    surprise = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.title

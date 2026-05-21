@@ -170,6 +170,3 @@ GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
 
 # Aladin TTB API KEY (도서 추천용)
 ALADIN_TTB_KEY = env('ALADIN_TTB_KEY', default='')
-
-# LLM API KEY (책 감정 태깅용 - Gemini)
-LLM_API_KEY = env('GEMINI_API_KEY', default='')
