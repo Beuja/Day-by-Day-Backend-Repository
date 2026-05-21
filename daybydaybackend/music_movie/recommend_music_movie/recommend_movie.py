@@ -10,155 +10,80 @@ JSON_PATH = os.path.join(BASE_DIR, 'emotion_tags.json')
 with open(JSON_PATH, 'r', encoding='utf-8') as f:
     TAG_EMOTION_MAP = json.load(f)
 
-def extract_user_emotion(user_emotion):
-    if isinstance(user_emotion, dict):
-        return (
-            float(user_emotion.get('valence', 0.0)),
-            float(user_emotion.get('arousal', 0.0)),
-        )
-    if isinstance(user_emotion, (list, tuple)) and len(user_emotion) >= 2:
-        return (float(user_emotion[0]), float(user_emotion[1]))
-    raise ValueError(
-        'user_emotion must be a dict or tuple/list containing (valence, arousal)'
-    )
-
-
-def convert_tag_vector_to_russell(tag_vector):
-    valence = (
-        tag_vector.get('joy', 0) * 1.0 +
-        tag_vector.get('romance', 0) * 0.7 +
-        tag_vector.get('calmness', 0) * 0.4 +
-        tag_vector.get('sadness', 0) * -1.0 +
-        tag_vector.get('anger', 0) * -0.8 +
-        tag_vector.get('fear', 0) * -0.7 +
-        tag_vector.get('darkness', 0) * -0.6
-    )
-    arousal = (
-        tag_vector.get('energy', 0) * 1.0 +
-        tag_vector.get('anger', 0) * 0.7 +
-        tag_vector.get('fear', 0) * 0.6 +
-        tag_vector.get('dreaminess', 0) * -0.2 +
-        tag_vector.get('calmness', 0) * -0.7
-    )
-    valence = max(-1.0, min(1.0, valence))
-    arousal = max(-1.0, min(1.0, arousal))
-    return valence, arousal
-
-
-def build_russell_emotion(tags):
-    total_valence = 0.0
-    total_arousal = 0.0
+def build_6d_emotion_vector(tags):
+    """영화 메타태그 가중치를 종합하여 6차원 감정 벡터 리스트를 빌드합니다."""
+    ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
+    total_vector = {key: 0.0 for key in ordered_keys}
     matched_count = 0
 
     for tag in tags:
         tag = str(tag).lower().strip()
         if tag in TAG_EMOTION_MAP:
             matched_count += 1
-            tag_valence, tag_arousal = convert_tag_vector_to_russell(TAG_EMOTION_MAP[tag])
-            total_valence += tag_valence
-            total_arousal += tag_arousal
+            tag_vec = TAG_EMOTION_MAP[tag]
+            for key in ordered_keys:
+                total_vector[key] += tag_vec.get(key, 0.0)
 
     if matched_count == 0:
-        return {'valence': 0.0, 'arousal': 0.0}
+        return [0.0] * 6
 
-    valence = max(-1.0, min(1.0, total_valence / matched_count))
-    arousal = max(-1.0, min(1.0, total_arousal / matched_count))
-    return {'valence': round(valence, 3), 'arousal': round(arousal, 3)}
-
-
-class EmotionStrategy:
-    @staticmethod
-    def get_strategy(valence, arousal):
-        if valence > 0 and arousal > 0:
-            return {
-                'strategy': 'amplify',
-                'target_valence': min(1.0, valence + 0.2),
-                'target_arousal': min(1.0, arousal + 0.1),
-                'description': '긍정적 고양감 증폭',
-            }
-        elif valence > 0 and arousal <= 0:
-            return {
-                'strategy': 'stabilize',
-                'target_valence': valence,
-                'target_arousal': arousal,
-                'description': '평온한 상태 유지',
-            }
-        elif valence <= 0 and arousal > 0:
-            return {
-                'strategy': 'release',
-                'target_valence': min(0.3, valence + 0.5),
-                'target_arousal': max(-0.3, arousal - 0.4),
-                'description': '긴장과 스트레스 해소',
-            }
-        else:
-            return {
-                'strategy': 'energize',
-                'target_valence': min(0.4, valence + 0.6),
-                'target_arousal': min(0.3, arousal + 0.5),
-                'description': '우울 상태 활력 제공',
-            }
-
-
-class SimilarityCalculator:
-    @staticmethod
-    def cosine_similarity(v1, v2):
-        dot_product = v1[0] * v2[0] + v1[1] * v2[1]
-        magnitude1 = math.sqrt(v1[0]**2 + v1[1]**2)
-        magnitude2 = math.sqrt(v2[0]**2 + v2[1]**2)
-        if magnitude1 == 0 or magnitude2 == 0:
-            return 0.0
-        return dot_product / (magnitude1 * magnitude2)
-
-    @staticmethod
-    def euclidean_distance(v1, v2):
-        return math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2)
-
-    @staticmethod
-    def combined_score(current, target, popularity=0, cosine_weight=0.6):
-        cos_sim = SimilarityCalculator.cosine_similarity(current, target)
-        distance = SimilarityCalculator.euclidean_distance(current, target)
-        distance_score = 1 / (1 + distance)
-        emotion_score = cosine_weight * cos_sim + (1 - cosine_weight) * distance_score
-        
-        # 영화 popularity 기반 대중성 점수 계산
-        popularity_score = min(1.0, popularity / 1000000)
-        final_score = emotion_score * 0.8 + popularity_score * 0.2
-        return round(final_score, 4)
-
-
-def get_target_emotion(valence, arousal, mode):
-    if mode == 'maintain':
-        return (valence, arousal)
-    elif mode == 'shift':
-        return (-0.5 if valence >= 0 else 0.5, -0.5 if arousal >= 0 else 0.5)
-    elif mode == 'amplify':
-        return (min(1.0, valence + 0.2), min(1.0, arousal + 0.1))
-    elif mode == 'release':
-        return (min(0.3, valence + 0.5), max(-0.3, arousal - 0.4))
-    elif mode == 'energize':
-        return (min(0.4, valence + 0.6), min(0.3, arousal + 0.5))
-    return (valence, arousal)
+    return [round(total_vector[key] / matched_count, 4) for key in ordered_keys]
 
 
 class MovieEmotionRecommender:
-    def __init__(self):
-        self.calculator = SimilarityCalculator()
-
-    def recommend_movies(self, user_emotion, movie_data, top_n=10):
-        valence, arousal = extract_user_emotion(user_emotion)
-        strategy = EmotionStrategy.get_strategy(valence, arousal)
-        target_emotion = (strategy['target_valence'], strategy['target_arousal'])
+    def recommend_movies(self, user_emotion, movie_data, mode='maintain', top_n=3):
+        ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
+        
+        # 1. 유저 감정 벡터 생성
+        u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
+        
+        # 2. books 앱 스타일의 임계값 및 방향 가중치 변환
+        if mode == 'maintain':
+            w_vec = u_vec
+            radius_limit = 0.4
+        elif mode == 'shift':
+            max_val = max(u_vec) if max(u_vec) > 0 else 1.0
+            w_vec = [v - 0.5 if v == max_val else v for v in u_vec]
+            radius_limit = 1.2
+        elif mode == 'amplification':
+            w_vec = [v * 1.5 for v in u_vec]
+            radius_limit = 0.8
+        else:
+            w_vec = u_vec
+            radius_limit = 0.7
 
         scored_movies = []
         for movie in movie_data:
             tags = movie.get('tags', [])
-            emotion_vec = build_russell_emotion(tags)
-            movie_emotion = (emotion_vec['valence'], emotion_vec['arousal'])
-            popularity = float(movie.get('popularity', 0))
-            score = self.calculator.combined_score(movie_emotion, target_emotion, popularity)
-            scored_movies.append({'content': movie, 'emotion': movie_emotion, 'score': score})
+            b_vec = build_6d_emotion_vector(tags)
+            
+            # 3. 임계값 범위 필터링 계산 (유클리디안 거리)
+            distance = math.sqrt(sum((w_val - b_val) ** 2 for w_val, b_val in zip(w_vec, b_vec)))
+            
+            if distance <= radius_limit:
+                # 4. 코사인 유사도 연산
+                dot_product = sum(w_val * b_val for w_val, b_val in zip(w_vec, b_vec))
+                mag_w = math.sqrt(sum(w_val ** 2 for w_val in w_vec))
+                mag_b = math.sqrt(sum(b_val ** 2 for b_val in b_vec))
+                
+                cosine_sim = dot_product / (mag_w * mag_b) if mag_w > 0 and mag_b > 0 else 0.0
+                
+                # 영화 popularity 기반 대중성 점수 계산 (기존 데이터 정규화 수치 준수)
+                popularity = float(movie.get('popularity', 0.0))
+                popularity_score = min(1.0, popularity / 100000)
+                
+                final_score = cosine_sim * 0.8 + popularity_score * 0.2
+                
+                scored_movies.append({
+                    'content': movie,
+                    'distance': round(distance, 4),
+                    'score': round(final_score, 4)
+                })
 
+        # 내림차순 정렬 후 슬라이싱 반환
         scored_movies.sort(key=lambda x: x['score'], reverse=True)
-        return {'strategy': strategy, 
-                'target_emotion': target_emotion, 
-                'recommendations': scored_movies[:top_n]}
+        return {
+            'mode': mode,
+            'radius_limit': radius_limit,
+            'recommendations': scored_movies[:top_n]
+        }
