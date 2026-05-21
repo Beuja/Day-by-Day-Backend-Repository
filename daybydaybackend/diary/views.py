@@ -68,6 +68,7 @@ def create_diary(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
 @transaction.atomic  # 비즈니스 로직 도중 실패 시 DB 롤백 보장
 def analyze_diary_emotion(request):
     serializer = AnalyzeEmotionRequestSerializer(data=request.data)
