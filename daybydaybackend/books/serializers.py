@@ -6,14 +6,32 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['isbn', 'title', 'author', 'category', 'description', 'valence', 'arousal']
-
-    def get_description(self, obj):
-        if obj.description and len(obj.description) > 100:
-            return obj.description[:100] + '...'
-        return obj.description
+        fields = '__all__'
 
 class RecommendRequestSerializer(serializers.Serializer):
-    diary_id = serializers.IntegerField(required=True, help_text="분석된 일기 ID")
-    mode = serializers.ChoiceField(choices=['maintain', 'reverse', 'boost'], default='maintain')
+    emotion = serializers.DictField(
+        child=serializers.FloatField(min_value=-1.0, max_value=1.0),
+        help_text='사용자 감정 벡터 (joy, sadness, anger, fear, trust, surprise)'
+    )
+    mode = serializers.ChoiceField(choices=['maintain', 'shift', 'amplification'], default='maintain')
     count = serializers.IntegerField(default=3, min_value=1)
+
+    class Meta:
+        swagger_schema_fields = {
+            "example": {
+                "emotion": {
+                    "joy": 0.7,
+                    "sadness": 0.2,
+                    "anger": 0.1,
+                    "fear": 0.0,
+                    "trust": 0.5,
+                    "surprise": 0.3,
+                    "valence": 0.5,
+                    "arousal": -0.2,
+                    "primary_emotion": "joy"
+                },
+                "mode": "shift",
+                "count": 5
+            }
+        }
+

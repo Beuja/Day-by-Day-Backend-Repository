@@ -58,7 +58,7 @@ class Command(BaseCommand):
         if not reviews_list:
             return None, None
             
-        # 리뷰가 20개 정도만 사용
+        # 리뷰 20개 정도만 사용
         combined_text = "\n".join(reviews_list[:20])
         
         prompt = f"""
@@ -69,8 +69,16 @@ class Command(BaseCommand):
         - valence (정서가): -1.0(매우 불쾌/슬픔) ~ 1.0(매우 쾌/기쁨)
         - arousal (각성도): -1.0(매우 차분/지루함) ~ 1.0(매우 격앙/흥분)
         
+        이와 별개로 가능하다면, 다음의 6가지 기본 감정에 대한 점수도 함께 제공해 주세요 (0.0 ~ 1.0):
+        - joy (기쁨)
+        - sadness (슬픔)
+        - anger (분노)
+        - fear (두려움)
+        - trust (신뢰)
+        - surprise (놀라움)
+
         반드시 아래 JSON 형식으로만 답변해 주세요. 다른 설명은 생략합니다.
-        {{"valence": 0.5, "arousal": -0.2}}
+        {{"valence": 0.5, "arousal": -0.2, "joy": 0.6, "sadness": -0.4, "anger": -0.3, "fear": -0.2, "trust": 0.5, "surprise": 0.1}}
         """
         max_retries = 3
         for attempt in range(max_retries):
@@ -83,7 +91,7 @@ class Command(BaseCommand):
                     self.stdout.write(f"모델 이름: {model.name}")
                 """
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-2.5-pro',
                     contents=prompt,
                 )
                 
@@ -93,11 +101,19 @@ class Command(BaseCommand):
                 result_str = re.sub(r'^```(json)?\s*', '', result_str)
                 result_str = re.sub(r'\s*```$', '', result_str)
 
-                data = json.loads(result_str)    
+                data = json.loads(result_str)
+
+                joy = max(0.0, min(1.0, float(data.get('joy', 0.0))))
+                sadness = max(0.0, min(1.0, float(data.get('sadness', 0.0))))
+                anger = max(0.0, min(1.0, float(data.get('anger', 0.0))))
+                fear = max(0.0, min(1.0, float(data.get('fear', 0.0))))
+                trust = max(0.0, min(1.0, float(data.get('trust', 0.0))))
+                surprise = max(0.0, min(1.0, float(data.get('surprise', 0.0))))
+
                 valence = max(-1.0, min(1.0, float(data.get('valence', 0.0))))
                 arousal = max(-1.0, min(1.0, float(data.get('arousal', 0.0))))
                 
-                return valence, arousal
+                return joy, sadness, anger, fear, trust, surprise, valence, arousal
                 
             except Exception as e:
                 error_msg = str(e)
@@ -115,14 +131,21 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR(f"    -> 감정 추출 실패: {e}"))
                 return None, None
             
-    def update_book_emotion(self, book, valence, arousal):
+    def update_book_emotion(self, book, joy, sadness, anger, fear, trust, surprise, valence, arousal):
+        book.joy = joy
+        book.sadness = sadness
+        book.anger = anger
+        book.fear = fear
+        book.trust = trust
+        book.surprise = surprise
         book.valence = valence
         book.arousal = arousal
+
         book.is_review_crawled = True
         book.save()
 
     def handle(self, *args, **options):
-        target_books = Book.objects.filter(link__isnull=False, valence__isnull=True)[:20]
+        target_books = Book.objects.filter(link__isnull=False, joy__isnull=True)[:20]
 
         if not target_books:
             self.stdout.write(self.style.SUCCESS("태깅이 필요한 도서가 없습니다."))
@@ -158,7 +181,7 @@ class Command(BaseCommand):
 
                         if(review_count < 3):
                             self.stdout.write(self.style.WARNING("    -> 리뷰 수가 충분하지 않아 0,0으로 설정합니다"))
-                            self.update_book_emotion(book, 0.0, 0.0)
+                            self.update_book_emotion(book, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
                         else:
                             """
@@ -169,10 +192,10 @@ class Command(BaseCommand):
                                 self.stdout.write(f"      {idx}. {preview}")
                             self.stdout.write("    ------------------------")
                             """
-                            valence, arousal = self.extract_emotion_vector(crawled_reviews)
+                            joy, sadness, anger, fear, trust, surprise, valence, arousal = self.extract_emotion_vector(crawled_reviews)
 
-                            if valence is not None and arousal is not None:
-                                self.update_book_emotion(book, valence, arousal)
+                            if valence is not None:
+                                self.update_book_emotion(book, joy, sadness, anger, fear, trust, surprise, valence, arousal)
                                 self.stdout.write(self.style.SUCCESS(f"    -> 태깅 완료 (valence: {valence}, arousal: {arousal})"))
 
                             else:
