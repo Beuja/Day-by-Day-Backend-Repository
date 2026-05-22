@@ -1,4 +1,4 @@
-from .recommend_by_emotion import (
+from .recommend_music import (
     EmotionRecommender,
     build_russell_emotion,
     get_target_emotion,

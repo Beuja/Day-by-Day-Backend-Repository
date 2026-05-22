@@ -1,6 +1,6 @@
 from django.db import models
 import json
-
+from diary.models import Diary  # diary 앱의 일기 모델 참조
 
 class Music(models.Model):
     title = models.CharField(max_length=255)
@@ -9,10 +9,13 @@ class Music(models.Model):
     listeners = models.IntegerField(default=0)
     playcount = models.IntegerField(default=0)
     
+    # [추가 반영] 프론트엔드 반환 및 캐싱 복원을 위한 자켓 이미지 주소 열
+    image_url = models.URLField(max_length=500, null=True, blank=True)
+    
     # 태그들을 JSON으로 저장
     tags = models.JSONField(default=list)
     
-    # 10차원 감정 벡터
+    # 6차원 감정 벡터
     emotion_vector = models.JSONField(default=dict)
     
     # Russell의 2차원 감정 벡터 (캐시)
