@@ -11,7 +11,7 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
     u_vec = np.array([user_emotion.get(key, 0.0) for key in ordered_keys])
     u_norm = norm(u_vec)
     if u_norm == 0:
-        u_norm - 1e-9
+        u_norm = 1e-9
 
     w_vec = _get_direction_weights(u_vec, mode)
     all_books = Book.objects.filter(joy__isnull=False)
@@ -49,7 +49,9 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
 
     filtered_and_scored.sort(key=lambda x: x[0])
 
+
     return [item[1] for item in filtered_and_scored[:count]]
+
 
 def _get_direction_weights(u_vec: np.ndarray, mode: str) -> np.ndarray:
     # 모드별 가중치 벡터 w 생성 함수

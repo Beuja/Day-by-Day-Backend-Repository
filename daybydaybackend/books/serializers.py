@@ -9,6 +9,7 @@ class BookSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RecommendRequestSerializer(serializers.Serializer):
+    diary_id = serializers.IntegerField(help_text='추천을 요청하는 일기의 ID')
     emotion = serializers.DictField(
         child=serializers.FloatField(min_value=-1.0, max_value=1.0),
         help_text='사용자 감정 벡터 (joy, sadness, anger, fear, trust, surprise)'
@@ -19,6 +20,7 @@ class RecommendRequestSerializer(serializers.Serializer):
     class Meta:
         swagger_schema_fields = {
             "example": {
+                "diary_id": 1,
                 "emotion": {
                     "joy": 0.7,
                     "sadness": 0.2,

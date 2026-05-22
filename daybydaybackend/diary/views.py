@@ -74,3 +74,4 @@ def analyze_diary_emotion(request):
     # 분석 결과(하위 Emotion 포함)를 직렬화하여 반환
     serializer = DiarySerializer(diary)
     return Response(serializer.data, status=status.HTTP_200_OK)
+    

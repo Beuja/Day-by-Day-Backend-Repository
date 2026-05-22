@@ -27,3 +27,5 @@ class Book(models.Model):
     
     class Meta:
         ordering = ['-title']
+
+    
