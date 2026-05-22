@@ -33,7 +33,12 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/dfKKipbQswChklXaaVTh6FP3oaJ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/dfKKipbQswChklXaaVTh6FP3oaJ.jpg",
+    "genre": [
+      "액션",
+      "드라마",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -76,7 +81,11 @@
       "dreaminess": 0.35,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/qqGpVVZk2KD1lAvccgTU4Z6nh1H.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/qqGpVVZk2KD1lAvccgTU4Z6nh1H.jpg",
+    "genre": [
+      "SF",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -115,7 +124,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/uv0iRQXDbtWHo1zPk3TZNo4Biti.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/uv0iRQXDbtWHo1zPk3TZNo4Biti.jpg",
+    "genre": [
+      "모험",
+      "애니메이션",
+      "가족",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -164,7 +179,14 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/knaXOBDBecVBWZVup3zXaOoy23v.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/knaXOBDBecVBWZVup3zXaOoy23v.jpg",
+    "genre": [
+      "가족",
+      "코미디",
+      "모험",
+      "판타지",
+      "애니메이션"
+    ]
   },
   {
     "type": "movie",
@@ -208,7 +230,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/lxjGbkRnY9d2j8cxIHxX57NNvRH.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/lxjGbkRnY9d2j8cxIHxX57NNvRH.jpg",
+    "genre": [
+      "드라마",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -247,7 +273,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/wGHGVAJGTn2BqsuFfPK8lzPiKjH.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/wGHGVAJGTn2BqsuFfPK8lzPiKjH.jpg",
+    "genre": [
+      "액션",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -273,7 +303,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/70bLedAueeJXOEVqXnNToj8zLvy.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/70bLedAueeJXOEVqXnNToj8zLvy.jpg",
+    "genre": [
+      "액션",
+      "드라마",
+      "로맨스"
+    ]
   },
   {
     "type": "movie",
@@ -311,7 +346,12 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/1NgBKiPrJzv1VHdEN8brdy59Rxo.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/1NgBKiPrJzv1VHdEN8brdy59Rxo.jpg",
+    "genre": [
+      "액션",
+      "판타지",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -347,7 +387,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/dU7bFp3dbFUZxzP8OVsBLWb93QP.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/dU7bFp3dbFUZxzP8OVsBLWb93QP.jpg",
+    "genre": [
+      "SF",
+      "모험",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -388,7 +433,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/13ZcJzSGEqVgDSqsS9U5EkQwPkV.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/13ZcJzSGEqVgDSqsS9U5EkQwPkV.jpg",
+    "genre": [
+      "스릴러",
+      "공포",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -423,7 +473,14 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/vJu9THzQ26Q5sWOVnhOkuRH5M1P.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/vJu9THzQ26Q5sWOVnhOkuRH5M1P.jpg",
+    "genre": [
+      "모험",
+      "애니메이션",
+      "코미디",
+      "가족",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -460,7 +517,12 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/3dTg1pgasstOa0XJTwt3dBFHjFf.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/3dTg1pgasstOa0XJTwt3dBFHjFf.jpg",
+    "genre": [
+      "액션",
+      "판타지",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -505,7 +567,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/piMZqtd0gGS7OgkhDwiQ7vVViBQ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/piMZqtd0gGS7OgkhDwiQ7vVViBQ.jpg",
+    "genre": [
+      "음악",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -536,7 +602,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/mUt0SnTp0oAN38BHD7NGX8hmwAT.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/mUt0SnTp0oAN38BHD7NGX8hmwAT.jpg",
+    "genre": [
+      "드라마",
+      "미스터리"
+    ]
   },
   {
     "type": "movie",
@@ -573,7 +643,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/kpOHAiCiIBa0yPtOqSp99NxhwUF.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/kpOHAiCiIBa0yPtOqSp99NxhwUF.jpg",
+    "genre": [
+      "공포",
+      "스릴러",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -632,7 +707,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/otP94vckeMXAgQxzhcRkZSeSmYv.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/otP94vckeMXAgQxzhcRkZSeSmYv.jpg",
+    "genre": [
+      "애니메이션",
+      "코미디",
+      "가족"
+    ]
   },
   {
     "type": "movie",
@@ -671,7 +751,12 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/cQN9rZj06rXMVkk76UF1DfBAico.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/cQN9rZj06rXMVkk76UF1DfBAico.jpg",
+    "genre": [
+      "액션",
+      "스릴러",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -703,7 +788,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/8uYxx23KyDnbDkA3eQSNECVeOiS.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/8uYxx23KyDnbDkA3eQSNECVeOiS.jpg",
+    "genre": [
+      "애니메이션",
+      "액션",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -744,7 +834,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/tS3UZlVfESO4z8inIZXGiHNgDfE.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/tS3UZlVfESO4z8inIZXGiHNgDfE.jpg",
+    "genre": [
+      "액션",
+      "범죄",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -784,7 +879,14 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ib6v6qUXzez1x2qIOLN7C0yJNPQ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ib6v6qUXzez1x2qIOLN7C0yJNPQ.jpg",
+    "genre": [
+      "모험",
+      "애니메이션",
+      "코미디",
+      "가족",
+      "미스터리"
+    ]
   },
   {
     "type": "movie",
@@ -823,7 +925,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/6oI4oQKTWMVUlr8Ivqydp28Ruu6.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/6oI4oQKTWMVUlr8Ivqydp28Ruu6.jpg",
+    "genre": [
+      "액션",
+      "코미디",
+      "공포"
+    ]
   },
   {
     "type": "movie",
@@ -861,7 +968,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/28A1VUDML1RzENYNtIU1WkBLT9V.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/28A1VUDML1RzENYNtIU1WkBLT9V.jpg",
+    "genre": [
+      "코미디",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -895,7 +1006,11 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/yvirUYrva23IudARHn3mMGVxWqM.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/yvirUYrva23IudARHn3mMGVxWqM.jpg",
+    "genre": [
+      "SF",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -944,7 +1059,11 @@
       "dreaminess": 0.0,
       "darkness": 0.15
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/tsYCG9yLRr7p2ZBqtCe3162cT4n.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/tsYCG9yLRr7p2ZBqtCe3162cT4n.jpg",
+    "genre": [
+      "드라마",
+      "미스터리"
+    ]
   },
   {
     "type": "movie",
@@ -982,7 +1101,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/uiIT7CsJ4V7rMnTqy7xYvj9IRhs.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/uiIT7CsJ4V7rMnTqy7xYvj9IRhs.jpg",
+    "genre": [
+      "액션",
+      "범죄",
+      "드라마",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -1023,7 +1148,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/z2tqCJLsw6uEJ8nJV8BsQXGa3dr.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/z2tqCJLsw6uEJ8nJV8BsQXGa3dr.jpg",
+    "genre": [
+      "모험",
+      "스릴러",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -1081,7 +1211,12 @@
       "dreaminess": 0.4,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/evoEi8SBSvIIEveM3V6nCJ6vKj8.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/evoEi8SBSvIIEveM3V6nCJ6vKj8.jpg",
+    "genre": [
+      "모험",
+      "드라마",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -1122,7 +1257,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/8lpCbwbYh9SSzCFsHDndZHKrcD4.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/8lpCbwbYh9SSzCFsHDndZHKrcD4.jpg",
+    "genre": [
+      "액션",
+      "SF",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -1184,7 +1324,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/mAFf4oW3XiH4IlFJw6dgwNnEPhg.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/mAFf4oW3XiH4IlFJw6dgwNnEPhg.jpg",
+    "genre": [
+      "액션",
+      "드라마",
+      "역사"
+    ]
   },
   {
     "type": "movie",
@@ -1222,7 +1367,11 @@
       "dreaminess": 0.2,
       "darkness": 0.7
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/fUDX16A4fJXmAuUA5t0pnqzXS0b.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/fUDX16A4fJXmAuUA5t0pnqzXS0b.jpg",
+    "genre": [
+      "미스터리",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -1254,7 +1403,14 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ysmsesGYF83VZXSvkG8ZdNNCKAz.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ysmsesGYF83VZXSvkG8ZdNNCKAz.jpg",
+    "genre": [
+      "액션",
+      "모험",
+      "스릴러",
+      "범죄",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -1285,7 +1441,10 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/75ot83QOkc02vujyzmIbumQCU6Y.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/75ot83QOkc02vujyzmIbumQCU6Y.jpg",
+    "genre": [
+      "다큐멘터리"
+    ]
   },
   {
     "type": "movie",
@@ -1325,7 +1484,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/77ggpowGO0ORQY9x33NeBIPajm1.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/77ggpowGO0ORQY9x33NeBIPajm1.jpg",
+    "genre": [
+      "범죄",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -1358,7 +1521,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/krgjV3rJtBcEpQehODKXNCt6uFL.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/krgjV3rJtBcEpQehODKXNCt6uFL.jpg",
+    "genre": [
+      "SF",
+      "액션",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -1403,7 +1571,12 @@
       "dreaminess": 0.0,
       "darkness": 0.8
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/gqgBqxyr8tGQGJCFrRWAzfA7Cml.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/gqgBqxyr8tGQGJCFrRWAzfA7Cml.jpg",
+    "genre": [
+      "공포",
+      "미스터리",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -1447,7 +1620,11 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/qV9BQZdiM8foEzDz0Ag5hGWE5qM.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/qV9BQZdiM8foEzDz0Ag5hGWE5qM.jpg",
+    "genre": [
+      "드라마",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -1479,7 +1656,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/yPV87cvDabRMTZs6NIbZLOufBLR.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/yPV87cvDabRMTZs6NIbZLOufBLR.jpg",
+    "genre": [
+      "로맨스",
+      "코미디",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -1511,7 +1693,10 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/rfItXrtDGILwsCdmgVxX79phFuI.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/rfItXrtDGILwsCdmgVxX79phFuI.jpg",
+    "genre": [
+      "다큐멘터리"
+    ]
   },
   {
     "type": "movie",
@@ -1534,7 +1719,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/tOCYV9JCXXFtb7YehKXJBMKI4aD.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/tOCYV9JCXXFtb7YehKXJBMKI4aD.jpg",
+    "genre": [
+      "다큐멘터리",
+      "음악"
+    ]
   },
   {
     "type": "movie",
@@ -1562,7 +1751,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/mRZIiG4vJiCgJh4v2EPUVVTznC8.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/mRZIiG4vJiCgJh4v2EPUVVTznC8.jpg",
+    "genre": [
+      "드라마",
+      "TV 영화"
+    ]
   },
   {
     "type": "movie",
@@ -1603,7 +1796,10 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/d5JdpKKyG8bLCBQsAfFskPhuj19.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/d5JdpKKyG8bLCBQsAfFskPhuj19.jpg",
+    "genre": [
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -1643,7 +1839,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/cfeIYPthWgq5XFZnx7cbpr7xFTp.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/cfeIYPthWgq5XFZnx7cbpr7xFTp.jpg",
+    "genre": [
+      "액션",
+      "SF",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -1680,7 +1881,12 @@
       "dreaminess": 0.75,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/kmP6viwzcEkZeoi1LaVcQemcvZh.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/kmP6viwzcEkZeoi1LaVcQemcvZh.jpg",
+    "genre": [
+      "모험",
+      "액션",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -1720,7 +1926,10 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/y9jKDJuf5WCDjSPsqkt1cb0JHGm.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/y9jKDJuf5WCDjSPsqkt1cb0JHGm.jpg",
+    "genre": [
+      "공포"
+    ]
   },
   {
     "type": "movie",
@@ -1758,7 +1967,14 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/jt1GlLLvkWL2m83VX8I1qsDR187.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/jt1GlLLvkWL2m83VX8I1qsDR187.jpg",
+    "genre": [
+      "가족",
+      "코미디",
+      "모험",
+      "판타지",
+      "애니메이션"
+    ]
   },
   {
     "type": "movie",
@@ -1784,7 +2000,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/jntqR2lt6rV1e8e5lXJXadkcsti.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/jntqR2lt6rV1e8e5lXJXadkcsti.jpg",
+    "genre": [
+      "코미디",
+      "액션",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -1831,7 +2052,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/1yvBkSv4ZLS1GohlmMDmdpSgfYo.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/1yvBkSv4ZLS1GohlmMDmdpSgfYo.jpg",
+    "genre": [
+      "드라마",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -1870,7 +2095,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ahj1JU8r0uJv7QII5Uj7tKzbEsC.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ahj1JU8r0uJv7QII5Uj7tKzbEsC.jpg",
+    "genre": [
+      "SF",
+      "액션",
+      "공포"
+    ]
   },
   {
     "type": "movie",
@@ -1911,7 +2141,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/dECA069mRikkghzgSBsM0cvic4F.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/dECA069mRikkghzgSBsM0cvic4F.jpg",
+    "genre": [
+      "범죄",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -1964,7 +2198,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/fxBxoXFAYKWde6lKzXxSusn18Av.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/fxBxoXFAYKWde6lKzXxSusn18Av.jpg",
+    "genre": [
+      "액션",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -1989,7 +2227,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/kvcdaGcres9pGDwZfPN9jOKfZh.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/kvcdaGcres9pGDwZfPN9jOKfZh.jpg",
+    "genre": [
+      "드라마",
+      "TV 영화"
+    ]
   },
   {
     "type": "movie",
@@ -2027,7 +2269,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/bvVoP1t2gNvmE9ccSrqR1zcGHGM.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/bvVoP1t2gNvmE9ccSrqR1zcGHGM.jpg",
+    "genre": [
+      "액션",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -2060,7 +2306,11 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/o0PgoBD6jLYId3LYpu9yUY06SLT.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/o0PgoBD6jLYId3LYpu9yUY06SLT.jpg",
+    "genre": [
+      "드라마",
+      "로맨스"
+    ]
   },
   {
     "type": "movie",
@@ -2097,7 +2347,12 @@
       "dreaminess": 1.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/atSxEGstxXRoSKDQFBgqQ5lpGSt.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/atSxEGstxXRoSKDQFBgqQ5lpGSt.jpg",
+    "genre": [
+      "액션",
+      "SF",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -2152,7 +2407,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/5fqcLmrgVDicMuGLOa9PKErFP72.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/5fqcLmrgVDicMuGLOa9PKErFP72.jpg",
+    "genre": [
+      "판타지",
+      "음악",
+      "코미디",
+      "애니메이션"
+    ]
   },
   {
     "type": "movie",
@@ -2201,7 +2462,11 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/oDXVQRHTomnm9N569Pu2d38IubP.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/oDXVQRHTomnm9N569Pu2d38IubP.jpg",
+    "genre": [
+      "로맨스",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -2243,7 +2508,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/9ICUbdveP56jRoMMVkXSOr3ceyV.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/9ICUbdveP56jRoMMVkXSOr3ceyV.jpg",
+    "genre": [
+      "액션",
+      "범죄",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -2281,7 +2551,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/h7H6Kd9kX1dvN8FZjUy6FcNdXxQ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/h7H6Kd9kX1dvN8FZjUy6FcNdXxQ.jpg",
+    "genre": [
+      "드라마",
+      "로맨스"
+    ]
   },
   {
     "type": "movie",
@@ -2319,7 +2593,12 @@
       "dreaminess": 0.0,
       "darkness": 0.37
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ubgOSHAEhv1ds8BNHodhCcI13oH.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ubgOSHAEhv1ds8BNHodhCcI13oH.jpg",
+    "genre": [
+      "공포",
+      "스릴러",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -2352,7 +2631,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/xthXNYltOOm80vW5Kxjzxx5gvQ6.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/xthXNYltOOm80vW5Kxjzxx5gvQ6.jpg",
+    "genre": [
+      "역사",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -2388,7 +2671,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/lnRkeQstaCvfMahZq7p9eAWzK1a.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/lnRkeQstaCvfMahZq7p9eAWzK1a.jpg",
+    "genre": [
+      "스릴러",
+      "범죄",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -2430,7 +2718,12 @@
       "dreaminess": 0.0,
       "darkness": 0.24
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/lSzmchPGjy6gjLMCpousS3vQAjS.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/lSzmchPGjy6gjLMCpousS3vQAjS.jpg",
+    "genre": [
+      "미스터리",
+      "드라마",
+      "공포"
+    ]
   },
   {
     "type": "movie",
@@ -2496,7 +2789,12 @@
       "dreaminess": 0.4,
       "darkness": 0.25
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/n8BPIRqvj1SdTRND828ANXhmSng.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/n8BPIRqvj1SdTRND828ANXhmSng.jpg",
+    "genre": [
+      "모험",
+      "판타지",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -2533,7 +2831,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/sHoSvGWwbdFcF29vskvv2XvYgEk.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/sHoSvGWwbdFcF29vskvv2XvYgEk.jpg",
+    "genre": [
+      "로맨스",
+      "드라마",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -2575,7 +2878,11 @@
       "dreaminess": 0.2,
       "darkness": 0.7
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/4DGPORlVIDIQvsuSDnM4uXKMjWS.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/4DGPORlVIDIQvsuSDnM4uXKMjWS.jpg",
+    "genre": [
+      "공포",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -2611,7 +2918,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/z7ilT5rNN9kDo8JZmgyhM6ej2xv.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/z7ilT5rNN9kDo8JZmgyhM6ej2xv.jpg",
+    "genre": [
+      "모험",
+      "SF",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -2647,7 +2959,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/4HxOXiEFPAFQhzkobIU9Lqlezlq.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/4HxOXiEFPAFQhzkobIU9Lqlezlq.jpg",
+    "genre": [
+      "모험",
+      "코미디",
+      "공포"
+    ]
   },
   {
     "type": "movie",
@@ -2697,7 +3014,11 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/zXlwtzXP80yc3X0VokdxvmsFQfw.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/zXlwtzXP80yc3X0VokdxvmsFQfw.jpg",
+    "genre": [
+      "공포",
+      "미스터리"
+    ]
   },
   {
     "type": "movie",
@@ -2738,7 +3059,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/bG8BPNRoOvTC9wIos7DIH1YWOqN.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/bG8BPNRoOvTC9wIos7DIH1YWOqN.jpg",
+    "genre": [
+      "액션",
+      "코미디",
+      "범죄",
+      "미스터리"
+    ]
   },
   {
     "type": "movie",
@@ -2779,7 +3106,12 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/o0d6Us9VWOW0nHhoB7ZNIwigARG.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/o0d6Us9VWOW0nHhoB7ZNIwigARG.jpg",
+    "genre": [
+      "액션",
+      "스릴러",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -2835,7 +3167,12 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/r18JdjImbWDRwkbVDIzWoLQqkCo.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/r18JdjImbWDRwkbVDIzWoLQqkCo.jpg",
+    "genre": [
+      "모험",
+      "판타지",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -2870,7 +3207,10 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/rdZ3T34AGXLglT6g6Xto7hPxr7h.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/rdZ3T34AGXLglT6g6Xto7hPxr7h.jpg",
+    "genre": [
+      "다큐멘터리"
+    ]
   },
   {
     "type": "movie",
@@ -2902,7 +3242,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/wlV000ToWdP5jtBBswT98DUibIS.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/wlV000ToWdP5jtBBswT98DUibIS.jpg",
+    "genre": [
+      "음악",
+      "스릴러",
+      "액션",
+      "공포"
+    ]
   },
   {
     "type": "movie",
@@ -2951,7 +3297,12 @@
       "dreaminess": 0.4,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/fvqoI9r1GU2EFkc0xjZ6dKCuDVR.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/fvqoI9r1GU2EFkc0xjZ6dKCuDVR.jpg",
+    "genre": [
+      "액션",
+      "모험",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -2995,7 +3346,12 @@
       "dreaminess": 0.0,
       "darkness": 0.8
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/izzk8dbmrLowcoGbFaebqJvzyXg.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/izzk8dbmrLowcoGbFaebqJvzyXg.jpg",
+    "genre": [
+      "범죄",
+      "미스터리",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -3036,7 +3392,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/x2BHx02jMbvpKjMvbf8XxJkYwHJ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/x2BHx02jMbvpKjMvbf8XxJkYwHJ.jpg",
+    "genre": [
+      "애니메이션",
+      "모험",
+      "코미디",
+      "가족"
+    ]
   },
   {
     "type": "movie",
@@ -3081,7 +3443,14 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/hABnmgdAU3u6Nu61b9GUGaOseVl.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/hABnmgdAU3u6Nu61b9GUGaOseVl.jpg",
+    "genre": [
+      "애니메이션",
+      "코미디",
+      "판타지",
+      "모험",
+      "가족"
+    ]
   },
   {
     "type": "movie",
@@ -3126,7 +3495,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/7F0jc75HrSkLVcvOXR2FXAIwuEv.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/7F0jc75HrSkLVcvOXR2FXAIwuEv.jpg",
+    "genre": [
+      "코미디",
+      "SF",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -3163,7 +3537,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/3GwTPQkAcgDeAirRpEuJG8HDdRz.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/3GwTPQkAcgDeAirRpEuJG8HDdRz.jpg",
+    "genre": [
+      "판타지",
+      "음악"
+    ]
   },
   {
     "type": "movie",
@@ -3198,7 +3576,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ygr4hE8Qpagv8sxZbMw1mtYkcQE.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ygr4hE8Qpagv8sxZbMw1mtYkcQE.jpg",
+    "genre": [
+      "SF",
+      "모험",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -3242,7 +3625,12 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ttryglcY2osWZE3sRYBf3ewTZsW.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ttryglcY2osWZE3sRYBf3ewTZsW.jpg",
+    "genre": [
+      "액션",
+      "판타지",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -3279,7 +3667,10 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/yQyoFCBLGJH5HXESmJAzaiXw9zU.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/yQyoFCBLGJH5HXESmJAzaiXw9zU.jpg",
+    "genre": [
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -3317,7 +3708,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/eKZ07Ted7VHxQjbuZrRBFOamcKJ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/eKZ07Ted7VHxQjbuZrRBFOamcKJ.jpg",
+    "genre": [
+      "드라마",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -3376,7 +3771,12 @@
       "dreaminess": 0.0,
       "darkness": 0.25
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/AdrItykbv1evqcbIPrItVWnkaKj.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/AdrItykbv1evqcbIPrItVWnkaKj.jpg",
+    "genre": [
+      "드라마",
+      "스릴러",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -3415,7 +3815,10 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/iLU2meXFN8BxNcM0Lq2gPtpoO8L.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/iLU2meXFN8BxNcM0Lq2gPtpoO8L.jpg",
+    "genre": [
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -3473,7 +3876,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/4exwxdn3HxHYQ2Nls2yhM3pW1Mw.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/4exwxdn3HxHYQ2Nls2yhM3pW1Mw.jpg",
+    "genre": [
+      "음악",
+      "다큐멘터리"
+    ]
   },
   {
     "type": "movie",
@@ -3507,7 +3914,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/dsfAcQ5J7TPOpJgcX8R1lRBqiMK.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/dsfAcQ5J7TPOpJgcX8R1lRBqiMK.jpg",
+    "genre": [
+      "액션",
+      "코미디",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -3557,7 +3969,11 @@
       "dreaminess": 0.4,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/8YaP48tVfngbURGldWk1I5odsBK.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/8YaP48tVfngbURGldWk1I5odsBK.jpg",
+    "genre": [
+      "모험",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -3603,7 +4019,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/132KjhVrWUqKFVfMAKKNkherytA.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/132KjhVrWUqKFVfMAKKNkherytA.jpg",
+    "genre": [
+      "드라마",
+      "로맨스"
+    ]
   },
   {
     "type": "movie",
@@ -3633,7 +4053,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/qZQRS4iUxHjkWjJzL2FkK4LHYs6.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/qZQRS4iUxHjkWjJzL2FkK4LHYs6.jpg",
+    "genre": [
+      "코미디",
+      "로맨스"
+    ]
   },
   {
     "type": "movie",
@@ -3688,7 +4112,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/l8wvbQQIBV8LBHmx3Wx9xbE2kzt.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/l8wvbQQIBV8LBHmx3Wx9xbE2kzt.jpg",
+    "genre": [
+      "코미디",
+      "드라마",
+      "로맨스"
+    ]
   },
   {
     "type": "movie",
@@ -3729,7 +4158,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/klfSEbFOquMFjBQJ5uKAfp0rrsK.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/klfSEbFOquMFjBQJ5uKAfp0rrsK.jpg",
+    "genre": [
+      "액션",
+      "스릴러",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -3758,7 +4192,10 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/kpTqWqLYcf1uErnx5VXLah4EWJZ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/kpTqWqLYcf1uErnx5VXLah4EWJZ.jpg",
+    "genre": [
+      "다큐멘터리"
+    ]
   },
   {
     "type": "movie",
@@ -3799,7 +4236,12 @@
       "dreaminess": 0.0,
       "darkness": 0.7
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/13ZcJzSGEqVgDSqsS9U5EkQwPkV.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/13ZcJzSGEqVgDSqsS9U5EkQwPkV.jpg",
+    "genre": [
+      "스릴러",
+      "공포",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -3857,7 +4299,13 @@
       "dreaminess": 0.0,
       "darkness": 0.3
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/oTn0PoR8gSMpMqJaT2pUtkkN0Ia.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/oTn0PoR8gSMpMqJaT2pUtkkN0Ia.jpg",
+    "genre": [
+      "애니메이션",
+      "액션",
+      "로맨스",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -3901,7 +4349,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/iGp4wBc0ZBVFd2HPicyDgl6Pn1r.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/iGp4wBc0ZBVFd2HPicyDgl6Pn1r.jpg",
+    "genre": [
+      "애니메이션",
+      "가족",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -3950,7 +4403,11 @@
       "dreaminess": 0.0,
       "darkness": 0.57
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/35RGDgySfINL9V2e6lkDECQ0hRa.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/35RGDgySfINL9V2e6lkDECQ0hRa.jpg",
+    "genre": [
+      "드라마",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -3990,7 +4447,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/dBKMc0Bim0Z8amB7VihuCfhto2v.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/dBKMc0Bim0Z8amB7VihuCfhto2v.jpg",
+    "genre": [
+      "로맨스",
+      "SF",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -4035,7 +4497,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/guzNdgRjANTBDkTRYGqgzFOgSWx.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/guzNdgRjANTBDkTRYGqgzFOgSWx.jpg",
+    "genre": [
+      "로맨스",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -4079,7 +4545,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/f7sCSLEPRfV2fWQ0RYOtHhnHXuG.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/f7sCSLEPRfV2fWQ0RYOtHhnHXuG.jpg",
+    "genre": [
+      "스릴러",
+      "액션",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -4121,7 +4592,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/pk1TPODQVnI8GdLf0DhlJQYxWjd.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/pk1TPODQVnI8GdLf0DhlJQYxWjd.jpg",
+    "genre": [
+      "판타지",
+      "드라마",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -4164,7 +4640,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/kCXGCEsDqjzWJVDyHgBUg0AMetT.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/kCXGCEsDqjzWJVDyHgBUg0AMetT.jpg",
+    "genre": [
+      "SF",
+      "모험",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -4222,7 +4703,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/qEipksU5SzHxbeZbE0cZQzEt6bD.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/qEipksU5SzHxbeZbE0cZQzEt6bD.jpg",
+    "genre": [
+      "공포",
+      "액션",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -4271,7 +4757,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/jpD6z9fgNe7OqsHoDeAWQWoULde.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/jpD6z9fgNe7OqsHoDeAWQWoULde.jpg",
+    "genre": [
+      "드라마",
+      "역사"
+    ]
   },
   {
     "type": "movie",
@@ -4310,7 +4800,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/nxoxD8FdbhRWd2Ra0W6qsZA0frn.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/nxoxD8FdbhRWd2Ra0W6qsZA0frn.jpg",
+    "genre": [
+      "공포",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -4362,7 +4856,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/m5lCha2XcbDowDoYHPc0DTNaCPU.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/m5lCha2XcbDowDoYHPc0DTNaCPU.jpg",
+    "genre": [
+      "SF",
+      "액션",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -4404,7 +4903,12 @@
       "dreaminess": 0.7,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/7XFfURIFCJxN1mfBg0SAjk5yGzg.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/7XFfURIFCJxN1mfBg0SAjk5yGzg.jpg",
+    "genre": [
+      "모험",
+      "액션",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -4436,7 +4940,13 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/tc3wdEEov3SdMja9ZkBiAZ6fBGV.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/tc3wdEEov3SdMja9ZkBiAZ6fBGV.jpg",
+    "genre": [
+      "애니메이션",
+      "액션",
+      "판타지",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -4488,7 +4998,12 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ftIYdV8IEE4n8odMv7FLam9VDVy.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ftIYdV8IEE4n8odMv7FLam9VDVy.jpg",
+    "genre": [
+      "SF",
+      "공포",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -4547,7 +5062,14 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ib6v6qUXzez1x2qIOLN7C0yJNPQ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ib6v6qUXzez1x2qIOLN7C0yJNPQ.jpg",
+    "genre": [
+      "모험",
+      "애니메이션",
+      "코미디",
+      "가족",
+      "미스터리"
+    ]
   },
   {
     "type": "movie",
@@ -4594,7 +5116,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/oyyUcGwLX7LTFS1pQbLrQpyzIyt.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/oyyUcGwLX7LTFS1pQbLrQpyzIyt.jpg",
+    "genre": [
+      "드라마",
+      "역사",
+      "전쟁"
+    ]
   },
   {
     "type": "movie",
@@ -4634,7 +5161,11 @@
       "dreaminess": 0.7,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/k3m1RdlYUlCx51PxxNMlmbm7QSk.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/k3m1RdlYUlCx51PxxNMlmbm7QSk.jpg",
+    "genre": [
+      "공포",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -4666,7 +5197,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/9ljV8sG9HQs6bBc19Vw0754aujG.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/9ljV8sG9HQs6bBc19Vw0754aujG.jpg",
+    "genre": [
+      "코미디",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -4728,7 +5263,13 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/lMWTlGr9jVUC18T515hPRKym5QQ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/lMWTlGr9jVUC18T515hPRKym5QQ.jpg",
+    "genre": [
+      "애니메이션",
+      "액션",
+      "모험",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -4764,7 +5305,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/hCKkybW6EfSZoOW3xia9ZsQwaUd.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/hCKkybW6EfSZoOW3xia9ZsQwaUd.jpg",
+    "genre": [
+      "공포",
+      "판타지",
+      "로맨스"
+    ]
   },
   {
     "type": "movie",
@@ -4809,7 +5355,11 @@
       "dreaminess": 0.5,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/fJZmCJpLeBFKktLFEIKPEhllWlU.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/fJZmCJpLeBFKktLFEIKPEhllWlU.jpg",
+    "genre": [
+      "SF",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -4843,7 +5393,12 @@
       "dreaminess": 0.4,
       "darkness": 0.25
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/iBvo3qOPcmhlqAaJcXcQHtx2qLk.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/iBvo3qOPcmhlqAaJcXcQHtx2qLk.jpg",
+    "genre": [
+      "애니메이션",
+      "액션",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -4882,7 +5437,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/8HjP0vqOk1FIxoN96ciRnOcmGu4.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/8HjP0vqOk1FIxoN96ciRnOcmGu4.jpg",
+    "genre": [
+      "공포",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -4938,7 +5497,11 @@
       "dreaminess": 0.4,
       "darkness": 0.17
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/7zV8FTYofAORGm0Umgh1mNNCym8.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/7zV8FTYofAORGm0Umgh1mNNCym8.jpg",
+    "genre": [
+      "SF",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -4980,7 +5543,11 @@
       "dreaminess": 0.0,
       "darkness": 0.7
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/zF9hSBS1t7PVFLo01GrJ3OjGi67.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/zF9hSBS1t7PVFLo01GrJ3OjGi67.jpg",
+    "genre": [
+      "드라마",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -5024,7 +5591,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/oqn0k8FbQ5mKXk5WbtKrvHwV5yV.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/oqn0k8FbQ5mKXk5WbtKrvHwV5yV.jpg",
+    "genre": [
+      "액션",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -5063,7 +5634,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/hqzCMHTuymM7FOZwpHfW5meiX1m.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/hqzCMHTuymM7FOZwpHfW5meiX1m.jpg",
+    "genre": [
+      "드라마",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -5102,7 +5677,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ekHemOB84SoKi6fqG0ciwvKWM2i.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ekHemOB84SoKi6fqG0ciwvKWM2i.jpg",
+    "genre": [
+      "액션",
+      "범죄",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -5139,7 +5719,15 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/fvtswV04JfLGxxrjxW4t4j8bPhx.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/fvtswV04JfLGxxrjxW4t4j8bPhx.jpg",
+    "genre": [
+      "액션",
+      "모험",
+      "애니메이션",
+      "코미디",
+      "가족",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -5198,7 +5786,12 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/zxZdTi3fA7aDxEOivmzZAY2bmTu.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/zxZdTi3fA7aDxEOivmzZAY2bmTu.jpg",
+    "genre": [
+      "모험",
+      "판타지",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -5239,7 +5832,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/4xOhtzXGt0if74dTmS4qtizFelX.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/4xOhtzXGt0if74dTmS4qtizFelX.jpg",
+    "genre": [
+      "액션",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -5286,7 +5883,14 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/rMXHvHzpuYZXrJUhRVJ3TvDSwe5.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/rMXHvHzpuYZXrJUhRVJ3TvDSwe5.jpg",
+    "genre": [
+      "애니메이션",
+      "가족",
+      "모험",
+      "드라마",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -5332,7 +5936,10 @@
       "dreaminess": 0.0,
       "darkness": 0.7
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/yg2XzSxH10DVGNY73e7yZgLnDF5.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/yg2XzSxH10DVGNY73e7yZgLnDF5.jpg",
+    "genre": [
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -5380,7 +5987,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/8AsDR2o5AC3V8Jmj6JH6cpta7dz.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/8AsDR2o5AC3V8Jmj6JH6cpta7dz.jpg",
+    "genre": [
+      "SF",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -5421,7 +6032,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/fQ8Q3VAybCt6fHFJQD0kwd5azNL.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/fQ8Q3VAybCt6fHFJQD0kwd5azNL.jpg",
+    "genre": [
+      "SF",
+      "액션",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -5453,7 +6069,14 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/vZmCFVff9JySHTUp9zbYUIAcxzc.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/vZmCFVff9JySHTUp9zbYUIAcxzc.jpg",
+    "genre": [
+      "액션",
+      "애니메이션",
+      "코미디",
+      "가족",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -5500,7 +6123,13 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/iJbm78MxPjLutWUYixbeege8EVe.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/iJbm78MxPjLutWUYixbeege8EVe.jpg",
+    "genre": [
+      "가족",
+      "코미디",
+      "애니메이션",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -5546,7 +6175,11 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": ""
+    "image_url": "",
+    "genre": [
+      "드라마",
+      "로맨스"
+    ]
   },
   {
     "type": "movie",
@@ -5600,7 +6233,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/uzVUEQ6PPGGsETviLwVKSzS8OUG.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/uzVUEQ6PPGGsETviLwVKSzS8OUG.jpg",
+    "genre": [
+      "애니메이션",
+      "가족",
+      "판타지",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -5644,7 +6283,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/h3mUJ9WEJ8PzA450ad4hrjsaiqG.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/h3mUJ9WEJ8PzA450ad4hrjsaiqG.jpg",
+    "genre": [
+      "코미디",
+      "모험",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -5697,7 +6341,11 @@
       "dreaminess": 0.4,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/anwNl1xbzXoj5Ax1nVw3WoDzHlw.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/anwNl1xbzXoj5Ax1nVw3WoDzHlw.jpg",
+    "genre": [
+      "모험",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -5744,7 +6392,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/oKNkhmyIBiDENivK6ELZxfBWa3q.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/oKNkhmyIBiDENivK6ELZxfBWa3q.jpg",
+    "genre": [
+      "드라마",
+      "음악",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -5795,7 +6448,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/1TsdNMKodmOKyo4xPacxq7opo3p.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/1TsdNMKodmOKyo4xPacxq7opo3p.jpg",
+    "genre": [
+      "전쟁",
+      "액션",
+      "역사"
+    ]
   },
   {
     "type": "movie",
@@ -5844,7 +6502,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/fnDLrtEoIrxTCWUvuurMzOzQGpQ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/fnDLrtEoIrxTCWUvuurMzOzQGpQ.jpg",
+    "genre": [
+      "애니메이션",
+      "코미디",
+      "가족"
+    ]
   },
   {
     "type": "movie",
@@ -5877,7 +6540,14 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/2QCGC4toQXYuIsWKj5vJQRAdPjd.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/2QCGC4toQXYuIsWKj5vJQRAdPjd.jpg",
+    "genre": [
+      "모험",
+      "애니메이션",
+      "코미디",
+      "가족",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -5922,7 +6592,10 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ApiNjedkfs7LtcJcjxMQAUIcN2L.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ApiNjedkfs7LtcJcjxMQAUIcN2L.jpg",
+    "genre": [
+      "다큐멘터리"
+    ]
   },
   {
     "type": "movie",
@@ -5971,7 +6644,12 @@
       "dreaminess": 0.0,
       "darkness": 0.9
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/jicHGaOX5pHs7RKjfexMxvLkwjf.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/jicHGaOX5pHs7RKjfexMxvLkwjf.jpg",
+    "genre": [
+      "범죄",
+      "미스터리",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -6013,7 +6691,14 @@
       "dreaminess": 0.7,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/1oG69MtmZGovhho0pPgRY9d1qrU.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/1oG69MtmZGovhho0pPgRY9d1qrU.jpg",
+    "genre": [
+      "가족",
+      "코미디",
+      "범죄",
+      "모험",
+      "애니메이션"
+    ]
   },
   {
     "type": "movie",
@@ -6041,7 +6726,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/d9V6Q9vpVpmaca7vwSUbCajtDb3.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/d9V6Q9vpVpmaca7vwSUbCajtDb3.jpg",
+    "genre": [
+      "애니메이션",
+      "액션",
+      "모험",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -6085,7 +6776,13 @@
       "dreaminess": 0.0,
       "darkness": 0.2
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/k5aQ2TqKcQFwPoXHkpAGoKNVDLZ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/k5aQ2TqKcQFwPoXHkpAGoKNVDLZ.jpg",
+    "genre": [
+      "가족",
+      "판타지",
+      "코미디",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -6128,7 +6825,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/dnuiFWiogHw1fmIDdwkVkLkzzFM.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/dnuiFWiogHw1fmIDdwkVkLkzzFM.jpg",
+    "genre": [
+      "로맨스",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -6159,7 +6860,11 @@
       "dreaminess": 0.0,
       "darkness": 0.6
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/yBQ6iBI7BcDWlgUzWzJNSvbWe8s.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/yBQ6iBI7BcDWlgUzWzJNSvbWe8s.jpg",
+    "genre": [
+      "액션",
+      "공포"
+    ]
   },
   {
     "type": "movie",
@@ -6195,7 +6900,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/iA9NiygwSOBy8FjZjvdYOMxRUG0.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/iA9NiygwSOBy8FjZjvdYOMxRUG0.jpg",
+    "genre": [
+      "가족",
+      "애니메이션",
+      "SF",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -6230,7 +6941,12 @@
       "dreaminess": 0.0,
       "darkness": 0.3
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/skTzymk67FfQSfGvwp4JSAqje4Z.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/skTzymk67FfQSfGvwp4JSAqje4Z.jpg",
+    "genre": [
+      "애니메이션",
+      "가족",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -6279,7 +6995,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/xiz6TiSduvR1U3VLfWVlBEdT9fO.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/xiz6TiSduvR1U3VLfWVlBEdT9fO.jpg",
+    "genre": [
+      "판타지",
+      "애니메이션",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -6324,7 +7045,12 @@
       "dreaminess": 0.2,
       "darkness": 0.7
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/m2Lw04GIjiTjylqPiccoo3WFMVb.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/m2Lw04GIjiTjylqPiccoo3WFMVb.jpg",
+    "genre": [
+      "미스터리",
+      "스릴러",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -6370,7 +7096,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/zzxvtXJ9pahjWVX3Q2ko29J0Zf6.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/zzxvtXJ9pahjWVX3Q2ko29J0Zf6.jpg",
+    "genre": [
+      "모험",
+      "코미디",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -6407,7 +7138,11 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": ""
+    "image_url": "",
+    "genre": [
+      "코미디",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -6448,7 +7183,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/q1GPxUb7dfzfw4toS5TnRoSPVbn.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/q1GPxUb7dfzfw4toS5TnRoSPVbn.jpg",
+    "genre": [
+      "범죄",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -6484,7 +7223,14 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/hwmwTFtMbzxAWbIOp1RyyiOCyx0.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/hwmwTFtMbzxAWbIOp1RyyiOCyx0.jpg",
+    "genre": [
+      "모험",
+      "애니메이션",
+      "코미디",
+      "가족",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -6515,7 +7261,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/pPokyKVPve6HNSgVliOlrMwU1lM.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/pPokyKVPve6HNSgVliOlrMwU1lM.jpg",
+    "genre": [
+      "액션",
+      "범죄",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -6568,7 +7319,14 @@
       "dreaminess": 0.0,
       "darkness": 0.12
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/gLabmTVZpNOGa8LEiMvTi9hJPDe.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/gLabmTVZpNOGa8LEiMvTi9hJPDe.jpg",
+    "genre": [
+      "모험",
+      "가족",
+      "애니메이션",
+      "액션",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -6594,7 +7352,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/5MdllYBVC9qomummBQSCPWrTylZ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/5MdllYBVC9qomummBQSCPWrTylZ.jpg",
+    "genre": [
+      "로맨스",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -6635,7 +7397,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ww7jn7lv1YzTAGd5m0R6CP1VXAs.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ww7jn7lv1YzTAGd5m0R6CP1VXAs.jpg",
+    "genre": [
+      "가족",
+      "SF",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -6681,7 +7448,10 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/oLALU5qhYbz995SfcSbrxE2zmYM.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/oLALU5qhYbz995SfcSbrxE2zmYM.jpg",
+    "genre": [
+      "다큐멘터리"
+    ]
   },
   {
     "type": "movie",
@@ -6724,7 +7494,12 @@
       "dreaminess": 0.0,
       "darkness": 0.35
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/9Y048zYw66TWvpUtsiNK0uReiVX.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/9Y048zYw66TWvpUtsiNK0uReiVX.jpg",
+    "genre": [
+      "애니메이션",
+      "가족",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -6760,7 +7535,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/hjki9weYYVABvkpZbX5jBOmKXXv.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/hjki9weYYVABvkpZbX5jBOmKXXv.jpg",
+    "genre": [
+      "액션",
+      "모험",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -6803,7 +7583,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/vXvcMeUL6dGr9iBhNOMG3SPRHGA.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/vXvcMeUL6dGr9iBhNOMG3SPRHGA.jpg",
+    "genre": [
+      "SF",
+      "모험",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -6837,7 +7622,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/iQaLakvYBzpmdHUB2h6h2aVY5nE.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/iQaLakvYBzpmdHUB2h6h2aVY5nE.jpg",
+    "genre": [
+      "드라마",
+      "로맨스",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -6881,7 +7671,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/lcu0aRFg7lzmzxGzpkYCeN4XRjh.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/lcu0aRFg7lzmzxGzpkYCeN4XRjh.jpg",
+    "genre": [
+      "공포",
+      "미스터리"
+    ]
   },
   {
     "type": "movie",
@@ -6927,7 +7721,12 @@
       "dreaminess": 0.4,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/3dTg1pgasstOa0XJTwt3dBFHjFf.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/3dTg1pgasstOa0XJTwt3dBFHjFf.jpg",
+    "genre": [
+      "액션",
+      "판타지",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -6975,7 +7774,11 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/uWPnKtu1eutmgBQ2hoWm0Xe8nfN.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/uWPnKtu1eutmgBQ2hoWm0Xe8nfN.jpg",
+    "genre": [
+      "모험",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -7007,7 +7810,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ziReGUV3xURsWmcmsn2GOunPc0L.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ziReGUV3xURsWmcmsn2GOunPc0L.jpg",
+    "genre": [
+      "액션",
+      "SF",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -7052,7 +7860,12 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/u2aVXft5GLBQnjzWVNda7sdDpdu.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/u2aVXft5GLBQnjzWVNda7sdDpdu.jpg",
+    "genre": [
+      "액션",
+      "모험",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -7093,7 +7906,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/bCg9iDSXPjVTUs1RyYH8AhmJ11d.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/bCg9iDSXPjVTUs1RyYH8AhmJ11d.jpg",
+    "genre": [
+      "스릴러",
+      "범죄",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -7127,7 +7945,12 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/cltj9nKLzl0HXtz2qdu55BoIgOn.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/cltj9nKLzl0HXtz2qdu55BoIgOn.jpg",
+    "genre": [
+      "액션",
+      "범죄",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -7160,7 +7983,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/bL0bBepUCLFcCj2ATFD40FbyDEl.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/bL0bBepUCLFcCj2ATFD40FbyDEl.jpg",
+    "genre": [
+      "액션",
+      "미스터리",
+      "SF",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -7207,7 +8036,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/tLNTaP5kcH2FDQNxGu4EkOCpMjr.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/tLNTaP5kcH2FDQNxGu4EkOCpMjr.jpg",
+    "genre": [
+      "액션",
+      "모험",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -7257,7 +8091,12 @@
       "dreaminess": 0.0,
       "darkness": 0.7
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/p0uAcyDgBXtCSXZdnacwr9OGcIH.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/p0uAcyDgBXtCSXZdnacwr9OGcIH.jpg",
+    "genre": [
+      "범죄",
+      "드라마",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -7308,7 +8147,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/yM0HNVCWfrb5VrFgPQMec2SmfrZ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/yM0HNVCWfrb5VrFgPQMec2SmfrZ.jpg",
+    "genre": [
+      "코미디",
+      "로맨스",
+      "드라마"
+    ]
   },
   {
     "type": "movie",
@@ -7340,7 +8184,12 @@
       "dreaminess": 0.0,
       "darkness": 0.35
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/8mS3VvzeDfw6VdgQQbXsunNBEit.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/8mS3VvzeDfw6VdgQQbXsunNBEit.jpg",
+    "genre": [
+      "액션",
+      "스릴러",
+      "공포"
+    ]
   },
   {
     "type": "movie",
@@ -7372,7 +8221,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/frXkpt1dLKO3iDbmBsjQUKseLiS.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/frXkpt1dLKO3iDbmBsjQUKseLiS.jpg",
+    "genre": [
+      "판타지",
+      "가족",
+      "액션",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -7408,7 +8263,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/96ikpEmn7Uxct77x6kTIUgnldh2.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/96ikpEmn7Uxct77x6kTIUgnldh2.jpg",
+    "genre": [
+      "드라마",
+      "로맨스",
+      "역사"
+    ]
   },
   {
     "type": "movie",
@@ -7442,7 +8302,12 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/ebJbC9OYAZJxy7bRUGryR72hfa2.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/ebJbC9OYAZJxy7bRUGryR72hfa2.jpg",
+    "genre": [
+      "모험",
+      "액션",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -7482,7 +8347,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/6tD4oT7C01aZLVfoZDz5VFVbJCi.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/6tD4oT7C01aZLVfoZDz5VFVbJCi.jpg",
+    "genre": [
+      "모험",
+      "판타지",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -7519,7 +8389,13 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/4784u4fHwcvc4owOGylVpP7JaKQ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/4784u4fHwcvc4owOGylVpP7JaKQ.jpg",
+    "genre": [
+      "액션",
+      "SF",
+      "코미디",
+      "가족"
+    ]
   },
   {
     "type": "movie",
@@ -7542,7 +8418,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/7OPedgbyapZ8LjIQIMIh72ZEfW6.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/7OPedgbyapZ8LjIQIMIh72ZEfW6.jpg",
+    "genre": [
+      "액션",
+      "드라마",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -7584,7 +8465,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/rGe64vmd9cpvwiTD5OGWJezBnNg.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/rGe64vmd9cpvwiTD5OGWJezBnNg.jpg",
+    "genre": [
+      "액션",
+      "스릴러",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -7626,7 +8512,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/3ovejwQO4fKOWx4VgGBJeT8CKCn.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/3ovejwQO4fKOWx4VgGBJeT8CKCn.jpg",
+    "genre": [
+      "모험",
+      "판타지",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -7672,7 +8563,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/nDVUiEqoeXaDQuM81KkUVNviYIm.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/nDVUiEqoeXaDQuM81KkUVNviYIm.jpg",
+    "genre": [
+      "액션",
+      "스릴러",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -7717,7 +8613,12 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/cVNasmF1Egd3v3mpq747Hizxx4x.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/cVNasmF1Egd3v3mpq747Hizxx4x.jpg",
+    "genre": [
+      "범죄",
+      "드라마",
+      "액션"
+    ]
   },
   {
     "type": "movie",
@@ -7771,7 +8672,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/rdBYtoxLvd8J9PsVYVGd7FGzQux.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/rdBYtoxLvd8J9PsVYVGd7FGzQux.jpg",
+    "genre": [
+      "범죄",
+      "드라마",
+      "코미디"
+    ]
   },
   {
     "type": "movie",
@@ -7808,7 +8714,13 @@
       "dreaminess": 0.0,
       "darkness": 0.6
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/cnUlKvIXbTmDnyp6pIGIMgdl332.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/cnUlKvIXbTmDnyp6pIGIMgdl332.jpg",
+    "genre": [
+      "액션",
+      "공포",
+      "SF",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -7848,7 +8760,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/vSMWJkBTEfa7kFxHizSz4uJNVlf.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/vSMWJkBTEfa7kFxHizSz4uJNVlf.jpg",
+    "genre": [
+      "드라마",
+      "판타지",
+      "공포"
+    ]
   },
   {
     "type": "movie",
@@ -7897,7 +8814,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/4caC5bNljJiakF2r18Bb3j4URAe.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/4caC5bNljJiakF2r18Bb3j4URAe.jpg",
+    "genre": [
+      "코미디",
+      "범죄"
+    ]
   },
   {
     "type": "movie",
@@ -7941,7 +8862,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/9ViCYfZ0whpwtKbM2WJP5PfsG2x.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/9ViCYfZ0whpwtKbM2WJP5PfsG2x.jpg",
+    "genre": [
+      "애니메이션",
+      "가족",
+      "모험"
+    ]
   },
   {
     "type": "movie",
@@ -7981,7 +8907,11 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/pWpTToZ32bG09PaZ1rvYG5mpOyV.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/pWpTToZ32bG09PaZ1rvYG5mpOyV.jpg",
+    "genre": [
+      "공포",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -8018,7 +8948,11 @@
       "dreaminess": 0.0,
       "darkness": 0.5
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/vgonf5kGsiijUBjzxKTvechhT28.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/vgonf5kGsiijUBjzxKTvechhT28.jpg",
+    "genre": [
+      "공포",
+      "미스터리"
+    ]
   },
   {
     "type": "movie",
@@ -8060,7 +8994,11 @@
       "dreaminess": 0.0,
       "darkness": 0.9
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/kEmPnUUXaF9hPgDMlc0eJht5JYO.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/kEmPnUUXaF9hPgDMlc0eJht5JYO.jpg",
+    "genre": [
+      "공포",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -8102,7 +9040,12 @@
       "dreaminess": 0.0,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/gXUNsdIIn6NiEBvh8Mq6gjgVPm0.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/gXUNsdIIn6NiEBvh8Mq6gjgVPm0.jpg",
+    "genre": [
+      "애니메이션",
+      "코미디",
+      "가족"
+    ]
   },
   {
     "type": "movie",
@@ -8151,7 +9094,13 @@
       "dreaminess": 0.8,
       "darkness": 0.0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/lYceQKe3EsYn7VdDXGTy7dSwBLp.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/lYceQKe3EsYn7VdDXGTy7dSwBLp.jpg",
+    "genre": [
+      "애니메이션",
+      "가족",
+      "모험",
+      "판타지"
+    ]
   },
   {
     "type": "movie",
@@ -8189,7 +9138,12 @@
       "dreaminess": 0,
       "darkness": 0
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/3YewJtji80oIroeXUavNRZkeXfQ.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/3YewJtji80oIroeXUavNRZkeXfQ.jpg",
+    "genre": [
+      "액션",
+      "모험",
+      "SF"
+    ]
   },
   {
     "type": "movie",
@@ -8244,7 +9198,11 @@
       "dreaminess": 0.07,
       "darkness": 0.63
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/x5FPVwJHyf1SnDW04fwr9rsyWm4.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/x5FPVwJHyf1SnDW04fwr9rsyWm4.jpg",
+    "genre": [
+      "미스터리",
+      "스릴러"
+    ]
   },
   {
     "type": "movie",
@@ -8292,6 +9250,11 @@
       "dreaminess": 0.2,
       "darkness": 0.7
     },
-    "image_url": "https://image.tmdb.org/t/p/w500/aywZdSOXtwcqqLTl271EUJemi2.jpg"
+    "image_url": "https://image.tmdb.org/t/p/w500/aywZdSOXtwcqqLTl271EUJemi2.jpg",
+    "genre": [
+      "드라마",
+      "스릴러",
+      "미스터리"
+    ]
   }
 ]

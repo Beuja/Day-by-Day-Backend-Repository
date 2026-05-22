@@ -15,13 +15,13 @@ from . import services
 def recommend_music_view(request, diary_id):
     diary_obj = get_object_or_404(Diary, id=diary_id, user=request.user)
     
-    # 1. 과거 추천 기록 조회 및 복원 (GET)
+    # 1. 달력 클릭 시 과거 저장 데이터 복원 조회 (GET)
     if request.method == 'GET':
         data = services.get_saved_music_metadata(diary_obj)
         serializer = serializers.MusicResponseSerializer(data, many=True)
         return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
         
-    # 2. 최초 감정 기반 추천 및 저장 연산 (POST)
+    # 2. 일기 작성 완료 후 최초 추천 결과 저장 연산 (POST)
     elif request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
         req_serializer.is_valid(raise_exception=True)
@@ -29,6 +29,7 @@ def recommend_music_view(request, diary_id):
         mode = req_serializer.validated_data.get('mode', 'maintain')
         count = req_serializer.validated_data.get('count', 3)
         
+        # diary 앱의 6차원 emotion 분석 데이터 수집
         raw_emotion = getattr(diary_obj, 'emotion', {})
         if not raw_emotion:
             raw_emotion = {}
@@ -46,13 +47,13 @@ def recommend_music_view(request, diary_id):
 def recommend_movie_view(request, diary_id):
     diary_obj = get_object_or_404(Diary, id=diary_id, user=request.user)
     
-    # 1. 과거 추천 기록 조회 및 복원 (GET)
+    # 1. 달력 클릭 시 과거 저장 데이터 복원 조회 (GET)
     if request.method == 'GET':
         data = services.get_saved_movie_metadata(diary_obj)
         serializer = serializers.MovieResponseSerializer(data, many=True)
         return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
         
-    # 2. 최초 감정 기반 추천 및 저장 연산 (POST)
+    # 2. 일기 작성 완료 후 최초 추천 결과 저장 연산 (POST)
     elif request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
         req_serializer.is_valid(raise_exception=True)
