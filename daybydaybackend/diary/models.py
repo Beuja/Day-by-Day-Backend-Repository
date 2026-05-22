@@ -28,3 +28,12 @@ class DiaryEmotion(models.Model):
 
     def __str__(self):
         return f"{self.diary.id} - {self.primary_emotion}"
+
+class DailyRecommended(models.Model):
+    diary = models.OneToOneField(Diary, on_delete=models.CASCADE, related_name='recommended_contents')
+    books = models.ManyToManyField('books.Book', related_name='daily_book')
+    movies = models.ManyToManyField('music_movie.Movie', related_name='daily_movie')
+    music = models.ManyToManyField('music_movie.Music', related_name='daily_music')
+
+    def __str__(self):
+        return f"Recommendations for Diary {self.diary.id}"

@@ -102,7 +102,7 @@ class MusicEmotionRecommender:
         filtered_and_scored = []
         
         for track in music_data:
-            # 기존 데이터베이스 상의 원본 문자열 태그 배열 추출
+            # 장고 ORM과의 유연한 필드 매핑 및 문자열 tags 가공 지원
             orig_tags = track.get('tags', [])
             b_vec = build_6d_emotion_vector(orig_tags)
             
@@ -116,7 +116,7 @@ class MusicEmotionRecommender:
                 # 최종 점수
                 emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
                 
-                # 대중성 가중치 결합 연산부 (listeners 기반 인센티브 역산)
+                # 대중성 가중치 결합 연산부 (listeners 기반 인센티브)
                 popularity = int(track.get('listeners', 0))
                 popularity_score = min(1.0, popularity / 1000000)
                 final_score = (emotion_score * 0.8) + ((1.0 - popularity_score) * 0.2)
@@ -125,12 +125,12 @@ class MusicEmotionRecommender:
                     'track_id': track.get('track_id'),
                     'title': track.get('title'),
                     'artist': track.get('artist'),
-                    'image_url': track.get('image_url', ''), # 이미지 주소 추가
-                    'tags': orig_tags,                       # 감정 수치 오브젝트 대신 문자열 태그 반환
+                    'image_url': track.get('image_url', ''),
+                    'tags': orig_tags,
                     'score': round(final_score, 4)
                 })
                 
-        # 거리가 가까운 순으로 내림차순이 아닌 오름차순 정렬 처리
+        # 거리가 가까운 순으로 오름차순 정렬 처리
         filtered_and_scored.sort(key=lambda x: x['score'])
         
         return {

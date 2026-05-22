@@ -15,7 +15,7 @@ from . import services
 def recommend_music_view(request, diary_id):
     diary_obj = get_object_or_404(Diary, id=diary_id, user=request.user)
     
-    # 1. 달력 클릭 시 과거 데이터 복원 조회 (GET)
+    # 1. 달력 클릭 시 과거 저장 데이터 복원 조회 (GET)
     if request.method == 'GET':
         data = services.get_saved_music_metadata(diary_obj)
         serializer = serializers.MusicResponseSerializer(data, many=True)
@@ -29,10 +29,9 @@ def recommend_music_view(request, diary_id):
         mode = req_serializer.validated_data.get('mode', 'maintain')
         count = req_serializer.validated_data.get('count', 3)
         
-        # diary 앱의 emotion 분석 데이터 수집
+        # diary 앱의 6차원 emotion 분석 데이터 수집
         raw_emotion = getattr(diary_obj, 'emotion', {})
         if not raw_emotion:
-            # 일기 데이터의 하위 상세 감정 매핑이 비어있을 시 딕셔너리 예외 대체
             raw_emotion = {}
             
         user_6d_emotion = services.convert_emotion_to_6d_vector(raw_emotion)
@@ -48,7 +47,7 @@ def recommend_music_view(request, diary_id):
 def recommend_movie_view(request, diary_id):
     diary_obj = get_object_or_404(Diary, id=diary_id, user=request.user)
     
-    # 1. 달력 클릭 시 과거 데이터 복원 조회 (GET)
+    # 1. 달력 클릭 시 과거 저장 데이터 복원 조회 (GET)
     if request.method == 'GET':
         data = services.get_saved_movie_metadata(diary_obj)
         serializer = serializers.MovieResponseSerializer(data, many=True)
