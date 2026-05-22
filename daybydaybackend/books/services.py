@@ -14,7 +14,8 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
         u_norm = 1e-9
 
     w_vec = _get_direction_weights(u_vec, mode)
-    all_books = Book.objects.filter(joy__isnull=False)
+    # 태그 0,0,0,0,0,0,0,0 인 책은 추천에서 제외 (리뷰 부족)
+    all_books = Book.objects.filter(~Q(valence=0.0) & ~Q(arousal=0.0), link__isnull=False)
 
     filtered_and_scored = []
     

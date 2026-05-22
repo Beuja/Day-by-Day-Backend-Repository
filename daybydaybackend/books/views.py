@@ -34,15 +34,23 @@ class BookViewSet(viewsets.ModelViewSet):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def recommend_books_views(request):
+    diary_id = request.data.get('diary_id')
     user_emotion = request.data.get('emotion')
     mode = request.data.get('mode')
-    diary_id = request.data.get('diary_id')
 
     if not diary_id:
         return Response(
             {'message': 'diary_id가 필요합니다.'}, 
             status=status.HTTP_400_BAD_REQUEST
         )
+
+    try:
+            diary = Diary.objects.get(id=diary_id)
+    except Diary.DoesNotExist:
+        return Response(
+            {'message': '해당 일기를 찾을 수 없습니다.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
 
     try:
         count = int(request.data.get('count', 3))
@@ -57,14 +65,6 @@ def recommend_books_views(request):
             {'message': '사용자 감정 정보가 필요합니다.'}, 
             status=status.HTTP_400_BAD_REQUEST
         )
-
-    try:
-        diary = Diary.objects.get(id=diary_id)
-    except Diary.DoesNotExist:
-        return Response(
-            {'message': '해당 일기를 찾을 수 없습니다.'}, 
-            status=status.HTTP_404_NOT_FOUND
-        )
     
     recommended_books_list = recommend_books(
         user_emotion=user_emotion,
@@ -72,8 +72,9 @@ def recommend_books_views(request):
         count=count
     )
 
+    # 일기의 추천 데이터 없으면 생성, 있으면 가져옴
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary)
-    daily_rec.recommended_books.set(recommended_books_list) # set : 추천 다시 요청했을 때 기존 목록 덮어씀, 필요시 add로 변경 
+    daily_rec.recommended_books.set(recommended_books_list)
 
     response_serializer = BookSerializer(recommended_books_list, many=True)
     
@@ -81,7 +82,7 @@ def recommend_books_views(request):
             "status": "success",
             "message": "도서 추천 완료",
             "data": response_serializer.data
-        }, status=status.HTTP_200_OK)
+        }, status=status.HTTP_201_CREATED)
 
     """
     serializer = RecommendRequestSerializer(data=request.data)
