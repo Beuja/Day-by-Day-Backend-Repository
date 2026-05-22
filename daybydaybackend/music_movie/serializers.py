@@ -1,28 +1,19 @@
 from rest_framework import serializers
-from .models import Music, Movie
 
+class ContentRecommendationRequestSerializer(serializers.Serializer):
+    mode = serializers.CharField(default='maintain', required=False)
+    count = serializers.IntegerField(default=3, min_value=1, max_value=20, required=False)
 
-class MusicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Music
-        fields = ['id', 'title', 'artist', 'source_tag', 'listeners', 'playcount', 'tags', 'valence', 'arousal']
+class MusicResponseSerializer(serializers.Serializer):
+    track_id = serializers.IntegerField()
+    title = serializers.CharField()
+    artist = serializers.CharField()
+    image_url = serializers.URLField(allow_blank=True, default='')
+    tags = serializers.ListField(child=serializers.CharField())
 
-
-class MovieSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Movie
-        fields = ['tmdb_id', 'title', 'genre', 'overview', 'vote_average', 'vote_count', 
-                  'popularity', 'release_date', 'poster_path', 'valence', 'arousal']
-
-
-class RecommendationRequestSerializer(serializers.Serializer):
-    """추천 요청용 시리얼라이저"""
-    valence = serializers.FloatField(min_value=-1.0, max_value=1.0, default=0.0, required=False)
-    arousal = serializers.FloatField(min_value=-1.0, max_value=1.0, default=0.0, required=False)
-    content_type = serializers.ChoiceField(choices=['music', 'movie', 'both'], default='both', required=False)
-    mode = serializers.ChoiceField(
-        choices=['maintain', 'shift', 'amplify', 'release', 'energize'],
-        required=False,
-        default='maintain'
-    )
-    count = serializers.IntegerField(default=5, min_value=1, max_value=20, required=False)
+class MovieResponseSerializer(serializers.Serializer):
+    movie_id = serializers.IntegerField()
+    title = serializers.CharField()
+    director = serializers.CharField()
+    image_url = serializers.URLField(allow_blank=True, default='')
+    tags = serializers.ListField(child=serializers.CharField())
