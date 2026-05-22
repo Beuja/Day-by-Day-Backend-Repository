@@ -122,8 +122,8 @@ class MovieEmotionRecommender:
                     'movie_id': movie.get('movie_id'),
                     'title': movie.get('title'),
                     'director': movie.get('director'),
-                    'image_url': movie.get('image_url', ''), # 포스터 주소 추가
-                    'tags': orig_tags,                       # 감정 수치 오브젝트 대신 문자열 태그 반환
+                    'image_url': movie.get('image_url', ''),
+                    'tags': orig_tags,
                     'score': round(final_score, 4)
                 })
 
