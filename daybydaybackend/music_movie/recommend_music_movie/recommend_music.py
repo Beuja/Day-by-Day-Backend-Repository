@@ -10,22 +10,8 @@ JSON_PATH = os.path.join(BASE_DIR, 'emotion_tags.json')
 with open(JSON_PATH, 'r', encoding='utf-8') as f:
     TAG_EMOTION_MAP = json.load(f)
 
-def _get_direction_weights(u_vec, mode):
-    """books 앱의 가중치 방향 벡터 생성 로직을 따릅니다."""
-    if mode == 'maintain':
-        return u_vec
-    elif mode == 'shift':
-        # 감정을 전환하는 방향 (가장 높은 감정을 낮추고 나머지를 보완하는 등 기획된 공식 적용)
-        max_idx = u_vec.argmax() if u_vec.max() > 0 else 0
-        w = u_vec.copy()
-        w[max_idx] = max(0.0, w[max_idx] - 0.5)
-        return w
-    elif mode == 'amplification':
-        return u_vec * 1.5
-    return u_vec
-
 def build_6d_emotion_vector(tags):
-    """콘텐츠 태그 가중치를 종합하여 6차원 감정 벡터를 리스트(배열) 형태로 빌드합니다."""
+    """콘텐츠 태그 가중치를 종합하여 6차원 감정 벡터를 리스트 형태로 빌드합니다."""
     ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
     total_vector = {key: 0.0 for key in ordered_keys}
     matched_count = 0
@@ -43,64 +29,112 @@ def build_6d_emotion_vector(tags):
 
     return [round(total_vector[key] / matched_count, 4) for key in ordered_keys]
 
+def _get_direction_weights(u_vec, mode):
+    """books 앱의 모드별 가중치 벡터 w 생성 로직과 완전히 일치합니다."""
+    weights = [1.0] * 6  # np.ones(6)
+    
+    if mode == 'maintain':
+        return weights
+    
+    elif mode == 'shift':
+        # joy, sadness, anger, fear, trust, surprise 순서
+        weights[0] = 0.5    # joy
+        weights[1] = 2.0    # sadness
+        weights[2] = 2.0    # anger
+        weights[3] = 2.0    # fear
+        weights[4] = 0.5    # trust
+        weights[5] = 1.0    # surprise
+        
+    elif mode == 'amplification':
+        # np.argmax(u_vec) 구현
+        max_val = max(u_vec)
+        max_emotion_idx = u_vec.index(max_val)
+        weights[max_emotion_idx] = 0.2
+        
+    return weights
+
+def _calculate_euclidean(u_vec, b_vec, w_vec):
+    """가중 유클리드 거리 계산 및 정규화"""
+    euclidean_dist = math.sqrt(sum(w * ((u - b) ** 2) for u, b, w in zip(u_vec, b_vec, w_vec)))
+    
+    # books 앱의 정규화 분모 공식 계산: np.sqrt(np.sum(w_vec * (np.sum(w_vec * (1.0 ** 2)))))
+    # np.sum(w_vec * 1.0)은 결국 sum(w_vec)이 되므로 수식을 그대로 구현합니다.
+    sum_w = sum(w_vec)
+    max_euclidean = math.sqrt(sum(w * sum_w for w in w_vec))
+    
+    if max_euclidean == 0:
+        return 0.0
+    return euclidean_dist / max_euclidean
+
+def _calculate_cosine(u_vec, b_vec, u_norm):
+    """코사인 거리 계산 (1.0 - cosine_sim)"""
+    b_norm = math.sqrt(sum(b ** 2 for b in b_vec))
+    if b_norm == 0:
+        b_norm = 1e-9
+        
+    dot_product = sum(u * b for u, b in zip(u_vec, b_vec))
+    cosine_sim = dot_product / (u_norm * b_norm)
+    return 1.0 - cosine_sim
+
+
 class MusicEmotionRecommender:
     def recommend_music(self, user_emotion, music_data, mode='maintain', top_n=3):
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         
-        # 1. 유저 감정 벡터 생성
+        # 1. 유저 감정 벡터 및 노름 생성
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
+        u_norm = math.sqrt(sum(u ** 2 for u in u_vec))
+        if u_norm == 0:
+            u_norm = 1e-9
+            
+        # 2. 가중치 벡터 w 생성 및 임계값 설정
+        w_vec = _get_direction_weights(u_vec, mode)
         
-        # 2. mode 별 방향 가중치 벡터 계산
-        # 정밀 연산을 위해 임시 매핑 (NumPy 의존성 최소화를 위해 원시 math/list 연산 구현)
         if mode == 'maintain':
-            w_vec = u_vec
             radius_limit = 0.4
         elif mode == 'shift':
-            max_val = max(u_vec) if max(u_vec) > 0 else 1.0
-            w_vec = [v - 0.5 if v == max_val else v for v in u_vec]
             radius_limit = 1.2
         elif mode == 'amplification':
-            w_vec = [v * 1.5 for v in u_vec]
             radius_limit = 0.8
         else:
-            w_vec = u_vec
             radius_limit = 0.7
-
-        scored_tracks = []
+            
+        alpha = 0.5
+        filtered_and_scored = []
+        
+        # 3. 데이터베이스 순회 및 가중 점수 계산
         for track in music_data:
             tags = track.get('tags', [])
-            # 콘텐츠의 6차원 감정 벡터 추출
             b_vec = build_6d_emotion_vector(tags)
             
-            # 3. 임계값(radius_limit) 필터링을 위한 유클리디안 거리 계산
-            distance = math.sqrt(sum((w_val - b_val) ** 2 for w_val, b_val in zip(w_vec, b_vec)))
+            # 순수 유클리드 거리 계산 (필터링 기준)
+            pure_distance = math.sqrt(sum((u - b) ** 2 for u, b in zip(u_vec, b_vec)))
             
-            if distance <= radius_limit:
-                # 4. 코사인 유사도 점수 계산
-                dot_product = sum(w_val * b_val for w_val, b_val in zip(w_vec, b_vec))
-                mag_w = math.sqrt(sum(w_val ** 2 for w_val in w_vec))
-                mag_b = math.sqrt(sum(b_val ** 2 for b_val in b_vec))
+            if pure_distance <= radius_limit:
+                norm_euclidean = _calculate_euclidean(u_vec, b_vec, w_vec)
+                cosine_dist = _calculate_cosine(u_vec, b_vec, u_norm)
                 
-                cosine_sim = dot_product / (mag_w * mag_b) if mag_w > 0 and mag_b > 0 else 0.0
+                # 최종 감정 거리 점수 (낮을수록 좋음)
+                emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
                 
-                # 대중성 점수 반영 (listeners 수치 활용)
+                # 음악 대중성 점수 반영 (listeners 수치를 거리 점수와 조화시키기 위해 역산 적용)
+                # 인기도가 높을수록 스코어를 차감(거리를 가깝게 만듦)하여 우선순위 유도 (가중치 20%)
                 popularity = int(track.get('listeners', 0))
                 popularity_score = min(1.0, popularity / 1000000)
                 
-                # 최종 추천 결합 스코어 (감정 유사도 80% + 대중성 20%)
-                final_score = cosine_sim * 0.8 + popularity_score * 0.2
+                # 최종 결합 스코어 (감정 거리 점수 80% + 대중성 인센티브 20%)
+                final_score = (emotion_score * 0.8) + ((1.0 - popularity_score) * 0.2)
                 
-                scored_tracks.append({
+                filtered_and_scored.append({
                     'content': track,
-                    'distance': round(distance, 4),
                     'score': round(final_score, 4)
                 })
-
-        # Score 기준 내림차순 정렬
-        scored_tracks.sort(key=lambda x: x['score'], reverse=True)
+                
+        # 거리가 가까운(Score가 낮은) 순서대로 정렬 (오름차순 정렬)
+        filtered_and_scored.sort(key=lambda x: x['score'])
         
         return {
             'mode': mode,
             'radius_limit': radius_limit,
-            'recommendations': scored_tracks[:top_n]
+            'recommendations': [item['content'] for item in filtered_and_scored[:top_n]]
         }
