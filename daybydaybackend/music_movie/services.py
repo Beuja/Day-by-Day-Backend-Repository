@@ -1,6 +1,7 @@
 import json
 import os
-from .models import SavedRecommendation
+from diary.models import Diary, DailyRecommended
+from music_movie.models import Music, Movie
 from .recommend_music_movie.recommend_music import MusicEmotionRecommender
 from .recommend_music_movie.recommend_movie import MovieEmotionRecommender
 
@@ -56,75 +57,70 @@ def convert_emotion_to_6d_vector(emotion_vector: dict) -> dict:
         'surprise': round(max(0.0, min(1.0, surprise)), 2),
     }
 
-# --- 최초 추천 생성 및 자동 저장 파이프라인 ---
+# --- 최초 추천 생성 및 ManyToMany 관계 자동 저장 ---
 def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
-    """최초 요청 시 음악 추천을 연산하고 DB에 고유 ID 배열을 보관합니다."""
-    saved_rec, created = SavedRecommendation.objects.get_or_create(diary=diary_obj)
+    """최초 요청 시 음악 추천을 연산하고, 통합 DailyRecommended 테이블 다대다 관계를 바인딩합니다."""
+    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj)
     music_data = load_music_data()
     
     recommender = MusicEmotionRecommender()
     res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
     
-    # 영구 보관용 ID 배열 추출 및 업데이트
-    saved_rec.recommended_music_ids = [track['track_id'] for track in res['recommendations']]
-    saved_rec.save()
+    # 추천된 track_id 목록에 해당하는 DB 실제 인스턴스들을 조회하여 ManyToManyField에 연결
+    recommended_track_ids = [track['track_id'] for track in res['recommendations']]
+    music_instances = Music.objects.filter(track_id__in=recommended_track_ids)
+    
+    daily_rec.music.set(music_instances)
     return res['recommendations']
 
 def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
-    """최초 요청 시 영화 추천을 연산하고 DB에 고유 ID 배열을 보관합니다."""
-    saved_rec, created = SavedRecommendation.objects.get_or_create(diary=diary_obj)
+    """최초 요청 시 영화 추천을 연산하고, 통합 DailyRecommended 테이블 다대다 관계를 바인딩합니다."""
+    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj)
     movie_data = load_movie_data()
     
     recommender = MovieEmotionRecommender()
     res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
     
-    saved_rec.recommended_movie_ids = [movie['movie_id'] for movie in res['recommendations']]
-    saved_rec.save()
+    recommended_movie_ids = [movie['movie_id'] for movie in res['recommendations']]
+    movie_instances = Movie.objects.filter(movie_id__in=recommended_movie_ids)
+    
+    daily_rec.movies.set(movie_instances)
     return res['recommendations']
 
-# --- 달력 클릭 시 과거 데이터 역추적 복원 기능 ---
+# --- 달력 클릭 시 DB 인스턴스 기반 매적 역참조 복원 기능 ---
 def get_saved_music_metadata(diary_obj):
-    """과거 저장된 ID 배열을 기점으로 대중성 파싱 파일에서 제목, 이미지, 태그 정보를 역추적 복원합니다."""
+    """DailyRecommended 관계를 고속 정밀 탐색하여 저장된 음악 목록을 응답 포맷으로 복원합니다."""
     try:
-        saved_rec = SavedRecommendation.objects.get(diary=diary_obj)
-    except SavedRecommendation.DoesNotExist:
+        daily_rec = DailyRecommended.objects.get(diary=diary_obj)
+    except DailyRecommended.DoesNotExist:
         return []
     
-    music_data = load_music_data()
-    id_maps = {track['track_id']: track for track in music_data}
-    
-    restored_list = []
-    for m_id in saved_rec.recommended_music_ids:
-        if m_id in id_maps:
-            orig = id_maps[m_id]
-            restored_list.append({
-                'track_id': m_id,
-                'title': orig.get('title'),
-                'artist': orig.get('artist'),
-                'image_url': orig.get('image_url', ''),
-                'tags': orig.get('tags', [])
-            })
-    return restored_list
+    # DB 인스턴스 목록 순회 가공
+    return [
+        {
+            'track_id': music.track_id,
+            'title': music.title,
+            'artist': music.artist,
+            'image_url': getattr(music, 'image_url', ''),
+            'tags': music.tags if isinstance(music.tags, list) else []
+        }
+        for music in daily_rec.music.all()
+    ]
 
 def get_saved_movie_metadata(diary_obj):
-    """과거 저장된 ID 배열을 기점으로 영화 포스터, 타이틀 메타데이터를 역추적 복원합니다."""
+    """DailyRecommended 관계를 고속 정밀 탐색하여 저장된 영화 목록을 응답 포맷으로 복원합니다."""
     try:
-        saved_rec = SavedRecommendation.objects.get(diary=diary_obj)
-    except SavedRecommendation.DoesNotExist:
+        daily_rec = DailyRecommended.objects.get(diary=diary_obj)
+    except DailyRecommended.DoesNotExist:
         return []
     
-    movie_data = load_movie_data()
-    id_maps = {movie['movie_id']: movie for movie in movie_data}
-    
-    restored_list = []
-    for m_id in saved_rec.recommended_movie_ids:
-        if m_id in id_maps:
-            orig = id_maps[m_id]
-            restored_list.append({
-                'movie_id': m_id,
-                'title': orig.get('title'),
-                'director': orig.get('director'),
-                'image_url': orig.get('image_url', ''),
-                'tags': orig.get('tags', [])
-            })
-    return restored_list
+    return [
+        {
+            'movie_id': movie.movie_id,
+            'title': movie.title,
+            'director': movie.director,
+            'image_url': getattr(movie, 'image_url', ''),
+            'tags': movie.tags if isinstance(movie.tags, list) else []
+        }
+        for movie in daily_rec.movies.all()
+    ]
