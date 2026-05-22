@@ -1,6 +1,13 @@
 from django.db import models
 import json
+from django.db import models
+from diary.models import Diary  # 일기 모델 참조
 
+class SavedRecommendation(models.Model):
+    diary = models.OneToOneField(Diary, on_delete=models.CASCADE, related_name='recommendation')
+    recommended_music_ids = models.JSONField(default=list)  # 예: [102, 501]
+    recommended_movie_ids = models.JSONField(default=list)  # 예: [12, 45]
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class Music(models.Model):
     title = models.CharField(max_length=255)
