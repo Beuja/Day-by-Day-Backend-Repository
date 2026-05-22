@@ -15,6 +15,8 @@ class Book(models.Model):
     # 2차원 감정 벡터
     valence = models.FloatField(null=True, blank=True)
     arousal = models.FloatField(null=True, blank=True)
+    
+    # 6차원 감정 벡터
     joy = models.FloatField(null=True, blank=True)
     sadness = models.FloatField(null=True, blank=True)
     anger = models.FloatField(null=True, blank=True)
