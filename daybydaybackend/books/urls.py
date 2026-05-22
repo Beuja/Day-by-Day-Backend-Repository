@@ -5,5 +5,5 @@ app_name = 'books'
 
 urlpatterns = [
     # 감정 기반 도서 추천 API
-    path('recommend/', views.recommend_books_views, name='recommend_books'),
+    path('recommend/books/<int:diary_id>/', views.recommend_books_views, name='recommend_books')
 ]

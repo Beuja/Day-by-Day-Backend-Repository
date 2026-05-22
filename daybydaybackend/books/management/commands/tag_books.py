@@ -90,7 +90,7 @@ class Command(BaseCommand):
         - surprise (놀라움)
 
         반드시 아래 JSON 형식으로만 답변해 주세요. 다른 설명은 생략합니다.
-        {{"valence": 0.5, "arousal": -0.2, "joy": 0.6, "sadness": -0.4, "anger": -0.3, "fear": -0.2, "trust": 0.5, "surprise": 0.1}}
+        {{"valence": 0.5, "arousal": -0.2, "joy": 0.6, "sadness": 0.4, "anger": 0.3, "fear": 0.2, "trust": 0.5, "surprise": 0.1}}
         """
         max_retries = 3
         for attempt in range(max_retries):
