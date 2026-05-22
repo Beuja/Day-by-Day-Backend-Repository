@@ -1,13 +1,18 @@
 from django.db import models
 import json
-from django.db import models
-from diary.models import Diary  # 일기 모델 참조
+from diary.models import Diary  # diary 앱의 일기 모델 참조
 
 class SavedRecommendation(models.Model):
+    """
+    일기별로 추천된 음악과 영화의 ID 리스트를 영구 저장하는 모델입니다.
+    """
     diary = models.OneToOneField(Diary, on_delete=models.CASCADE, related_name='recommendation')
-    recommended_music_ids = models.JSONField(default=list)  # 예: [102, 501]
+    recommended_music_ids = models.JSONField(default=list)  # 예: [101, 503]
     recommended_movie_ids = models.JSONField(default=list)  # 예: [12, 45]
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Recommendation for Diary {self.diary.id} ({self.created_at.date()})"
 
 class Music(models.Model):
     title = models.CharField(max_length=255)
