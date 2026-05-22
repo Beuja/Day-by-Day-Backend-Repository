@@ -4,7 +4,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 
 
 from drf_yasg.utils import swagger_auto_schema
@@ -68,7 +68,7 @@ def create_diary(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-@parser_classes([MultiPartParser, FormParser])
+@parser_classes([JSONParser, MultiPartParser, FormParser])
 @transaction.atomic  # 비즈니스 로직 도중 실패 시 DB 롤백 보장
 def analyze_diary_emotion(request):
     serializer = AnalyzeEmotionRequestSerializer(data=request.data)
