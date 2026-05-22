@@ -19,7 +19,7 @@ class Command(BaseCommand):
             'ttbkey': ttb_key,
             'QueryType': 'BestSeller',
             'MaxResults': 50,
-            'start': 2,     # 새로운 도서 수집 시 값 변경
+            'start': 4,     # 새로운 도서 수집 시 값 변경
             'SearchTarget': 'Book',
             'CategoryId': '1',  # 소설 / 시 / 희곡 카테고리
             'output': 'js',
