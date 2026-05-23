@@ -1,13 +1,15 @@
 import json
 import os
 
-from .recommend_music_movie.recommend_by_emotion import (
-    EmotionRecommender,
-)
+from .recommend_music_movie.recommend_by_emotion import EmotionRecommender
+from .recommend_music_movie.recommend_music import MusicEmotionRecommender
+from .recommend_music_movie.recommend_movie import MovieEmotionRecommender
+from .models import Music, Movie
+from daybydaybackend.diary.models import Diary, DailyRecommended
 
 PACKAGE_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    'recommend_music_movie'
+    'data'
 )
 
 
@@ -60,6 +62,7 @@ def convert_emotion_vector_to_russell(emotion_vector: dict) -> tuple:
 
 
 def recommend_music(valence: float, arousal: float, mode: str = 'maintain', count: int = 5):
+    """임시 2D 추천 API입니다. 하위 호환용으로 유지되며 추후 제거될 수 있습니다."""
     recommender = EmotionRecommender()
 
     music_data = load_music_data()
@@ -72,6 +75,7 @@ def recommend_music(valence: float, arousal: float, mode: str = 'maintain', coun
 
 
 def recommend_movies(valence: float, arousal: float, mode: str = 'maintain', count: int = 5):
+    """임시 2D 추천 API입니다. 하위 호환용으로 유지되며 추후 제거될 수 있습니다."""
     recommender = EmotionRecommender()
 
     movie_data = load_movie_data()
@@ -81,3 +85,74 @@ def recommend_movies(valence: float, arousal: float, mode: str = 'maintain', cou
         top_n=count
     )
     return rec
+
+
+# --- 최초 추천 생성 및 DailyRecommended ManyToMany 관계 자동 세팅 ---
+def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
+    """최초 요청 시 음악 추천을 연산하고, 통합 DailyRecommended 테이블 다대다 관계를 바인딩합니다."""
+    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj)
+    music_data = load_music_data()
+
+    recommender = MusicEmotionRecommender()
+    res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
+
+    recommended_track_ids = [track['track_id'] for track in res['recommendations']]
+    music_instances = Music.objects.filter(id__in=recommended_track_ids)
+
+    daily_rec.music.set(music_instances)
+    return res['recommendations']
+
+
+def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
+    """최초 요청 시 영화 추천을 연산하고, 통합 DailyRecommended 테이블 다대다 관계를 바인딩합니다."""
+    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj)
+    movie_data = load_movie_data()
+
+    recommender = MovieEmotionRecommender()
+    res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
+
+    recommended_movie_ids = [movie.get('movie_id') for movie in res['recommendations'] if movie.get('movie_id') is not None]
+    movie_instances = Movie.objects.filter(tmdb_id__in=recommended_movie_ids)
+
+    daily_rec.movies.set(movie_instances)
+    return res['recommendations']
+
+
+def get_saved_music_metadata(diary_obj):
+    """DailyRecommended 관계를 역참조하여 저장된 음악 인스턴스들의 메타데이터(제목, 이미지, 태그) 목록을 반환합니다."""
+    try:
+        daily_rec = DailyRecommended.objects.get(diary=diary_obj)
+    except DailyRecommended.DoesNotExist:
+        return []
+
+    return [
+        {
+            'track_id': music.id,
+            'title': music.title,
+            'artist': music.artist if music.artist else '',
+            'image_url': music.image_url if music.image_url else '',
+            'tags': music.tags if isinstance(music.tags, list) else []
+        }
+        for music in daily_rec.music.all()
+    ]
+
+
+def get_saved_movie_metadata(diary_obj):
+    """DailyRecommended 관계를 역참조하여 저장된 영화 인스턴스들의 메타데이터(제목, 이미지, 태그) 목록을 반환합니다."""
+    try:
+        daily_rec = DailyRecommended.objects.get(diary=diary_obj)
+    except DailyRecommended.DoesNotExist:
+        return []
+
+    restored_movies = []
+    for movie in daily_rec.movies.all():
+        movie_tags = [movie.genre] if movie.genre else []
+
+        restored_movies.append({
+            'movie_id': movie.tmdb_id,
+            'title': movie.title,
+            'director': getattr(movie, 'director', ''),
+            'image_url': f"https://image.tmdb.org/t/p/w500{movie.poster_path}" if movie.poster_path else '',
+            'tags': movie_tags
+        })
+    return restored_movies
