@@ -1,3 +1,4 @@
+from django.db import transaction
 import json
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -9,12 +10,13 @@ import os
 class Command(BaseCommand):
     help = "JSON 파일에서 음악 및 영화 데이터 로드"
 
+    @transaction.atomic
     def handle(self, *args, **options):
-        # 데이터 파일 경로
+        # 데이터 파일 경로 (daybydaybackend/music_movie/data/)
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        package_dir = os.path.join(base_dir, 'recommend_music_movie')
-        music_file = os.path.join(package_dir, 'music_database.json')
-        movie_file = os.path.join(package_dir, 'movie_database.json')
+        data_dir = os.path.join(base_dir, 'data')
+        music_file = os.path.join(data_dir, 'music_database.json')
+        movie_file = os.path.join(data_dir, 'movie_database.json')
 
         # 음악 데이터 로드
         if os.path.exists(music_file):

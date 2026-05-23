@@ -13,18 +13,45 @@ PACKAGE_DIR = os.path.join(
 )
 
 
-def load_json_file(file_name: str):
-    path = os.path.join(PACKAGE_DIR, file_name)
-    with open(path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+_cached_music_data = None
+_cached_movie_data = None
 
 
 def load_music_data():
-    return load_json_file('music_database.json')
+    global _cached_music_data
+    if _cached_music_data is None:
+        db_music = Music.objects.all().values(
+            'id', 'title', 'artist', 'source_tag', 'listeners', 
+            'playcount', 'image_url', 'tags', 'emotion_vector', 
+            'valence', 'arousal'
+        )
+        _cached_music_data = []
+        for m in db_music:
+            m['track_id'] = m['id']  # 추천 엔진 키 싱크
+            _cached_music_data.append(m)
+    return _cached_music_data
 
 
 def load_movie_data():
-    return load_json_file('movie_database.json')
+    global _cached_movie_data
+    if _cached_movie_data is None:
+        db_movie = Movie.objects.all().values(
+            'tmdb_id', 'title', 'genre', 'overview', 'vote_average', 
+            'vote_count', 'popularity', 'release_date', 'poster_path', 
+            'valence', 'arousal'
+        )
+        _cached_movie_data = []
+        for m in db_movie:
+            m['movie_id'] = m['tmdb_id']  # 추천 엔진 키 싱크
+            _cached_movie_data.append(m)
+    return _cached_movie_data
+
+
+def clear_content_cache():
+    """신규 콘텐츠 등록 시 메모리 캐시를 초기화할 수 있는 안전장치"""
+    global _cached_music_data, _cached_movie_data
+    _cached_music_data = None
+    _cached_movie_data = None
 
 
 def convert_emotion_vector_to_russell(emotion_vector: dict) -> tuple:
