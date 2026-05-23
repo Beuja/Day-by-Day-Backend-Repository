@@ -16,17 +16,27 @@ import environ, os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables early
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # load .env for local development
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_aweoajs@^0g%yf)uecnvd=+^gnvp#c0mvf731cl*&=)!2f$&)'
+# Read from environment for deployment; fallback to a dev key for local testing
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-devlocalkey')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS: allow '*' or comma-separated list in .env
+_allowed = env('ALLOWED_HOSTS', default='*')
+if _allowed.strip() == '*':
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = [h.strip() for h in _allowed.split(',') if h.strip()]
 
 
 # Application definition
@@ -157,11 +167,14 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# 파일 맨 아래에 추가
-# React 개발 서버(localhost:3000)에서의 요청 허용
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+# CORS settings: support allow-all flag or explicit origins via .env
+# Set CORS_ALLOW_ALL_ORIGINS=True in .env to allow any origin (only for dev/demo)
+CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS', default=False)
+if CORS_ALLOW_ALL_ORIGINS:
+    # django-cors-headers: when True, all origins are allowed
+    CORS_ALLOWED_ORIGINS = []
+else:
+    CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['http://localhost:3000'])
 
 # DRF 기본 설정: 토큰 인증 사용
 REST_FRAMEWORK = {
@@ -183,10 +196,6 @@ SWAGGER_SETTINGS = {
         }
     }
 }
-
-# .env 파일에서 환경 변수 읽기
-env = environ.Env(DEBUG=(bool, False))  # DEBUG 환경 변수는 bool 타입으로, 기본값은 False
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # .env 파일에서 환경 변수 읽기
 
 # ===== API 키 설정 =====
 # Gemini API KEY (일기 감정 분석용)
