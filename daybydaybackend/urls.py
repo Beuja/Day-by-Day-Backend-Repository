@@ -13,8 +13,8 @@ urlpatterns = [
     # 1. 메인 화면 통합 개인화 추천
     path('recommend/main/', diary_views.get_main_recommendations, name='get_main_recommendations'),
     # 2. 도서 추천
-    path('recommend/books/', books_views.recommend_books, name='recommend_books'),
+    path('recommend/books/<int:diary_id>/', books_views.recommend_books, name='recommend_books'),
 
-    # 음악/영화 추천 API (기존 주소 보존)
-    path('music-movie/', include('daybydaybackend.music_movie.urls')),
+    # 음악/영화 추천 API
+    path('recommend/', include('daybydaybackend.music_movie.urls')),
 ]
