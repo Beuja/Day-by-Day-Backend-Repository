@@ -27,4 +27,3 @@ class DiaryCreateRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diary
         fields = ['content', 'weather', 'image']
-

@@ -116,7 +116,9 @@ def get_main_recommendations(request):
     최근 일기 5개의 감정을 분석하여 분야별 2개 콘텐츠 통합 맞춤 추천 반환
     """
     from daybydaybackend.books.utils import get_book_recommendations
-    from daybydaybackend.music_movie.services import recommend_music, recommend_movies
+    from daybydaybackend.music_movie.recommend_music_movie.recommend_music import MusicEmotionRecommender
+    from daybydaybackend.music_movie.recommend_music_movie.recommend_movie import MovieEmotionRecommender
+    from daybydaybackend.music_movie.services import load_music_data, load_movie_data
     
     # 1. 최근 5개 일기 및 감정정보 조회 (select_related 적용으로 N+1 문제 해소)
     diaries = Diary.objects.filter(user=request.user).select_related('emotion')[:5]
@@ -146,9 +148,20 @@ def get_main_recommendations(request):
     # 3. 책 추천 호출 (책 앱 소스코드 보존을 위해 원본 스펙인 2차원 인자(valence, arousal)로 안전하게 전달)
     books = get_book_recommendations(avg_emotion['valence'], avg_emotion['arousal'], mode='maintain', count=2)
     
-    # 4. 기존 2차원 음악 및 영화 추천 API 호출
-    music_result = recommend_music(valence=avg_emotion['valence'], arousal=avg_emotion['arousal'], mode='maintain', count=2)
-    movie_result = recommend_movies(valence=avg_emotion['valence'], arousal=avg_emotion['arousal'], mode='maintain', count=2)
+    # 4. 6차원 음악 및 영화 추천 API 호출
+    user_6d_emotion = {
+        'joy': avg_emotion['joy'],
+        'sadness': avg_emotion['sadness'],
+        'anger': avg_emotion['anger'],
+        'fear': avg_emotion['fear'],
+        'trust': avg_emotion['trust'],
+        'surprise': avg_emotion['surprise'],
+    }
+
+    music_recommender = MusicEmotionRecommender()
+    movie_recommender = MovieEmotionRecommender()
+    music_result = music_recommender.recommend_music(user_6d_emotion, load_music_data(), mode='maintain', top_n=2)
+    movie_result = movie_recommender.recommend_movies(user_6d_emotion, load_movie_data(), mode='maintain', top_n=2)
     
     # 5. 데이터 정제 및 직렬화
     serialized_books = []
