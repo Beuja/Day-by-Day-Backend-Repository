@@ -5,6 +5,7 @@ from daybydaybackend.books.models import Book
 
 
 class Command(BaseCommand):
+    
     help = "Aladin TTB API를 사용하여 도서 데이터 수집"
 
     def handle(self, *args, **options):
@@ -17,8 +18,8 @@ class Command(BaseCommand):
         params = {
             'ttbkey': ttb_key,
             'QueryType': 'BestSeller',
-            'MaxResults': 20,
-            'start': 1,
+            'MaxResults': 50,
+            'start': 4,     # 새로운 도서 수집 시 값 변경
             'SearchTarget': 'Book',
             'CategoryId': '1',  # 소설 / 시 / 희곡 카테고리
             'output': 'js',
@@ -29,6 +30,7 @@ class Command(BaseCommand):
         try:
             response = requests.get(url, params=params)
             items = response.json().get('item', [])
+            saved_count = 0
 
             for item in items:
                 self.stdout.write(f"저장 시도: {item.get('title')}")
@@ -38,15 +40,18 @@ class Command(BaseCommand):
 
                 full_category = item.get('categoryName', '')
                 # 중복 방지 저장
-                Book.objects.get_or_create(
+                book, created = Book.objects.get_or_create(
                     isbn=isbn,
                     defaults={
                         'title': item.get('title'),
                         'author': item.get('author'),
                         'category': full_category.split('>')[-1] if full_category else '기타',
                         'description': item.get('description', ''),
+                        'link': item.get('link'),
                     }
                 )
-            self.stdout.write(self.style.SUCCESS("도서 수집 완료!"))
+                if created:
+                    saved_count += 1
+            self.stdout.write(self.style.SUCCESS(f"도서 수집 완료 ({saved_count}개 저장)"))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"오류: {e}"))

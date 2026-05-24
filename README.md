@@ -1,151 +1,53 @@
-# Day by Day 백엔드 API 서버
+# Day-by-Day Backend — 감정 기반 추천 백엔드
 
-Django REST Framework 기반의 백엔드 API 서버입니다.
+이 저장소는 사용자의 일기 텍스트를 분석해 감정 기반으로 도서·음악·영화 추천을 제공하는 Django 백엔드입니다.
 
----
+## 프로젝트 개요
 
-## 🚀 빠른 시작
+- 목적: 일기 감정 분석을 통해 개인화된 추천을 생성하고 저장/복원 기능을 제공
+- 주요 기능: 일기 작성/감정 분석, 6차원 감정벡터 기반 추천(도서·음악·영화), 추천 저장/복원, Swagger API
 
-### 필수 요구사항
+## 팀 구성
 
-- **Python 3.13** 이상
-- Git
+- (추후 추가)
 
-### 1️⃣ 저장소 복제
+## 기술 스택
 
-```bash
-git clone <repository-url>
-cd Day-by-Day-Backend-Repository
-```
+- Django (REST API)
+- kiwi 라이브러리(오픈소스)
 
-### 2️⃣ 패키지 설치
+## 주요 기능
 
-#### 방법 1: Pipenv 사용 (권장)
+1. 일기 감정 분석
 
-```bash
-pip install pipenv
-pipenv install
-pipenv shell
-```
+- 일기 텍스트에서 6차원 감정 벡터(joy, sadness, anger, fear, trust, surprise) 및 2D(valence/arousal) 계산
+- 분석 파이프라인: `daybydaybackend/diary/emotion_analyzer.py` 등
 
-#### 방법 2: pip 사용
+1. 추천 엔진
+
+- 6D 감정벡터로 도서/음악/영화 추천
+- 추천 전략(mode): `maintain`, `shift`, `amplification`
+
+1. 저장 및 복원
+
+- 추천 결과를 `DailyRecommended` 모델로 저장, 달력 조회 시 복원 지원
+
+## 설치 및 실행(간단)
 
 ```bash
 python -m venv myenv
 myenv\Scripts\activate  # Windows
-# 또는
-source myenv/bin/activate  # macOS/Linux
-
 pip install -r requirements.txt
-```
-
-### 3️⃣ 필수 파일 설정
-
-> ⚠️ **중요**: 아래 파일들은 **보안/용량** 이유로 저장소에 포함되지 않습니다. 담당자에게 받아서 설정하세요.
-
-#### 필수 설정 파일
-
-| 파일 경로                                        | 설명                                    | 담당자 |
-| ------------------------------------------------ | --------------------------------------- | ------ |
-| `daybydaybackend/diary/data/knu_lexicon_ko.json` | 한국어 감정 분석 사전                   | 담당자 |
-| `project/.env`                                   | Django 환경 변수 (SECRET_KEY, DEBUG 등) | 담당자 |
-
-#### 파일 설정 방법
-
-1. 담당자로부터 위 파일들을 받기
-2. 프로젝트 루트에 해당 위치에 배치
-3. `.env` 파일 예시:
-
-```env
-SECRET_KEY=your-secret-key-here
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-```
-
-### 4️⃣ 데이터베이스 초기화
-
-```bash
 python manage.py migrate
-```
-
-### 5️⃣ 서버 실행
-
-```bash
 python manage.py runserver
 ```
 
-접속: http://127.0.0.1:8000
+## 환경변수/설정
 
----
+- `project/settings.py`는 환경변수(.env 또는 플랫폼 환경변수)를 사용하도록 구성 권장
+- 예: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `GEMINI_API_KEY`, `ALADIN_TTB_KEY`
 
-## 📁 프로젝트 구조
+## 중요 데이터 파일
 
-```
-Day-by-Day-Backend-Repository/
-├── manage.py                 # Django CLI
-├── db.sqlite3               # 개발용 DB
-├── requirements.txt         # 의존성 패키지
-├── Pipfile                  # Pipenv 설정
-├── README.md                # 이 파일
-│
-├── daybydaybackend/         # 메인 앱
-│   ├── accounts/            # 회원 관리
-│   ├── books/               # 책 정보
-│   ├── diary/               # 일기 관리
-│   │   └── data/
-│   │       └── knu_lexicon_ko.json  # 필수 파일 ⚠️
-│   └── music_movie/         # 음악/영화 추천
-│
-└── project/                 # Django 설정
-    ├── settings.py
-    ├── urls.py
-    └── wsgi.py
-```
-
----
-
-## 🔧 주요 기능
-
-- **회원 관리**: 회원가입, 로그인, JWT 인증
-- **일기 작성**: 감정 분석 기반 일기 관리
-- **도서 정보**: 도서 검색 및 추천
-- **음악/영화**: 감정별 추천 콘텐츠
-
----
-
-## 📝 API 문서
-
-서버 실행 후:
-
-- Swagger UI: http://127.0.0.1:8000/swagger/
-- ReDoc: http://127.0.0.1:8000/redoc/
-
----
-
-## ❓ 문제 해결
-
-### 패키지 설치 오류
-
-```bash
-# 캐시 삭제 후 재설치
-pip cache purge
-pip install -r requirements.txt
-```
-
-### Python 버전 오류
-
-프로젝트는 **Python 3.13**을 필요로 합니다. 설치 확인:
-
-```bash
-python --version
-```
-
-### 필수 파일 누락
-
-`ModuleNotFoundError` 또는 `FileNotFoundError`가 발생하면, **필수 파일 설정** 섹션을 다시 확인하세요.
-
----
-
-## 📞 문의
-
-파일 요청 및 기술 문제는 담당자에게 문의하세요.
+- `daybydaybackend/diary/data/knu_lexicon_ko.json` (한국어 감정사전)
+- `daybydaybackend/music_movie/data/music_database.json`, `movie_database.json` (추천 데이터)
