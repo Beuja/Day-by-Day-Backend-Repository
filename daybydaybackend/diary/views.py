@@ -115,7 +115,7 @@ def get_main_recommendations(request):
     """
     최근 일기 5개의 감정을 분석하여 분야별 2개 콘텐츠 통합 맞춤 추천 반환
     """
-    from daybydaybackend.books.utils import get_book_recommendations
+    from daybydaybackend.books.services import recommend_books
     from daybydaybackend.music_movie.recommend_music_movie.recommend_music import MusicEmotionRecommender
     from daybydaybackend.music_movie.recommend_music_movie.recommend_movie import MovieEmotionRecommender
     from daybydaybackend.music_movie.services import load_music_data, load_movie_data
@@ -145,8 +145,17 @@ def get_main_recommendations(request):
             'arousal': round(sum(e.arousal for e in emotions) / count, 4),
         }
         
-    # 3. 책 추천 호출 (책 앱 소스코드 보존을 위해 원본 스펙인 2차원 인자(valence, arousal)로 안전하게 전달)
-    books = get_book_recommendations(avg_emotion['valence'], avg_emotion['arousal'], mode='maintain', count=2)
+    # 3. 6차원 감정 기반 음악 및 영화와 보조를 맞춰 책 추천 6D 호출
+    user_6d_emotion = {
+        'joy': avg_emotion['joy'],
+        'sadness': avg_emotion['sadness'],
+        'anger': avg_emotion['anger'],
+        'fear': avg_emotion['fear'],
+        'trust': avg_emotion['trust'],
+        'surprise': avg_emotion['surprise'],
+    }
+    
+    books = recommend_books(user_6d_emotion, mode='maintain', count=2)
     
     # 4. 6차원 음악 및 영화 추천 API 호출
     user_6d_emotion = {
