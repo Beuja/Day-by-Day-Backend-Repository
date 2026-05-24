@@ -45,10 +45,10 @@ def recommend_books_views(request):
         )
 
     try:
-        diary = Diary.objects.get(id=diary_id, user=request.user)
+        diary = Diary.objects.get(id=diary_id)
     except Diary.DoesNotExist:
         return Response(
-            {'message': '해당 일기를 찾을 수 없습니다.'}, 
+                {'message': '해당 일기를 찾을 수 없습니다.'}, 
                 status=status.HTTP_404_NOT_FOUND
             )
 
