@@ -95,6 +95,7 @@ class Music(models.Model):
 class Movie(models.Model):
     tmdb_id = models.IntegerField(unique=True, primary_key=True)
     title = models.CharField(max_length=255)
+    director = models.CharField(max_length=255, null=True, blank=True)
     genre = models.CharField(max_length=100, null=True, blank=True)
     overview = models.TextField(blank=True)
     
