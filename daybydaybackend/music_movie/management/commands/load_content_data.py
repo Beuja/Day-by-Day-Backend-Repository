@@ -120,7 +120,7 @@ class Command(BaseCommand):
                                 popularity=item.get('popularity', 0.0),
                                 release_date=release_date,
                                 image_url=item.get("image_url"),
-                                emotion_vector=item.get("emotion_vector", {})
+                                emotion_vector=item.get("emotion_vector", {}),
                                 valence=valence,
                                 arousal=arousal,
                             )
