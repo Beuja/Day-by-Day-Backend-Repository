@@ -15,8 +15,8 @@ def load_music_data():
     if _cached_music_data is None:
         db_music = Music.objects.all().values(
             'id', 'title', 'artist', 'source_tag', 'listeners', 
-            'playcount', 'image_url', 'tags', 'emotion_vector', 
-            'valence', 'arousal'
+            'playcount', 'image_url', 'tags', 
+            'valence', 'arousal', 'joy', 'sadness', 'anger', 'fear', 'trust', 'surprise'
         )
         _cached_music_data = []
         for m in db_music:
@@ -30,7 +30,7 @@ def load_movie_data():
         db_movie = Movie.objects.all().values(
             'tmdb_id', 'title', 'genre', 'overview', 'vote_average', 
             'vote_count', 'popularity', 'release_date', 'poster_path', 
-            'valence', 'arousal'
+            'valence', 'arousal', 'joy', 'sadness', 'anger', 'fear', 'trust', 'surprise'
         )
         _cached_movie_data = []
         for m in db_movie:
@@ -133,7 +133,7 @@ def get_saved_movie_metadata(diary_obj):
             'movie_id': movie.tmdb_id,  # 원본 고유 식별자 PK 반환
             'title': movie.title,
             'director': getattr(movie, 'director', ''),
-            'image_url': f"https://image.tmdb.org/t/p/w500{movie.poster_path}" if movie.poster_path else '',
+            'image_url': movie.poster_path if movie.poster_path else '',  # DB의 전체 URL 직접 다이렉트 반환!
             'tags': movie_tags
         })
     return restored_movies
