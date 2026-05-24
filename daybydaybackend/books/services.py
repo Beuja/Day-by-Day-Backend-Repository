@@ -3,6 +3,7 @@
 # import math
 import numpy as np
 from .models import Book
+from django.db.models import Q
 
 # 6가지 기본 감정 기반 도서 추천 서비스
 def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
