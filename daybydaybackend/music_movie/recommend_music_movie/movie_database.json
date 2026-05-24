@@ -22,16 +22,12 @@
       "vigilante justice"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.9,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "joy": 0.22,
+      "sadness": 0.29,
+      "anger": 1.0,
+      "fear": 0.39,
+      "trust": 0.1,
+      "surprise": 0.4
     },
     "image_url": "https://image.tmdb.org/t/p/w500/dfKKipbQswChklXaaVTh6FP3oaJ.jpg",
     "genre": [
@@ -70,16 +66,12 @@
       "intense"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.53,
       "sadness": 0.0,
       "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.3,
-      "energy": 0.0,
-      "romance": 0.1,
-      "nostalgia": 0.0,
-      "dreaminess": 0.35,
-      "darkness": 0.0
+      "fear": 0.07,
+      "trust": 0.4,
+      "surprise": 0.56
     },
     "image_url": "https://image.tmdb.org/t/p/w500/qqGpVVZk2KD1lAvccgTU4Z6nh1H.jpg",
     "genre": [
@@ -113,16 +105,12 @@
       "animal adventure"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.39,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.31,
+      "surprise": 0.45
     },
     "image_url": "https://image.tmdb.org/t/p/w500/uv0iRQXDbtWHo1zPk3TZNo4Biti.jpg",
     "genre": [
@@ -168,16 +156,12 @@
       "fictional country"
     ],
     "emotion_vector": {
-      "joy": 0.8,
+      "joy": 1.0,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.4,
-      "energy": 0.0,
-      "romance": 0.2,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.63,
+      "surprise": 0.52
     },
     "image_url": "https://image.tmdb.org/t/p/w500/knaXOBDBecVBWZVup3zXaOoy23v.jpg",
     "genre": [
@@ -219,16 +203,12 @@
       "workplace drama"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.28,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/lxjGbkRnY9d2j8cxIHxX57NNvRH.jpg",
     "genre": [
@@ -262,16 +242,12 @@
       "investigation resolution"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.24,
+      "fear": 0.21,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/wGHGVAJGTn2BqsuFfPK8lzPiKjH.jpg",
     "genre": [
@@ -292,16 +268,12 @@
       "brisk"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.28,
+      "sadness": 0.14,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/70bLedAueeJXOEVqXnNToj8zLvy.jpg",
     "genre": [
@@ -335,16 +307,12 @@
       "ominous"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.43,
       "sadness": 0.0,
-      "anger": 0.0,
+      "anger": 0.14,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "trust": 0.34,
+      "surprise": 0.89
     },
     "image_url": "https://image.tmdb.org/t/p/w500/1NgBKiPrJzv1VHdEN8brdy59Rxo.jpg",
     "genre": [
@@ -376,16 +344,12 @@
       "oscar winner"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.07,
+      "trust": 0.1,
+      "surprise": 0.59
     },
     "image_url": "https://image.tmdb.org/t/p/w500/dU7bFp3dbFUZxzP8OVsBLWb93QP.jpg",
     "genre": [
@@ -422,16 +386,12 @@
       "horror"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.17,
+      "fear": 0.49,
+      "trust": 0.0,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/13ZcJzSGEqVgDSqsS9U5EkQwPkV.jpg",
     "genre": [
@@ -462,16 +422,12 @@
       "3d animation"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.63,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.07,
+      "trust": 0.28,
+      "surprise": 0.53
     },
     "image_url": "https://image.tmdb.org/t/p/w500/vJu9THzQ26Q5sWOVnhOkuRH5M1P.jpg",
     "genre": [
@@ -506,16 +462,12 @@
       "casual"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.43,
       "sadness": 0.0,
-      "anger": 0.0,
+      "anger": 0.14,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "trust": 0.34,
+      "surprise": 0.89
     },
     "image_url": "https://image.tmdb.org/t/p/w500/3dTg1pgasstOa0XJTwt3dBFHjFf.jpg",
     "genre": [
@@ -556,16 +508,12 @@
       "biopic"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.17,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/piMZqtd0gGS7OgkhDwiQ7vVViBQ.jpg",
     "genre": [
@@ -591,16 +539,12 @@
       "fictional town"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.17,
+      "trust": 0.1,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/mUt0SnTp0oAN38BHD7NGX8hmwAT.jpg",
     "genre": [
@@ -632,16 +576,12 @@
       "comedy horror"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.42,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.4,
-      "calmness": 0.0,
-      "energy": 0.6,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "anger": 0.17,
+      "fear": 0.89,
+      "trust": 0.0,
+      "surprise": 0.46
     },
     "image_url": "https://image.tmdb.org/t/p/w500/kpOHAiCiIBa0yPtOqSp99NxhwUF.jpg",
     "genre": [
@@ -696,16 +636,12 @@
       "sports comedy"
     ],
     "emotion_vector": {
-      "joy": 0.6,
-      "sadness": 0.1,
+      "joy": 1.0,
+      "sadness": 0.3,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.2,
-      "energy": 0.0,
-      "romance": 0.1,
-      "nostalgia": 0.4,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.53,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/otP94vckeMXAgQxzhcRkZSeSmYv.jpg",
     "genre": [
@@ -740,16 +676,12 @@
       "innocent victim"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.9,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "joy": 0.22,
+      "sadness": 0.29,
+      "anger": 1.0,
+      "fear": 0.46,
+      "trust": 0.1,
+      "surprise": 0.44
     },
     "image_url": "https://image.tmdb.org/t/p/w500/cQN9rZj06rXMVkk76UF1DfBAico.jpg",
     "genre": [
@@ -777,16 +709,12 @@
       "taisho period"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.39
     },
     "image_url": "https://image.tmdb.org/t/p/w500/8uYxx23KyDnbDkA3eQSNECVeOiS.jpg",
     "genre": [
@@ -823,16 +751,12 @@
       "siege situation"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.35,
+      "fear": 0.35,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/tS3UZlVfESO4z8inIZXGiHNgDfE.jpg",
     "genre": [
@@ -868,16 +792,12 @@
       "excited"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.63,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.17,
+      "trust": 0.28,
+      "surprise": 0.42
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ib6v6qUXzez1x2qIOLN7C0yJNPQ.jpg",
     "genre": [
@@ -914,16 +834,12 @@
       "action horror"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.46,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.4,
-      "calmness": 0.0,
-      "energy": 0.6,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "anger": 0.21,
+      "fear": 0.68,
+      "trust": 0.0,
+      "surprise": 0.53
     },
     "image_url": "https://image.tmdb.org/t/p/w500/6oI4oQKTWMVUlr8Ivqydp28Ruu6.jpg",
     "genre": [
@@ -957,16 +873,12 @@
       "exhilarated"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.28,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/28A1VUDML1RzENYNtIU1WkBLT9V.jpg",
     "genre": [
@@ -996,15 +908,11 @@
     ],
     "emotion_vector": {
       "joy": 0.0,
-      "sadness": 0.6,
-      "anger": 0.5,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "sadness": 0.75,
+      "anger": 0.7,
+      "fear": 0.53,
+      "trust": 0.0,
+      "surprise": 0.24
     },
     "image_url": "https://image.tmdb.org/t/p/w500/yvirUYrva23IudARHn3mMGVxWqM.jpg",
     "genre": [
@@ -1048,16 +956,12 @@
       "cruel"
     ],
     "emotion_vector": {
-      "joy": 0.25,
-      "sadness": 0.4,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.5,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.15
+      "joy": 0.64,
+      "sadness": 0.58,
+      "anger": 0.03,
+      "fear": 0.25,
+      "trust": 0.21,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/tsYCG9yLRr7p2ZBqtCe3162cT4n.jpg",
     "genre": [
@@ -1090,16 +994,12 @@
       "family stakes"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.07,
+      "sadness": 0.14,
+      "anger": 0.35,
+      "fear": 0.35,
+      "trust": 0.1,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/uiIT7CsJ4V7rMnTqy7xYvj9IRhs.jpg",
     "genre": [
@@ -1137,16 +1037,12 @@
       "lawless zones"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.1,
+      "fear": 0.28,
+      "trust": 0.07,
+      "surprise": 0.42
     },
     "image_url": "https://image.tmdb.org/t/p/w500/z2tqCJLsw6uEJ8nJV8BsQXGa3dr.jpg",
     "genre": [
@@ -1200,16 +1096,12 @@
       "exhilarated"
     ],
     "emotion_vector": {
-      "joy": 0.17,
-      "sadness": 0.0,
+      "joy": 0.49,
+      "sadness": 0.14,
       "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.07,
-      "energy": 0.13,
-      "romance": 0.33,
-      "nostalgia": 0.0,
-      "dreaminess": 0.4,
-      "darkness": 0.0
+      "fear": 0.07,
+      "trust": 0.41,
+      "surprise": 0.66
     },
     "image_url": "https://image.tmdb.org/t/p/w500/evoEi8SBSvIIEveM3V6nCJ6vKj8.jpg",
     "genre": [
@@ -1246,16 +1138,12 @@
       "stealth pursuit"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.21,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.4,
-      "calmness": 0.0,
-      "energy": 0.6,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "anger": 0.14,
+      "fear": 0.47,
+      "trust": 0.07,
+      "surprise": 0.85
     },
     "image_url": "https://image.tmdb.org/t/p/w500/8lpCbwbYh9SSzCFsHDndZHKrcD4.jpg",
     "genre": [
@@ -1313,16 +1201,12 @@
       "enchant"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.07,
+      "sadness": 0.21,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.28,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/mAFf4oW3XiH4IlFJw6dgwNnEPhg.jpg",
     "genre": [
@@ -1357,15 +1241,11 @@
     ],
     "emotion_vector": {
       "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.2,
-      "darkness": 0.7
+      "sadness": 0.21,
+      "anger": 0.24,
+      "fear": 1.0,
+      "trust": 0.06,
+      "surprise": 0.24
     },
     "image_url": "https://image.tmdb.org/t/p/w500/fUDX16A4fJXmAuUA5t0pnqzXS0b.jpg",
     "genre": [
@@ -1392,16 +1272,12 @@
       "thrill seeker"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.07,
+      "sadness": 0.14,
+      "anger": 0.35,
+      "fear": 0.35,
+      "trust": 0.17,
+      "surprise": 0.31
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ysmsesGYF83VZXSvkG8ZdNNCKAz.jpg",
     "genre": [
@@ -1430,16 +1306,12 @@
       "adult"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.24,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/75ot83QOkc02vujyzmIbumQCU6Y.jpg",
     "genre": [
@@ -1473,16 +1345,12 @@
       "antwerp diamonds"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.21,
+      "fear": 0.35,
+      "trust": 0.0,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/77ggpowGO0ORQY9x33NeBIPajm1.jpg",
     "genre": [
@@ -1510,16 +1378,12 @@
       "marvel cinematic universe (mcu)"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/krgjV3rJtBcEpQehODKXNCt6uFL.jpg",
     "genre": [
@@ -1561,15 +1425,11 @@
     ],
     "emotion_vector": {
       "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.8
+      "sadness": 0.24,
+      "anger": 0.34,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/gqgBqxyr8tGQGJCFrRWAzfA7Cml.jpg",
     "genre": [
@@ -1609,16 +1469,12 @@
       "exhilarated"
     ],
     "emotion_vector": {
-      "joy": 0.75,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.35,
-      "energy": 0.0,
-      "romance": 0.1,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "joy": 0.92,
+      "sadness": 0.14,
+      "anger": 0.1,
+      "fear": 0.14,
+      "trust": 0.37,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/qV9BQZdiM8foEzDz0Ag5hGWE5qM.jpg",
     "genre": [
@@ -1645,16 +1501,12 @@
       "tense"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.49,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/yPV87cvDabRMTZs6NIbZLOufBLR.jpg",
     "genre": [
@@ -1682,16 +1534,12 @@
       "adult"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.24,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/rfItXrtDGILwsCdmgVxX79phFuI.jpg",
     "genre": [
@@ -1708,16 +1556,12 @@
     "popularity": 62.7956,
     "tags": [],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.14,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.35,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/tOCYV9JCXXFtb7YehKXJBMKI4aD.jpg",
     "genre": [
@@ -1740,16 +1584,12 @@
       "foreboding"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/mRZIiG4vJiCgJh4v2EPUVVTznC8.jpg",
     "genre": [
@@ -1785,16 +1625,12 @@
       "broken women"
     ],
     "emotion_vector": {
-      "joy": 0.4,
-      "sadness": 0.2,
+      "joy": 0.43,
+      "sadness": 0.74,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.8,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.43,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/d5JdpKKyG8bLCBQsAfFskPhuj19.jpg",
     "genre": [
@@ -1828,16 +1664,12 @@
       "remote outpost"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.24,
+      "fear": 0.28,
+      "trust": 0.0,
+      "surprise": 0.35
     },
     "image_url": "https://image.tmdb.org/t/p/w500/cfeIYPthWgq5XFZnx7cbpr7xFTp.jpg",
     "genre": [
@@ -1870,16 +1702,12 @@
       "cosmic"
     ],
     "emotion_vector": {
-      "joy": 0.2,
+      "joy": 0.26,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.1,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.75,
-      "darkness": 0.0
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.36,
+      "surprise": 0.86
     },
     "image_url": "https://image.tmdb.org/t/p/w500/kmP6viwzcEkZeoi1LaVcQemcvZh.jpg",
     "genre": [
@@ -1915,16 +1743,12 @@
       "horror"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.07,
+      "fear": 0.28,
+      "trust": 0.0,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/y9jKDJuf5WCDjSPsqkt1cb0JHGm.jpg",
     "genre": [
@@ -1956,16 +1780,12 @@
       "evil king"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.63,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.31,
+      "surprise": 0.52
     },
     "image_url": "https://image.tmdb.org/t/p/w500/jt1GlLLvkWL2m83VX8I1qsDR187.jpg",
     "genre": [
@@ -1989,16 +1809,12 @@
       "brazil"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.28,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.07,
+      "surprise": 0.35
     },
     "image_url": "https://image.tmdb.org/t/p/w500/jntqR2lt6rV1e8e5lXJXadkcsti.jpg",
     "genre": [
@@ -2041,16 +1857,12 @@
       "oscar winner"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.14,
+      "anger": 0.1,
+      "fear": 0.14,
+      "trust": 0.1,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/1yvBkSv4ZLS1GohlmMDmdpSgfYo.jpg",
     "genre": [
@@ -2084,16 +1896,12 @@
       "military checkpoints"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.18,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "anger": 0.21,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.61
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ahj1JU8r0uJv7QII5Uj7tKzbEsC.jpg",
     "genre": [
@@ -2130,16 +1938,12 @@
       "international theft"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.21,
+      "fear": 0.35,
+      "trust": 0.0,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/dECA069mRikkghzgSBsM0cvic4F.jpg",
     "genre": [
@@ -2187,16 +1991,12 @@
       "dystopian"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.0,
+      "surprise": 0.32
     },
     "image_url": "https://image.tmdb.org/t/p/w500/fxBxoXFAYKWde6lKzXxSusn18Av.jpg",
     "genre": [
@@ -2216,16 +2016,12 @@
       "adult filmmaking"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/kvcdaGcres9pGDwZfPN9jOKfZh.jpg",
     "genre": [
@@ -2258,16 +2054,12 @@
       "joyful"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.07,
+      "sadness": 0.14,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/bvVoP1t2gNvmE9ccSrqR1zcGHGM.jpg",
     "genre": [
@@ -2295,16 +2087,12 @@
       "enraged"
     ],
     "emotion_vector": {
-      "joy": 0.5,
-      "sadness": 0.0,
+      "joy": 1.0,
+      "sadness": 0.14,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 1.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.41,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/o0PgoBD6jLYId3LYpu9yUY06SLT.jpg",
     "genre": [
@@ -2336,16 +2124,12 @@
       "dream"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.03,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 1.0,
-      "darkness": 0.0
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.37,
+      "surprise": 0.99
     },
     "image_url": "https://image.tmdb.org/t/p/w500/atSxEGstxXRoSKDQFBgqQ5lpGSt.jpg",
     "genre": [
@@ -2396,16 +2180,12 @@
       "trio"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.59,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.39
     },
     "image_url": "https://image.tmdb.org/t/p/w500/5fqcLmrgVDicMuGLOa9PKErFP72.jpg",
     "genre": [
@@ -2451,16 +2231,12 @@
       "sensual"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.8,
-      "fear": 0.4,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "joy": 0.24,
+      "sadness": 0.29,
+      "anger": 0.9,
+      "fear": 0.65,
+      "trust": 0.21,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/oDXVQRHTomnm9N569Pu2d38IubP.jpg",
     "genre": [
@@ -2497,16 +2273,12 @@
       "bold"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.35,
+      "fear": 0.35,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/9ICUbdveP56jRoMMVkXSOr3ceyV.jpg",
     "genre": [
@@ -2540,16 +2312,12 @@
       "step-sibling romance"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/h7H6Kd9kX1dvN8FZjUy6FcNdXxQ.jpg",
     "genre": [
@@ -2582,16 +2350,12 @@
       "northumberland"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.3,
-      "anger": 0.0,
-      "fear": 0.43,
-      "calmness": 0.0,
-      "energy": 0.43,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.37
+      "joy": 0.13,
+      "sadness": 0.41,
+      "anger": 0.25,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.5
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ubgOSHAEhv1ds8BNHodhCcI13oH.jpg",
     "genre": [
@@ -2620,16 +2384,12 @@
       "hermann göring"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.21,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.28,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/xthXNYltOOm80vW5Kxjzxx5gvQ6.jpg",
     "genre": [
@@ -2660,16 +2420,12 @@
       "dramatic"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.21,
+      "fear": 0.35,
+      "trust": 0.0,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/lnRkeQstaCvfMahZq7p9eAWzK1a.jpg",
     "genre": [
@@ -2707,16 +2463,12 @@
       "ambivalent"
     ],
     "emotion_vector": {
-      "joy": 0.1,
-      "sadness": 0.0,
-      "anger": 0.16,
-      "fear": 0.46,
-      "calmness": 0.0,
-      "energy": 0.22,
-      "romance": 0.2,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.24
+      "joy": 0.34,
+      "sadness": 0.21,
+      "anger": 0.28,
+      "fear": 1.0,
+      "trust": 0.15,
+      "surprise": 0.24
     },
     "image_url": "https://image.tmdb.org/t/p/w500/lSzmchPGjy6gjLMCpousS3vQAjS.jpg",
     "genre": [
@@ -2778,16 +2530,12 @@
       "armies"
     ],
     "emotion_vector": {
-      "joy": 0.2,
-      "sadness": 0.3,
-      "anger": 0.25,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.4,
-      "darkness": 0.25
+      "joy": 0.24,
+      "sadness": 0.38,
+      "anger": 0.44,
+      "fear": 0.12,
+      "trust": 0.23,
+      "surprise": 0.69
     },
     "image_url": "https://image.tmdb.org/t/p/w500/n8BPIRqvj1SdTRND828ANXhmSng.jpg",
     "genre": [
@@ -2820,16 +2568,12 @@
       "workplace romance"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.49,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/sHoSvGWwbdFcF29vskvv2XvYgEk.jpg",
     "genre": [
@@ -2868,15 +2612,11 @@
     ],
     "emotion_vector": {
       "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.2,
-      "darkness": 0.7
+      "sadness": 0.21,
+      "anger": 0.21,
+      "fear": 1.0,
+      "trust": 0.06,
+      "surprise": 0.31
     },
     "image_url": "https://image.tmdb.org/t/p/w500/4DGPORlVIDIQvsuSDnM4uXKMjWS.jpg",
     "genre": [
@@ -2907,16 +2647,12 @@
       "sister sister relationship"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/z7ilT5rNN9kDo8JZmgyhM6ej2xv.jpg",
     "genre": [
@@ -2948,16 +2684,12 @@
       "demeaning"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.07,
+      "fear": 0.28,
+      "trust": 0.07,
+      "surprise": 0.24
     },
     "image_url": "https://image.tmdb.org/t/p/w500/4HxOXiEFPAFQhzkobIU9Lqlezlq.jpg",
     "genre": [
@@ -3003,16 +2735,12 @@
       "harsh"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.15,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "anger": 0.07,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.4
     },
     "image_url": "https://image.tmdb.org/t/p/w500/zXlwtzXP80yc3X0VokdxvmsFQfw.jpg",
     "genre": [
@@ -3048,16 +2776,12 @@
       "heavy firepower"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.28,
+      "sadness": 0.0,
+      "anger": 0.24,
+      "fear": 0.31,
+      "trust": 0.0,
+      "surprise": 0.28
     },
     "image_url": "https://image.tmdb.org/t/p/w500/bG8BPNRoOvTC9wIos7DIH1YWOqN.jpg",
     "genre": [
@@ -3095,16 +2819,12 @@
       "loyalty conflict"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.8,
-      "fear": 0.4,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "joy": 0.03,
+      "sadness": 0.15,
+      "anger": 1.0,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/o0d6Us9VWOW0nHhoB7ZNIwigARG.jpg",
     "genre": [
@@ -3156,16 +2876,12 @@
       "optimistic"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.43,
       "sadness": 0.0,
-      "anger": 0.0,
+      "anger": 0.14,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "trust": 0.34,
+      "surprise": 0.89
     },
     "image_url": "https://image.tmdb.org/t/p/w500/r18JdjImbWDRwkbVDIzWoLQqkCo.jpg",
     "genre": [
@@ -3200,12 +2916,8 @@
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "trust": 0.48,
+      "surprise": 0.43
     },
     "image_url": "https://image.tmdb.org/t/p/w500/rdZ3T34AGXLglT6g6Xto7hPxr7h.jpg",
     "genre": [
@@ -3231,16 +2943,12 @@
       "dance troupe"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.17,
+      "sadness": 0.0,
+      "anger": 0.32,
+      "fear": 0.49,
+      "trust": 0.1,
+      "surprise": 0.17
     },
     "image_url": "https://image.tmdb.org/t/p/w500/wlV000ToWdP5jtBBswT98DUibIS.jpg",
     "genre": [
@@ -3286,16 +2994,12 @@
       "excited"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.54,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.35,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.4,
-      "darkness": 0.0
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.19,
+      "surprise": 0.9
     },
     "image_url": "https://image.tmdb.org/t/p/w500/fvqoI9r1GU2EFkc0xjZ6dKCuDVR.jpg",
     "genre": [
@@ -3336,15 +3040,11 @@
     ],
     "emotion_vector": {
       "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.8
+      "sadness": 0.24,
+      "anger": 0.37,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/izzk8dbmrLowcoGbFaebqJvzyXg.jpg",
     "genre": [
@@ -3381,16 +3081,12 @@
       "cheerful"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.63,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.28,
+      "surprise": 0.32
     },
     "image_url": "https://image.tmdb.org/t/p/w500/x2BHx02jMbvpKjMvbf8XxJkYwHJ.jpg",
     "genre": [
@@ -3432,16 +3128,12 @@
       "witty"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 1.0,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "trust": 0.55,
+      "surprise": 0.93
     },
     "image_url": "https://image.tmdb.org/t/p/w500/hABnmgdAU3u6Nu61b9GUGaOseVl.jpg",
     "genre": [
@@ -3484,16 +3176,12 @@
       "buddy action"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.1,
+      "fear": 0.21,
+      "trust": 0.0,
+      "surprise": 0.28
     },
     "image_url": "https://image.tmdb.org/t/p/w500/7F0jc75HrSkLVcvOXR2FXAIwuEv.jpg",
     "genre": [
@@ -3526,16 +3214,12 @@
       "empathetic"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.14,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.14,
+      "surprise": 0.24
     },
     "image_url": "https://image.tmdb.org/t/p/w500/3GwTPQkAcgDeAirRpEuJG8HDdRz.jpg",
     "genre": [
@@ -3565,16 +3249,12 @@
       "indifferent"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ygr4hE8Qpagv8sxZbMw1mtYkcQE.jpg",
     "genre": [
@@ -3614,16 +3294,12 @@
       "good versus evil"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.43,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.27,
+      "surprise": 0.92
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ttryglcY2osWZE3sRYBf3ewTZsW.jpg",
     "genre": [
@@ -3656,16 +3332,12 @@
       "partying"
     ],
     "emotion_vector": {
-      "joy": 0.4,
-      "sadness": 0.2,
+      "joy": 0.43,
+      "sadness": 0.74,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.8,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.43,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/yQyoFCBLGJH5HXESmJAzaiXw9zU.jpg",
     "genre": [
@@ -3697,16 +3369,12 @@
       "self destructiveness"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.14,
+      "anger": 0.1,
+      "fear": 0.21,
+      "trust": 0.1,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/eKZ07Ted7VHxQjbuZrRBFOamcKJ.jpg",
     "genre": [
@@ -3760,16 +3428,12 @@
       "defiant"
     ],
     "emotion_vector": {
-      "joy": 0.25,
-      "sadness": 0.0,
-      "anger": 0.45,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.25,
-      "romance": 0.5,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.25
+      "joy": 0.71,
+      "sadness": 0.21,
+      "anger": 0.71,
+      "fear": 0.47,
+      "trust": 0.21,
+      "surprise": 0.18
     },
     "image_url": "https://image.tmdb.org/t/p/w500/AdrItykbv1evqcbIPrItVWnkaKj.jpg",
     "genre": [
@@ -3804,16 +3468,12 @@
       "sex"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/iLU2meXFN8BxNcM0Lq2gPtpoO8L.jpg",
     "genre": [
@@ -3865,16 +3525,12 @@
       "powerful"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.14,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.35,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/4exwxdn3HxHYQ2Nls2yhM3pW1Mw.jpg",
     "genre": [
@@ -3903,16 +3559,12 @@
       "superhero teamup"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.89,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.7,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.0,
+      "surprise": 0.8
     },
     "image_url": "https://image.tmdb.org/t/p/w500/dsfAcQ5J7TPOpJgcX8R1lRBqiMK.jpg",
     "genre": [
@@ -3958,16 +3610,12 @@
       "teen fantasy"
     ],
     "emotion_vector": {
-      "joy": 0.6,
+      "joy": 0.71,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.2,
-      "energy": 0.0,
-      "romance": 0.1,
-      "nostalgia": 0.0,
-      "dreaminess": 0.4,
-      "darkness": 0.0
+      "trust": 0.38,
+      "surprise": 0.58
     },
     "image_url": "https://image.tmdb.org/t/p/w500/8YaP48tVfngbURGldWk1I5odsBK.jpg",
     "genre": [
@@ -4008,16 +3656,12 @@
       "1910s"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/132KjhVrWUqKFVfMAKKNkherytA.jpg",
     "genre": [
@@ -4042,16 +3686,12 @@
       "adolescent sexuality"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.45,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/qZQRS4iUxHjkWjJzL2FkK4LHYs6.jpg",
     "genre": [
@@ -4101,16 +3741,12 @@
       "feel-good"
     ],
     "emotion_vector": {
-      "joy": 0.8,
-      "sadness": 0.0,
+      "joy": 1.0,
+      "sadness": 0.14,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.4,
-      "energy": 0.0,
-      "romance": 0.2,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.53,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/l8wvbQQIBV8LBHmx3Wx9xbE2kzt.jpg",
     "genre": [
@@ -4147,16 +3783,12 @@
       "mass entertainment"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.21,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.4,
-      "calmness": 0.0,
-      "energy": 0.6,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "anger": 0.24,
+      "fear": 0.68,
+      "trust": 0.0,
+      "surprise": 0.71
     },
     "image_url": "https://image.tmdb.org/t/p/w500/klfSEbFOquMFjBQJ5uKAfp0rrsK.jpg",
     "genre": [
@@ -4181,16 +3813,12 @@
       "porn"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.24,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/kpTqWqLYcf1uErnx5VXLah4EWJZ.jpg",
     "genre": [
@@ -4225,16 +3853,12 @@
       "ridiculous"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.7,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.7
+      "joy": 0.24,
+      "sadness": 0.21,
+      "anger": 0.32,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/13ZcJzSGEqVgDSqsS9U5EkQwPkV.jpg",
     "genre": [
@@ -4288,16 +3912,12 @@
       "sympathetic"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.8,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.3
+      "joy": 0.45,
+      "sadness": 0.89,
+      "anger": 0.2,
+      "fear": 0.15,
+      "trust": 0.21,
+      "surprise": 0.39
     },
     "image_url": "https://image.tmdb.org/t/p/w500/oTn0PoR8gSMpMqJaT2pUtkkN0Ia.jpg",
     "genre": [
@@ -4338,16 +3958,12 @@
       "callous"
     ],
     "emotion_vector": {
-      "joy": 0.8,
+      "joy": 1.0,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.4,
-      "energy": 0.0,
-      "romance": 0.2,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.56,
+      "surprise": 0.28
     },
     "image_url": "https://image.tmdb.org/t/p/w500/iGp4wBc0ZBVFd2HPicyDgl6Pn1r.jpg",
     "genre": [
@@ -4392,16 +4008,12 @@
       "violence"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.57,
-      "fear": 0.37,
-      "calmness": 0.0,
-      "energy": 0.17,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.57
+      "joy": 0.09,
+      "sadness": 0.31,
+      "anger": 0.79,
+      "fear": 0.8,
+      "trust": 0.1,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/35RGDgySfINL9V2e6lkDECQ0hRa.jpg",
     "genre": [
@@ -4436,16 +4048,12 @@
       "restricted zone"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.21,
+      "sadness": 0.0,
+      "anger": 0.1,
+      "fear": 0.28,
+      "trust": 0.1,
+      "surprise": 0.24
     },
     "image_url": "https://image.tmdb.org/t/p/w500/dBKMc0Bim0Z8amB7VihuCfhto2v.jpg",
     "genre": [
@@ -4486,16 +4094,12 @@
       "incredulous"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/guzNdgRjANTBDkTRYGqgzFOgSWx.jpg",
     "genre": [
@@ -4534,16 +4138,12 @@
       "humint"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.07,
+      "sadness": 0.14,
+      "anger": 0.24,
+      "fear": 0.21,
+      "trust": 0.1,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/f7sCSLEPRfV2fWQ0RYOtHhnHXuG.jpg",
     "genre": [
@@ -4581,16 +4181,12 @@
       "abuse of power"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.14,
+      "anger": 0.1,
+      "fear": 0.14,
+      "trust": 0.14,
+      "surprise": 0.21
     },
     "image_url": "https://image.tmdb.org/t/p/w500/pk1TPODQVnI8GdLf0DhlJQYxWjd.jpg",
     "genre": [
@@ -4629,16 +4225,12 @@
       "world‑saving mission"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/kCXGCEsDqjzWJVDyHgBUg0AMetT.jpg",
     "genre": [
@@ -4692,16 +4284,12 @@
       "frightened"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.31,
+      "fear": 0.49,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/qEipksU5SzHxbeZbE0cZQzEt6bD.jpg",
     "genre": [
@@ -4746,16 +4334,12 @@
       "los alamos"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.21,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.28,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/jpD6z9fgNe7OqsHoDeAWQWoULde.jpg",
     "genre": [
@@ -4789,16 +4373,12 @@
       "moral collapse"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.17,
+      "fear": 0.49,
+      "trust": 0.0,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/nxoxD8FdbhRWd2Ra0W6qsZA0frn.jpg",
     "genre": [
@@ -4845,16 +4425,12 @@
       "exhilarated"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/m5lCha2XcbDowDoYHPc0DTNaCPU.jpg",
     "genre": [
@@ -4892,16 +4468,12 @@
       "tuwaderalit"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.08,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.2,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.7,
-      "darkness": 0.0
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.42,
+      "surprise": 0.84
     },
     "image_url": "https://image.tmdb.org/t/p/w500/7XFfURIFCJxN1mfBg0SAjk5yGzg.jpg",
     "genre": [
@@ -4929,16 +4501,12 @@
       "donghua"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.65,
       "sadness": 0.0,
-      "anger": 0.0,
+      "anger": 0.14,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "trust": 0.41,
+      "surprise": 0.96
     },
     "image_url": "https://image.tmdb.org/t/p/w500/tc3wdEEov3SdMja9ZkBiAZ6fBGV.jpg",
     "genre": [
@@ -4988,15 +4556,11 @@
     ],
     "emotion_vector": {
       "joy": 0.0,
-      "sadness": 0.4,
-      "anger": 0.0,
-      "fear": 0.35,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "sadness": 0.55,
+      "anger": 0.17,
+      "fear": 0.95,
+      "trust": 0.03,
+      "surprise": 0.42
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ftIYdV8IEE4n8odMv7FLam9VDVy.jpg",
     "genre": [
@@ -5051,16 +4615,12 @@
       "cheerful"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.9,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "joy": 0.78,
+      "sadness": 0.15,
+      "anger": 1.0,
+      "fear": 0.42,
+      "trust": 0.28,
+      "surprise": 0.72
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ib6v6qUXzez1x2qIOLN7C0yJNPQ.jpg",
     "genre": [
@@ -5105,16 +4665,12 @@
       "disheartening"
     ],
     "emotion_vector": {
-      "joy": 0.4,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.7,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "joy": 0.65,
+      "sadness": 0.24,
+      "anger": 0.21,
+      "fear": 0.1,
+      "trust": 0.28,
+      "surprise": 0.42
     },
     "image_url": "https://image.tmdb.org/t/p/w500/oyyUcGwLX7LTFS1pQbLrQpyzIyt.jpg",
     "genre": [
@@ -5150,16 +4706,12 @@
       "cosmos"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.04,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.2,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.7,
-      "darkness": 0.0
+      "anger": 0.07,
+      "fear": 0.35,
+      "trust": 0.35,
+      "surprise": 0.56
     },
     "image_url": "https://image.tmdb.org/t/p/w500/k3m1RdlYUlCx51PxxNMlmbm7QSk.jpg",
     "genre": [
@@ -5186,16 +4738,12 @@
       "provocative"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.03,
+      "surprise": 0.28
     },
     "image_url": "https://image.tmdb.org/t/p/w500/9ljV8sG9HQs6bBc19Vw0754aujG.jpg",
     "genre": [
@@ -5252,16 +4800,12 @@
       "vibrant"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.85,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.7,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.14,
+      "surprise": 0.98
     },
     "image_url": "https://image.tmdb.org/t/p/w500/lMWTlGr9jVUC18T515hPRKym5QQ.jpg",
     "genre": [
@@ -5294,16 +4838,12 @@
       "dracula"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.21,
+      "sadness": 0.0,
+      "anger": 0.07,
+      "fear": 0.28,
+      "trust": 0.14,
+      "surprise": 0.21
     },
     "image_url": "https://image.tmdb.org/t/p/w500/hCKkybW6EfSZoOW3xia9ZsQwaUd.jpg",
     "genre": [
@@ -5344,16 +4884,12 @@
       "oscar winner"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
+      "joy": 0.15,
+      "sadness": 0.14,
       "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.4,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.5,
-      "darkness": 0.0
+      "fear": 0.07,
+      "trust": 0.26,
+      "surprise": 0.7
     },
     "image_url": "https://image.tmdb.org/t/p/w500/fJZmCJpLeBFKktLFEIKPEhllWlU.jpg",
     "genre": [
@@ -5382,16 +4918,12 @@
       "god of thunder"
     ],
     "emotion_vector": {
-      "joy": 0.2,
-      "sadness": 0.0,
-      "anger": 0.45,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.25,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.4,
-      "darkness": 0.25
+      "joy": 0.52,
+      "sadness": 0.07,
+      "anger": 0.64,
+      "fear": 0.12,
+      "trust": 0.23,
+      "surprise": 0.73
     },
     "image_url": "https://image.tmdb.org/t/p/w500/iBvo3qOPcmhlqAaJcXcQHtx2qLk.jpg",
     "genre": [
@@ -5426,16 +4958,12 @@
       "scientific expertise"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.17,
+      "fear": 0.49,
+      "trust": 0.0,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/8HjP0vqOk1FIxoN96ciRnOcmGu4.jpg",
     "genre": [
@@ -5486,16 +5014,12 @@
       "oscar winner"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.3,
-      "fear": 0.0,
-      "calmness": 0.07,
-      "energy": 0.3,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.4,
-      "darkness": 0.17
+      "joy": 0.1,
+      "sadness": 0.05,
+      "anger": 0.33,
+      "fear": 0.15,
+      "trust": 0.24,
+      "surprise": 0.76
     },
     "image_url": "https://image.tmdb.org/t/p/w500/7zV8FTYofAORGm0Umgh1mNNCym8.jpg",
     "genre": [
@@ -5532,16 +5056,12 @@
       "tampa, florida"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.7,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.7
+      "joy": 0.03,
+      "sadness": 0.35,
+      "anger": 0.24,
+      "fear": 1.0,
+      "trust": 0.1,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/zF9hSBS1t7PVFLo01GrJ3OjGi67.jpg",
     "genre": [
@@ -5580,16 +5100,12 @@
       "exuberant"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.07,
+      "sadness": 0.14,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/oqn0k8FbQ5mKXk5WbtKrvHwV5yV.jpg",
     "genre": [
@@ -5623,16 +5139,12 @@
       "best picture nominee"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.14,
+      "anger": 0.1,
+      "fear": 0.21,
+      "trust": 0.1,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/hqzCMHTuymM7FOZwpHfW5meiX1m.jpg",
     "genre": [
@@ -5666,16 +5178,12 @@
       "powerful elites"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.35,
+      "fear": 0.35,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ekHemOB84SoKi6fqG0ciwvKWM2i.jpg",
     "genre": [
@@ -5708,16 +5216,12 @@
       "pretentious"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.67,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.31,
+      "surprise": 0.63
     },
     "image_url": "https://image.tmdb.org/t/p/w500/fvtswV04JfLGxxrjxW4t4j8bPhx.jpg",
     "genre": [
@@ -5775,16 +5279,12 @@
       "winged creatures"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.43,
       "sadness": 0.0,
-      "anger": 0.0,
+      "anger": 0.14,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "trust": 0.34,
+      "surprise": 0.89
     },
     "image_url": "https://image.tmdb.org/t/p/w500/zxZdTi3fA7aDxEOivmzZAY2bmTu.jpg",
     "genre": [
@@ -5821,16 +5321,12 @@
       "taking responsibility"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.0,
+      "surprise": 0.32
     },
     "image_url": "https://image.tmdb.org/t/p/w500/4xOhtzXGt0if74dTmS4qtizFelX.jpg",
     "genre": [
@@ -5872,16 +5368,12 @@
       "hopeful"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.66,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.38,
+      "surprise": 0.32
     },
     "image_url": "https://image.tmdb.org/t/p/w500/rMXHvHzpuYZXrJUhRVJ3TvDSwe5.jpg",
     "genre": [
@@ -5925,16 +5417,12 @@
       "foreboding"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.7,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.7
+      "joy": 0.03,
+      "sadness": 0.35,
+      "anger": 0.14,
+      "fear": 1.0,
+      "trust": 0.1,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/yg2XzSxH10DVGNY73e7yZgLnDF5.jpg",
     "genre": [
@@ -5976,16 +5464,12 @@
       "oscar winner"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.39
     },
     "image_url": "https://image.tmdb.org/t/p/w500/8AsDR2o5AC3V8Jmj6JH6cpta7dz.jpg",
     "genre": [
@@ -6021,16 +5505,12 @@
       "dystopian"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.24,
+      "fear": 0.28,
+      "trust": 0.0,
+      "surprise": 0.35
     },
     "image_url": "https://image.tmdb.org/t/p/w500/fQ8Q3VAybCt6fHFJQD0kwd5azNL.jpg",
     "genre": [
@@ -6058,16 +5538,12 @@
       "calm"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.67,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.21,
+      "surprise": 0.45
     },
     "image_url": "https://image.tmdb.org/t/p/w500/vZmCFVff9JySHTUp9zbYUIAcxzc.jpg",
     "genre": [
@@ -6112,16 +5588,12 @@
       "pixar"
     ],
     "emotion_vector": {
-      "joy": 0.8,
+      "joy": 1.0,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.4,
-      "energy": 0.0,
-      "romance": 0.2,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.6,
+      "surprise": 0.31
     },
     "image_url": "https://image.tmdb.org/t/p/w500/iJbm78MxPjLutWUYixbeege8EVe.jpg",
     "genre": [
@@ -6164,16 +5636,12 @@
       "1940s"
     ],
     "emotion_vector": {
-      "joy": 0.5,
-      "sadness": 0.0,
+      "joy": 1.0,
+      "sadness": 0.14,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 1.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.41,
+      "surprise": 0.0
     },
     "image_url": "",
     "genre": [
@@ -6222,16 +5690,12 @@
       "ridiculous"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.39,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.31,
+      "surprise": 0.45
     },
     "image_url": "https://image.tmdb.org/t/p/w500/uzVUEQ6PPGGsETviLwVKSzS8OUG.jpg",
     "genre": [
@@ -6272,16 +5736,12 @@
       "secret world"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.45
     },
     "image_url": "https://image.tmdb.org/t/p/w500/h3mUJ9WEJ8PzA450ad4hrjsaiqG.jpg",
     "genre": [
@@ -6330,16 +5790,12 @@
       "teen fantasy"
     ],
     "emotion_vector": {
-      "joy": 0.6,
+      "joy": 0.71,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.2,
-      "energy": 0.0,
-      "romance": 0.1,
-      "nostalgia": 0.0,
-      "dreaminess": 0.4,
-      "darkness": 0.0
+      "trust": 0.38,
+      "surprise": 0.58
     },
     "image_url": "https://image.tmdb.org/t/p/w500/anwNl1xbzXoj5Ax1nVw3WoDzHlw.jpg",
     "genre": [
@@ -6381,16 +5837,12 @@
       "drummer"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.17,
+      "sadness": 0.14,
+      "anger": 0.1,
+      "fear": 0.21,
+      "trust": 0.21,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/oKNkhmyIBiDENivK6ELZxfBWa3q.jpg",
     "genre": [
@@ -6437,16 +5889,12 @@
       "helen of troy"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.1,
+      "anger": 0.35,
+      "fear": 0.1,
+      "trust": 0.17,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/1TsdNMKodmOKyo4xPacxq7opo3p.jpg",
     "genre": [
@@ -6491,16 +5939,12 @@
       "cheerful"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.78,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.21,
+      "surprise": 0.44
     },
     "image_url": "https://image.tmdb.org/t/p/w500/fnDLrtEoIrxTCWUvuurMzOzQGpQ.jpg",
     "genre": [
@@ -6529,16 +5973,12 @@
       "familiar"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.63,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.31,
+      "surprise": 0.53
     },
     "image_url": "https://image.tmdb.org/t/p/w500/2QCGC4toQXYuIsWKj5vJQRAdPjd.jpg",
     "genre": [
@@ -6581,16 +6021,12 @@
       "confederate gold"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.24,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ApiNjedkfs7LtcJcjxMQAUIcN2L.jpg",
     "genre": [
@@ -6634,15 +6070,11 @@
     ],
     "emotion_vector": {
       "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.9,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.9
+      "sadness": 0.27,
+      "anger": 0.39,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/jicHGaOX5pHs7RKjfexMxvLkwjf.jpg",
     "genre": [
@@ -6680,16 +6112,12 @@
       "joyful"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.67,
       "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.2,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.7,
-      "darkness": 0.0
+      "anger": 0.1,
+      "fear": 0.14,
+      "trust": 0.63,
+      "surprise": 0.66
     },
     "image_url": "https://image.tmdb.org/t/p/w500/1oG69MtmZGovhho0pPgRY9d1qrU.jpg",
     "genre": [
@@ -6715,16 +6143,12 @@
       "alternate universe"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.14,
+      "surprise": 0.56
     },
     "image_url": "https://image.tmdb.org/t/p/w500/d9V6Q9vpVpmaca7vwSUbCajtDb3.jpg",
     "genre": [
@@ -6765,16 +6189,12 @@
       "building"
     ],
     "emotion_vector": {
-      "joy": 0.27,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.43,
-      "calmness": 0.13,
-      "energy": 0.43,
-      "romance": 0.07,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.2
+      "joy": 0.89,
+      "sadness": 0.06,
+      "anger": 0.04,
+      "fear": 0.53,
+      "trust": 0.35,
+      "surprise": 0.71
     },
     "image_url": "https://image.tmdb.org/t/p/w500/k5aQ2TqKcQFwPoXHkpAGoKNVDLZ.jpg",
     "genre": [
@@ -6814,16 +6234,12 @@
       "protective motherhood"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/dnuiFWiogHw1fmIDdwkVkLkzzFM.jpg",
     "genre": [
@@ -6849,16 +6265,12 @@
       "south korea"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.9,
-      "calmness": 0.0,
-      "energy": 0.7,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.6
+      "joy": 0.24,
+      "sadness": 0.18,
+      "anger": 0.33,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.53
     },
     "image_url": "https://image.tmdb.org/t/p/w500/yBQ6iBI7BcDWlgUzWzJNSvbWe8s.jpg",
     "genre": [
@@ -6889,16 +6301,12 @@
       "oscar nominee"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.39,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.07,
+      "trust": 0.28,
+      "surprise": 0.45
     },
     "image_url": "https://image.tmdb.org/t/p/w500/iA9NiygwSOBy8FjZjvdYOMxRUG0.jpg",
     "genre": [
@@ -6930,16 +6338,12 @@
       "dystopian"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.8,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.3
+      "joy": 0.39,
+      "sadness": 0.89,
+      "anger": 0.06,
+      "fear": 0.22,
+      "trust": 0.21,
+      "surprise": 0.28
     },
     "image_url": "https://image.tmdb.org/t/p/w500/skTzymk67FfQSfGvwp4JSAqje4Z.jpg",
     "genre": [
@@ -6984,16 +6388,12 @@
       "hopeful"
     ],
     "emotion_vector": {
-      "joy": 0.5,
+      "joy": 0.95,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.8,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.17,
+      "surprise": 0.93
     },
     "image_url": "https://image.tmdb.org/t/p/w500/xiz6TiSduvR1U3VLfWVlBEdT9fO.jpg",
     "genre": [
@@ -7034,16 +6434,12 @@
       "controlling wife"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.2,
-      "darkness": 0.7
+      "joy": 0.03,
+      "sadness": 0.35,
+      "anger": 0.24,
+      "fear": 1.0,
+      "trust": 0.16,
+      "surprise": 0.24
     },
     "image_url": "https://image.tmdb.org/t/p/w500/m2Lw04GIjiTjylqPiccoo3WFMVb.jpg",
     "genre": [
@@ -7085,16 +6481,12 @@
       "1950s"
     ],
     "emotion_vector": {
-      "joy": 0.5,
+      "joy": 1.0,
       "sadness": 0.0,
       "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 1.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "fear": 0.07,
+      "trust": 0.27,
+      "surprise": 0.45
     },
     "image_url": "https://image.tmdb.org/t/p/w500/zzxvtXJ9pahjWVX3Q2ko29J0Zf6.jpg",
     "genre": [
@@ -7127,16 +6519,12 @@
       "emotional"
     ],
     "emotion_vector": {
-      "joy": 0.8,
-      "sadness": 0.0,
+      "joy": 1.0,
+      "sadness": 0.14,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.4,
-      "energy": 0.0,
-      "romance": 0.2,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.42,
+      "surprise": 0.07
     },
     "image_url": "",
     "genre": [
@@ -7172,16 +6560,12 @@
       "smuggling network"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.14,
+      "anger": 0.1,
+      "fear": 0.14,
+      "trust": 0.1,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/q1GPxUb7dfzfw4toS5TnRoSPVbn.jpg",
     "genre": [
@@ -7212,16 +6596,12 @@
       "female explorer"
     ],
     "emotion_vector": {
-      "joy": 0.4,
-      "sadness": 0.2,
+      "joy": 1.0,
+      "sadness": 0.6,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.8,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.64,
+      "surprise": 0.53
     },
     "image_url": "https://image.tmdb.org/t/p/w500/hwmwTFtMbzxAWbIOp1RyyiOCyx0.jpg",
     "genre": [
@@ -7250,16 +6630,12 @@
       "criminal conspiracy"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.35,
+      "fear": 0.35,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/pPokyKVPve6HNSgVliOlrMwU1lM.jpg",
     "genre": [
@@ -7308,16 +6684,12 @@
       "hopeful"
     ],
     "emotion_vector": {
-      "joy": 0.4,
-      "sadness": 0.05,
-      "anger": 0.23,
-      "fear": 0.0,
-      "calmness": 0.1,
-      "energy": 0.3,
-      "romance": 0.05,
-      "nostalgia": 0.2,
-      "dreaminess": 0.0,
-      "darkness": 0.12
+      "joy": 1.0,
+      "sadness": 0.19,
+      "anger": 0.39,
+      "fear": 0.06,
+      "trust": 0.44,
+      "surprise": 0.6
     },
     "image_url": "https://image.tmdb.org/t/p/w500/gLabmTVZpNOGa8LEiMvTi9hJPDe.jpg",
     "genre": [
@@ -7341,16 +6713,12 @@
       "sequel"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/5MdllYBVC9qomummBQSCPWrTylZ.jpg",
     "genre": [
@@ -7386,16 +6754,12 @@
       "whimsical"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.42,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.07,
+      "trust": 0.14,
+      "surprise": 0.28
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ww7jn7lv1YzTAGd5m0R6CP1VXAs.jpg",
     "genre": [
@@ -7437,16 +6801,12 @@
       "romantic"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.24,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/oLALU5qhYbz995SfcSbrxE2zmYM.jpg",
     "genre": [
@@ -7483,16 +6843,12 @@
       "epic"
     ],
     "emotion_vector": {
-      "joy": 0.2,
-      "sadness": 0.1,
-      "anger": 0.0,
-      "fear": 0.35,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.4,
-      "dreaminess": 0.0,
-      "darkness": 0.35
+      "joy": 0.62,
+      "sadness": 0.55,
+      "anger": 0.07,
+      "fear": 0.52,
+      "trust": 0.47,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/9Y048zYw66TWvpUtsiNK0uReiVX.jpg",
     "genre": [
@@ -7524,16 +6880,12 @@
       "teen superhero"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/hjki9weYYVABvkpZbX5jBOmKXXv.jpg",
     "genre": [
@@ -7572,16 +6924,12 @@
       "cosmic entity"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/vXvcMeUL6dGr9iBhNOMG3SPRHGA.jpg",
     "genre": [
@@ -7611,16 +6959,12 @@
       "baffled"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.14,
+      "anger": 0.1,
+      "fear": 0.21,
+      "trust": 0.21,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/iQaLakvYBzpmdHUB2h6h2aVY5nE.jpg",
     "genre": [
@@ -7660,16 +7004,12 @@
       "missing children"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.07,
+      "fear": 0.45,
+      "trust": 0.0,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/lcu0aRFg7lzmzxGzpkYCeN4XRjh.jpg",
     "genre": [
@@ -7710,16 +7050,12 @@
       "good versus evil"
     ],
     "emotion_vector": {
-      "joy": 0.2,
+      "joy": 0.31,
       "sadness": 0.0,
-      "anger": 0.0,
+      "anger": 0.14,
       "fear": 0.4,
-      "calmness": 0.0,
-      "energy": 0.25,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.4,
-      "darkness": 0.0
+      "trust": 0.22,
+      "surprise": 0.84
     },
     "image_url": "https://image.tmdb.org/t/p/w500/3dTg1pgasstOa0XJTwt3dBFHjFf.jpg",
     "genre": [
@@ -7767,12 +7103,8 @@
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "trust": 0.34,
+      "surprise": 0.78
     },
     "image_url": "https://image.tmdb.org/t/p/w500/uWPnKtu1eutmgBQ2hoWm0Xe8nfN.jpg",
     "genre": [
@@ -7799,16 +7131,12 @@
       "counterterrorism"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ziReGUV3xURsWmcmsn2GOunPc0L.jpg",
     "genre": [
@@ -7849,16 +7177,12 @@
       "exhilarated"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.6,
-      "anger": 0.5,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "joy": 0.03,
+      "sadness": 0.75,
+      "anger": 0.74,
+      "fear": 0.32,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/u2aVXft5GLBQnjzWVNda7sdDpdu.jpg",
     "genre": [
@@ -7895,16 +7219,12 @@
       "immigration detention center"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.21,
+      "fear": 0.35,
+      "trust": 0.0,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/bCg9iDSXPjVTUs1RyYH8AhmJ11d.jpg",
     "genre": [
@@ -7934,16 +7254,12 @@
       "forceful"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.9,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "joy": 0.18,
+      "sadness": 0.15,
+      "anger": 1.0,
+      "fear": 0.6,
+      "trust": 0.0,
+      "surprise": 0.44
     },
     "image_url": "https://image.tmdb.org/t/p/w500/cltj9nKLzl0HXtz2qdu55BoIgOn.jpg",
     "genre": [
@@ -7972,16 +7288,12 @@
       "labirinto"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.24,
+      "fear": 0.45,
+      "trust": 0.0,
+      "surprise": 0.45
     },
     "image_url": "https://image.tmdb.org/t/p/w500/bL0bBepUCLFcCj2ATFD40FbyDEl.jpg",
     "genre": [
@@ -8025,16 +7337,12 @@
       "armies"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/tLNTaP5kcH2FDQNxGu4EkOCpMjr.jpg",
     "genre": [
@@ -8080,16 +7388,12 @@
       "bold"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.7,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.7
+      "joy": 0.07,
+      "sadness": 0.35,
+      "anger": 0.39,
+      "fear": 1.0,
+      "trust": 0.1,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/p0uAcyDgBXtCSXZdnacwr9OGcIH.jpg",
     "genre": [
@@ -8136,16 +7440,12 @@
       "grandmother's birthday"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.49,
+      "sadness": 0.14,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.21,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/yM0HNVCWfrb5VrFgPQMec2SmfrZ.jpg",
     "genre": [
@@ -8173,16 +7473,12 @@
       "death game"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.55,
-      "calmness": 0.0,
-      "energy": 0.3,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.35
+      "joy": 0.12,
+      "sadness": 0.1,
+      "anger": 0.38,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.32
     },
     "image_url": "https://image.tmdb.org/t/p/w500/8mS3VvzeDfw6VdgQQbXsunNBEit.jpg",
     "genre": [
@@ -8210,16 +7506,12 @@
       "reminiscent"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.21,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.24,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/frXkpt1dLKO3iDbmBsjQUKseLiS.jpg",
     "genre": [
@@ -8252,16 +7544,12 @@
       "oscar winner"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.21,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.39,
+      "surprise": 0.0
     },
     "image_url": "https://image.tmdb.org/t/p/w500/96ikpEmn7Uxct77x6kTIUgnldh2.jpg",
     "genre": [
@@ -8291,16 +7579,12 @@
       "irreverent"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.9,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "joy": 0.18,
+      "sadness": 0.15,
+      "anger": 1.0,
+      "fear": 0.32,
+      "trust": 0.07,
+      "surprise": 0.79
     },
     "image_url": "https://image.tmdb.org/t/p/w500/ebJbC9OYAZJxy7bRUGryR72hfa2.jpg",
     "genre": [
@@ -8336,16 +7620,12 @@
       "witty"
     ],
     "emotion_vector": {
-      "joy": 0.0,
+      "joy": 0.18,
       "sadness": 0.0,
-      "anger": 0.0,
+      "anger": 0.14,
       "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.1,
+      "surprise": 0.79
     },
     "image_url": "https://image.tmdb.org/t/p/w500/6tD4oT7C01aZLVfoZDz5VFVbJCi.jpg",
     "genre": [
@@ -8378,16 +7658,12 @@
       "anthropomorphic animal"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.45,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.14,
+      "surprise": 0.39
     },
     "image_url": "https://image.tmdb.org/t/p/w500/4784u4fHwcvc4owOGylVpP7JaKQ.jpg",
     "genre": [
@@ -8407,16 +7683,12 @@
     "popularity": 20.5728,
     "tags": [],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.07,
+      "sadness": 0.14,
+      "anger": 0.24,
+      "fear": 0.21,
+      "trust": 0.1,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/7OPedgbyapZ8LjIQIMIh72ZEfW6.jpg",
     "genre": [
@@ -8454,16 +7726,12 @@
       "brutal violence"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.35,
+      "fear": 0.35,
+      "trust": 0.0,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/rGe64vmd9cpvwiTD5OGWJezBnNg.jpg",
     "genre": [
@@ -8501,16 +7769,12 @@
       "brisk"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.0,
+      "trust": 0.1,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/3ovejwQO4fKOWx4VgGBJeT8CKCn.jpg",
     "genre": [
@@ -8552,16 +7816,12 @@
       "artificial intelligence"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.24,
+      "fear": 0.28,
+      "trust": 0.0,
+      "surprise": 0.35
     },
     "image_url": "https://image.tmdb.org/t/p/w500/nDVUiEqoeXaDQuM81KkUVNviYIm.jpg",
     "genre": [
@@ -8602,16 +7862,12 @@
       "tense"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.27,
-      "anger": 0.3,
-      "fear": 0.23,
-      "calmness": 0.0,
-      "energy": 0.17,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "joy": 0.12,
+      "sadness": 0.56,
+      "anger": 0.65,
+      "fear": 0.62,
+      "trust": 0.1,
+      "surprise": 0.21
     },
     "image_url": "https://image.tmdb.org/t/p/w500/cVNasmF1Egd3v3mpq747Hizxx4x.jpg",
     "genre": [
@@ -8661,16 +7917,12 @@
       "financial drama"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.28,
+      "sadness": 0.14,
+      "anger": 0.1,
+      "fear": 0.14,
+      "trust": 0.1,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/rdBYtoxLvd8J9PsVYVGd7FGzQux.jpg",
     "genre": [
@@ -8703,16 +7955,12 @@
       "virus"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.9,
-      "calmness": 0.0,
-      "energy": 0.7,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.6
+      "joy": 0.24,
+      "sadness": 0.18,
+      "anger": 0.43,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.77
     },
     "image_url": "https://image.tmdb.org/t/p/w500/cnUlKvIXbTmDnyp6pIGIMgdl332.jpg",
     "genre": [
@@ -8749,16 +7997,12 @@
       "unnatural life"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.5,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "joy": 0.18,
+      "sadness": 0.14,
+      "anger": 0.07,
+      "fear": 1.0,
+      "trust": 0.14,
+      "surprise": 0.51
     },
     "image_url": "https://image.tmdb.org/t/p/w500/vSMWJkBTEfa7kFxHizSz4uJNVlf.jpg",
     "genre": [
@@ -8803,16 +8047,12 @@
       "drug bust"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.24,
+      "sadness": 0.0,
+      "anger": 0.1,
+      "fear": 0.14,
+      "trust": 0.0,
+      "surprise": 0.07
     },
     "image_url": "https://image.tmdb.org/t/p/w500/4caC5bNljJiakF2r18Bb3j4URAe.jpg",
     "genre": [
@@ -8851,16 +8091,12 @@
       "sympathetic"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.39,
+      "sadness": 0.0,
+      "anger": 0.0,
+      "fear": 0.0,
+      "trust": 0.28,
+      "surprise": 0.24
     },
     "image_url": "https://image.tmdb.org/t/p/w500/9ViCYfZ0whpwtKbM2WJP5PfsG2x.jpg",
     "genre": [
@@ -8896,16 +8132,12 @@
       "malevolent spirit"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.0,
+      "sadness": 0.0,
+      "anger": 0.17,
+      "fear": 0.49,
+      "trust": 0.0,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/pWpTToZ32bG09PaZ1rvYG5mpOyV.jpg",
     "genre": [
@@ -8938,15 +8170,11 @@
     ],
     "emotion_vector": {
       "joy": 0.0,
-      "sadness": 0.9,
-      "anger": 0.0,
-      "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.5
+      "sadness": 1.0,
+      "anger": 0.17,
+      "fear": 0.71,
+      "trust": 0.0,
+      "surprise": 0.1
     },
     "image_url": "https://image.tmdb.org/t/p/w500/vgonf5kGsiijUBjzxKTvechhT28.jpg",
     "genre": [
@@ -8984,15 +8212,11 @@
     ],
     "emotion_vector": {
       "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.9,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.9
+      "sadness": 0.27,
+      "anger": 0.35,
+      "fear": 1.0,
+      "trust": 0.0,
+      "surprise": 0.03
     },
     "image_url": "https://image.tmdb.org/t/p/w500/kEmPnUUXaF9hPgDMlc0eJht5JYO.jpg",
     "genre": [
@@ -9029,16 +8253,12 @@
       "cheerful"
     ],
     "emotion_vector": {
-      "joy": 0.8,
+      "joy": 1.0,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.4,
-      "energy": 0.0,
-      "romance": 0.2,
-      "nostalgia": 0.0,
-      "dreaminess": 0.0,
-      "darkness": 0.0
+      "trust": 0.53,
+      "surprise": 0.14
     },
     "image_url": "https://image.tmdb.org/t/p/w500/gXUNsdIIn6NiEBvh8Mq6gjgVPm0.jpg",
     "genre": [
@@ -9083,16 +8303,12 @@
       "hopeful"
     ],
     "emotion_vector": {
-      "joy": 0.4,
+      "joy": 0.78,
       "sadness": 0.0,
       "anger": 0.0,
       "fear": 0.0,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.8,
-      "darkness": 0.0
+      "trust": 0.55,
+      "surprise": 0.85
     },
     "image_url": "https://image.tmdb.org/t/p/w500/lYceQKe3EsYn7VdDXGTy7dSwBLp.jpg",
     "genre": [
@@ -9127,16 +8343,12 @@
       "teen superhero"
     ],
     "emotion_vector": {
-      "joy": 0,
-      "sadness": 0,
-      "anger": 0,
-      "fear": 0,
-      "calmness": 0,
-      "energy": 0,
-      "romance": 0,
-      "nostalgia": 0,
-      "dreaminess": 0,
-      "darkness": 0
+      "joy": 0.03,
+      "sadness": 0.0,
+      "anger": 0.14,
+      "fear": 0.07,
+      "trust": 0.07,
+      "surprise": 0.49
     },
     "image_url": "https://image.tmdb.org/t/p/w500/3YewJtji80oIroeXUavNRZkeXfQ.jpg",
     "genre": [
@@ -9187,16 +8399,12 @@
       "suspense mystery"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.3,
-      "fear": 0.5,
-      "calmness": 0.0,
-      "energy": 0.17,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.07,
-      "darkness": 0.63
+      "joy": 0.05,
+      "sadness": 0.19,
+      "anger": 0.53,
+      "fear": 1.0,
+      "trust": 0.02,
+      "surprise": 0.28
     },
     "image_url": "https://image.tmdb.org/t/p/w500/x5FPVwJHyf1SnDW04fwr9rsyWm4.jpg",
     "genre": [
@@ -9239,16 +8447,12 @@
       "suspense mystery"
     ],
     "emotion_vector": {
-      "joy": 0.0,
-      "sadness": 0.0,
-      "anger": 0.0,
-      "fear": 0.8,
-      "calmness": 0.0,
-      "energy": 0.0,
-      "romance": 0.0,
-      "nostalgia": 0.0,
-      "dreaminess": 0.2,
-      "darkness": 0.7
+      "joy": 0.03,
+      "sadness": 0.35,
+      "anger": 0.24,
+      "fear": 1.0,
+      "trust": 0.16,
+      "surprise": 0.24
     },
     "image_url": "https://image.tmdb.org/t/p/w500/aywZdSOXtwcqqLTl271EUJemi2.jpg",
     "genre": [
