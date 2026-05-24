@@ -1,6 +1,5 @@
 from django.db import models
 import json
-from diary.models import Diary  # diary 앱의 일기 모델 참조
 
 class Music(models.Model):
     title = models.CharField(max_length=255)

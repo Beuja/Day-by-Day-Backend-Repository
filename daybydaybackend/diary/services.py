@@ -3,12 +3,13 @@ from .emotion_analyzer import EmotionAnalyzer
 
 
 # ===== 일기 작성 비즈니스 로직 =====
-def create_diary_entry(user, content):
+def create_diary_entry(user, content, weather=None, image=None):
     """
     새로운 일기를 작성하여 저장하는 로직
     """
-    diary = Diary.objects.create(user=user, content=content)
+    diary = Diary.objects.create(user=user, content=content, weather=weather, image=image)
     return diary
+
 
 
 # ===== 감정 분석 비즈니스 로직 =====

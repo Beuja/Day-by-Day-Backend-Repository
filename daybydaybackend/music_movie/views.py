@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 
-from diary.models import Diary
+from daybydaybackend.diary.models import Diary
 from . import serializers
 from . import services
 
@@ -29,12 +29,15 @@ def recommend_music_view(request, diary_id):
         mode = req_serializer.validated_data.get('mode', 'maintain')
         count = req_serializer.validated_data.get('count', 3)
         
-        # diary 앱의 6차원 emotion 분석 데이터 수집
-        raw_emotion = getattr(diary_obj, 'emotion', {})
-        if not raw_emotion:
-            raw_emotion = {}
-            
-        user_6d_emotion = services.convert_emotion_to_6d_vector(raw_emotion)
+        raw_emotion = getattr(diary_obj, 'emotion', None)
+        user_6d_emotion = {
+            'joy': getattr(raw_emotion, 'joy', 0.0),
+            'sadness': getattr(raw_emotion, 'sadness', 0.0),
+            'anger': getattr(raw_emotion, 'anger', 0.0),
+            'fear': getattr(raw_emotion, 'fear', 0.0),
+            'trust': getattr(raw_emotion, 'trust', 0.0),
+            'surprise': getattr(raw_emotion, 'surprise', 0.0),
+        }
         
         data = services.get_or_create_music_recommendation(diary_obj, user_6d_emotion, mode, count)
         res_serializer = serializers.MusicResponseSerializer(data, many=True)
@@ -61,11 +64,15 @@ def recommend_movie_view(request, diary_id):
         mode = req_serializer.validated_data.get('mode', 'maintain')
         count = req_serializer.validated_data.get('count', 3)
         
-        raw_emotion = getattr(diary_obj, 'emotion', {})
-        if not raw_emotion:
-            raw_emotion = {}
-            
-        user_6d_emotion = services.convert_emotion_to_6d_vector(raw_emotion)
+        raw_emotion = getattr(diary_obj, 'emotion', None)
+        user_6d_emotion = {
+            'joy': getattr(raw_emotion, 'joy', 0.0),
+            'sadness': getattr(raw_emotion, 'sadness', 0.0),
+            'anger': getattr(raw_emotion, 'anger', 0.0),
+            'fear': getattr(raw_emotion, 'fear', 0.0),
+            'trust': getattr(raw_emotion, 'trust', 0.0),
+            'surprise': getattr(raw_emotion, 'surprise', 0.0),
+        }
         
         data = services.get_or_create_movie_recommendation(diary_obj, user_6d_emotion, mode, count)
         res_serializer = serializers.MovieResponseSerializer(data, many=True)

@@ -13,7 +13,7 @@ from .models import Book
 from .services import recommend_books
 from .serializers import BookSerializer, RecommendRequestSerializer
 
-from daybydaybackend.diary.models import DailyRecommended
+from daybydaybackend.diary.models import Diary, DailyRecommended
 
 class BookViewSet(viewsets.ModelViewSet): 
     queryset = Book.objects.all()
@@ -45,7 +45,7 @@ def recommend_books_views(request):
         )
 
     try:
-            diary = Diary.objects.get(id=diary_id)
+        diary = Diary.objects.get(id=diary_id, user=request.user)
     except Diary.DoesNotExist:
         return Response(
             {'message': '해당 일기를 찾을 수 없습니다.'}, 
@@ -73,8 +73,7 @@ def recommend_books_views(request):
     )
 
     # 일기의 추천 데이터 없으면 생성, 있으면 가져옴
-    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary)
-    daily_rec.recommended_books.set(recommended_books_list)
+    DailyRecommended.objects.get_or_create(diary=diary)
 
     response_serializer = BookSerializer(recommended_books_list, many=True)
     

@@ -3,8 +3,30 @@ from django.contrib.auth.models import User
 
 
 class Diary(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='diaries', null=True, blank=True)
+    WEATHER_CHOICES = [
+        ('SUNNY', '맑음'),
+        ('CLOUDY', '흐림'),
+        ('RAINY', '비'),
+        ('SNOWY', '눈'),
+        ('WINDY', '바람'),
+        ('THUNDER', '천둥'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='diaries', default=1)
     content = models.TextField()
+    weather = models.CharField(
+        max_length=10,
+        choices=WEATHER_CHOICES,
+        null=True,
+        blank=True,
+        help_text='일기 작성 당시 날씨'
+    )
+    image = models.ImageField(
+        upload_to='diaries/',
+        null=True,
+        blank=True,
+        help_text='일기에 첨부된 사진'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -12,6 +34,7 @@ class Diary(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
 
 
 class DiaryEmotion(models.Model):
@@ -29,11 +52,11 @@ class DiaryEmotion(models.Model):
     def __str__(self):
         return f"{self.diary.id} - {self.primary_emotion}"
 
+#TODO: 일단 구현해 놓는 데이터 베이스 구조
 class DailyRecommended(models.Model):
-    diary = models.OneToOneField(Diary, on_delete=models.CASCADE, related_name='recommended_contents')
-    books = models.ManyToManyField('books.Book', related_name='daily_book')
-    movies = models.ManyToManyField('music_movie.Movie', related_name='daily_movie')
-    music = models.ManyToManyField('music_movie.Music', related_name='daily_music')
+    diary = models.OneToOneField(Diary, on_delete=models.CASCADE, related_name='recommendation')
+    music = models.ManyToManyField('music_movie.Music', blank=True, related_name='daily_recommendations')
+    movies = models.ManyToManyField('music_movie.Movie', blank=True, related_name='daily_recommendations')
 
     def __str__(self):
-        return f"Recommendations for Diary {self.diary.id}"
+        return f"Recommendation for Diary {self.diary.id}"
