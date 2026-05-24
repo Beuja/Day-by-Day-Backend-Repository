@@ -101,7 +101,14 @@ class MovieEmotionRecommender:
         
         for movie in movie_data:
             orig_tags = movie.get('tags', [])
-            b_vec = build_6d_emotion_vector(orig_tags)
+            b_vec = [
+                float(movie.get('joy', 0.0) if movie.get('joy') is not None else 0.0),
+                float(movie.get('sadness', 0.0) if movie.get('sadness') is not None else 0.0),
+                float(movie.get('anger', 0.0) if movie.get('anger') is not None else 0.0),
+                float(movie.get('fear', 0.0) if movie.get('fear') is not None else 0.0),
+                float(movie.get('trust', 0.0) if movie.get('trust') is not None else 0.0),
+                float(movie.get('surprise', 0.0) if movie.get('surprise') is not None else 0.0),
+            ]
             
             # 순수 유클리드 거리
             pure_distance = math.sqrt(sum((u - b) ** 2 for u, b in zip(u_vec, b_vec)))

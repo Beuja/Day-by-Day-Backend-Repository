@@ -104,7 +104,14 @@ class MusicEmotionRecommender:
         for track in music_data:
             # 장고 ORM과의 유연한 필드 매핑 및 문자열 tags 가공 지원
             orig_tags = track.get('tags', [])
-            b_vec = build_6d_emotion_vector(orig_tags)
+            b_vec = [
+                float(track.get('joy', 0.0) if track.get('joy') is not None else 0.0),
+                float(track.get('sadness', 0.0) if track.get('sadness') is not None else 0.0),
+                float(track.get('anger', 0.0) if track.get('anger') is not None else 0.0),
+                float(track.get('fear', 0.0) if track.get('fear') is not None else 0.0),
+                float(track.get('trust', 0.0) if track.get('trust') is not None else 0.0),
+                float(track.get('surprise', 0.0) if track.get('surprise') is not None else 0.0),
+            ]
             
             # 순수 유클리드 거리
             pure_distance = math.sqrt(sum((u - b) ** 2 for u, b in zip(u_vec, b_vec)))
