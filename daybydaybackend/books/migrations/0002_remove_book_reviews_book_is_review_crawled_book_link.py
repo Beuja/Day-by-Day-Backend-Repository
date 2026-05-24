@@ -10,10 +10,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='book',
-            name='reviews',
-        ),
         migrations.AddField(
             model_name='book',
             name='is_review_crawled',
