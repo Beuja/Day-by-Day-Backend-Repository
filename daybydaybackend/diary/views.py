@@ -13,7 +13,8 @@ from drf_yasg import openapi
 from .models import Diary
 from .serializers import (
     DiarySerializer, AnalyzeEmotionRequestSerializer,
-    DiaryCreateRequestSerializer
+    DiaryCreateRequestSerializer,
+    BookSerializer, MovieSerializer, MusicSerializer
 )
 from . import services
 
@@ -172,7 +173,9 @@ def get_main_recommendations(request):
     music_result = music_recommender.recommend_music(user_6d_emotion, load_music_data(), mode='maintain', top_n=2)
     movie_result = movie_recommender.recommend_movies(user_6d_emotion, load_movie_data(), mode='maintain', top_n=2)
     
+    
     # 5. 데이터 정제 및 직렬화
+    """
     serialized_books = []
     for b in books:
         serialized_books.append({
@@ -187,7 +190,21 @@ def get_main_recommendations(request):
         
     serialized_music = music_result.get('recommendations', [])
     serialized_movies = movie_result.get('recommendations', [])
-    
+    """
+    serialized_books = BookSerializer(books, many=True).data
+    serialized_music = MusicSerializer(music_result.get('recommendations', []), many=True).data
+    serialized_movies = MovieSerializer(movie_result.get('recommendations', []), many=True).data
+
+    # 6. DailyRecommended 모델에 추천 콘텐츠 저장 (primary key 리스트 형태)
+    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary)
+    book_pks = [book.pk for book in books]
+    music_pks = [music.pk for music in music_result.get('recommendations', [])]
+    movie_pks = [movie.pk for movie in movie_result.get('recommendations', [])]
+
+    daily_rec.books.set(book_pks)
+    daily_rec.music.set(music_pks)
+    daily_rec.movies.set(movie_pks)
+
     return Response({
         'emotion_status': avg_emotion,
         'books': serialized_books,

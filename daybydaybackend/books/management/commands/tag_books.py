@@ -116,7 +116,7 @@ class Command(BaseCommand):
             fields = item['fields'] if 'fields' in item else item
             if fields.get('link') and not fields.get('is_review_crawled', False):
                 target_items.append(item)
-                if len(target_items) >= 10:  # 너무 무리하지 않게 한 번에 10권 단위 배치 크롤링
+                if len(target_items) >= 10:  
                     break
 
         if not target_items:

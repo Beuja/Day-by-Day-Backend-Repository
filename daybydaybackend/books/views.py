@@ -73,9 +73,10 @@ def recommend_books_views(request):
         count=count
     )
 
-    # 일기의 추천 데이터 없으면 생성, 있으면 가져옴
+    # pk 리스트로 변환하여 DailyRecommended 모델에 저장
+    book_pks = [book.pk for book in recommended_books_list]
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary)
-    daily_rec.books.set(recommended_books_list)
+    daily_rec.books.set(book_pks)
 
 
     response_serializer = BookSerializer(recommended_books_list, many=True)
