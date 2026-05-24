@@ -40,8 +40,11 @@ class Movie(models.Model):
     popularity = models.FloatField(default=0.0)
     
     release_date = models.DateField(null=True, blank=True)
-    poster_path = models.CharField(max_length=255, null=True, blank=True)
+    image_url = models.CharField(max_length=255, null=True, blank=True)
     
+    # 6차원 감정 벡터
+    emotion_vector = models.JSONField(default=dict)
+
     # Russell의 2차원 감정 벡터
     valence = models.FloatField(null=True, blank=True)
     arousal = models.FloatField(null=True, blank=True)
