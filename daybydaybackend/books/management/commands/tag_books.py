@@ -1,23 +1,18 @@
-# books/management/commands/tag_books.py
-# LLM API를 활용해 책 태깅
-import google.genai as genai    
-from google.genai import types
 import json
-import time
 import os
 import re
+import time
+from django.core.management.base import BaseCommand
+from django.conf import settings
+from playwright.sync_api import sync_playwright
+from daybydaybackend.diary.services import analyze_emotion_hybrid
+
 # Playwright의 내부 이벤트 루프와 Django ORM의 충돌을 방지하는 환경 변수 설정
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
-from playwright.sync_api import sync_playwright
-from django.core.management.base import BaseCommand
-from django.conf import settings
-from django.db.models import Q
-from daybydaybackend.books.models import Book
-
 
 class Command(BaseCommand):
-    help = "리뷰 크롤링 후 Gemini API를 사용하여 도서의 감정 벡터 태깅"
+    help = "Playwright로 알라딘 리뷰를 크롤링하고, diary 앱의 EmotionAnalyzer를 사용해 감정을 분석하여 원본 books_data.json에 직접 업데이트"
 
     def crawl_reviews(self, page, book_url):
         reviews = []
@@ -67,103 +62,69 @@ class Command(BaseCommand):
         
         return reviews[:target_total_count]
 
-    def extract_emotion_vector(self, reviews_list):
+    def extract_emotion_vector_local(self, reviews_list):
+        """
+        [고도화 패치] 무거운 외부 Gemini API 호출 대신, 
+        로컬의 diary.services.analyze_emotion_hybrid (Kiwi 형태소 + 사전)를 구동하여 
+        오프라인에서 초고속으로 감정을 추출합니다.
+        """
         if not reviews_list:
-            return None, None, None, None, None, None, None, None
+            return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
             
         combined_text = "\n".join(reviews_list[:50])
-        
-        prompt = f"""
-        다음은 특정 도서에 대한 독자들의 리뷰이며 학술적 분석을 위한 데이터가 필요합니다:
-        {combined_text}
-        
-        리뷰들을 종합하여, 이 책이 독자가 어떤 감정을 느끼게 하는지 러셀의 감정 모델에 따라 분석해 주세요.
-        - valence (정서가): -1.0(매우 불쾌/슬픔) ~ 1.0(매우 쾌/기쁨)
-        - arousal (각성도): -1.0(매우 차분/지루함) ~ 1.0(매우 격앙/흥분)
-        
-        추가적으로 다음의 6가지 기본 감정을 기반으로 한 분석도 함께 제공해 주세요 (0.0 ~ 1.0):
-        - joy (기쁨)
-        - sadness (슬픔)
-        - anger (분노)
-        - fear (두려움)
-        - trust (신뢰)
-        - surprise (놀라움)
-
-        반드시 아래 JSON 형식으로만 답변해 주세요. 다른 설명은 생략합니다.
-        {{"valence": 0.5, "arousal": -0.2, "joy": 0.6, "sadness": 0.4, "anger": 0.3, "fear": 0.2, "trust": 0.5, "surprise": 0.1}}
-        """
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                api_key = getattr(settings, 'GEMINI_API_KEY', None)
-                client = genai.Client(api_key=api_key)
-
-                """
-                for model in client.models.list():
-                    self.stdout.write(f"모델 이름: {model.name}")
-                """
-                response = client.models.generate_content(
-                    model='gemini-2.5-flash',
-                    contents=prompt,
-                )
-                
-
-                result_str = response.text.strip()
-                
-                result_str = re.sub(r'^```(json)?\s*', '', result_str)
-                result_str = re.sub(r'\s*```$', '', result_str)
-
-                data = json.loads(result_str)
-
-                joy = max(0.0, min(1.0, float(data.get('joy', 0.0))))
-                sadness = max(0.0, min(1.0, float(data.get('sadness', 0.0))))
-                anger = max(0.0, min(1.0, float(data.get('anger', 0.0))))
-                fear = max(0.0, min(1.0, float(data.get('fear', 0.0))))
-                trust = max(0.0, min(1.0, float(data.get('trust', 0.0))))
-                surprise = max(0.0, min(1.0, float(data.get('surprise', 0.0))))
-
-                valence = max(-1.0, min(1.0, float(data.get('valence', 0.0))))
-                arousal = max(-1.0, min(1.0, float(data.get('arousal', 0.0))))
-                
-                return joy, sadness, anger, fear, trust, surprise, valence, arousal
-                
-            except Exception as e:
-                error_msg = str(e)         
-                if "503" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
-                    self.stdout.write(self.style.WARNING(f"    -> 서비스 일시적 불가. 20초 대기 후 재시도합니다... ({attempt+1}/{max_retries})"))
-                    time.sleep(20) 
-                    continue
-                else:
-                    self.stdout.write(self.style.WARNING(f"    -> 감정 추출 중 오류 발생: {e}"))
-                    
-                self.stdout.write(self.style.ERROR(f"    -> 감정 추출 실패: {e}"))
-                return None, None, None, None, None, None, None, None
-
-    def update_book_emotion(self, book, joy, sadness, anger, fear, trust, surprise, valence, arousal):
         try:
-            book.joy = joy
-            book.sadness = sadness
-            book.anger = anger
-            book.fear = fear
-            book.trust = trust
-            book.surprise = surprise
-            book.valence = valence
-            book.arousal = arousal
-
-            book.is_review_crawled = True
-            fileds_to_update = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise', 'valence', 'arousal', 'is_review_crawled']
-            book.save(update_fields=fileds_to_update)
-        
+            res = analyze_emotion_hybrid(combined_text)
+            
+            joy = round(res.get('joy', 0.0), 4)
+            sadness = round(res.get('sadness', 0.0), 4)
+            anger = round(res.get('anger', 0.0), 4)
+            fear = round(res.get('fear', 0.0), 4)
+            trust = round(res.get('trust', 0.0), 4)
+            surprise = round(res.get('surprise', 0.0), 4)
+            valence = round(res.get('valence', 0.0), 4)
+            arousal = round(res.get('arousal', 0.0), 4)
+            
+            return joy, sadness, anger, fear, trust, surprise, valence, arousal
         except Exception as e:
-            self.stdout.write(self.style.ERROR(f"    -> DB 업데이트 실패: {e}"))
+            self.stdout.write(self.style.ERROR(f"    ⚠️ 로컬 감정 분석 실패: {e}"))
+            return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 
     def handle(self, *args, **options):
-        target_books = Book.objects.filter(link__isnull=False, is_review_crawled=False)[:20]
-        # target_books = Book.objects.filter(~Q(valence=0.0) & ~Q(arousal=0.0), link__isnull=False)[:20]
-        if not target_books:
-            self.stdout.write(self.style.SUCCESS("태깅이 필요한 도서가 없습니다."))
+        # 1. 경로 정의 (원본 books_data.json에 직접 in-place 저장하도록 일치)
+        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        input_file = os.path.join(root_dir, 'books_data.json')
+        output_file = input_file
+
+        if not os.path.exists(input_file):
+            self.stdout.write(self.style.ERROR(f"❌ 입력 파일이 없습니다: {input_file}"))
             return
-        
+
+        self.stdout.write("📚 books_data.json 로딩 중...")
+        file_encoding = 'utf-8'
+        try:
+            with open(input_file, 'r', encoding='utf-8') as f:
+                book_data = json.load(f)
+        except UnicodeDecodeError:
+            self.stdout.write("⚠️ UTF-8 디코딩 실패. UTF-16 인코딩으로 전환하여 로딩합니다...")
+            file_encoding = 'utf-16'
+            with open(input_file, 'r', encoding='utf-16') as f:
+                book_data = json.load(f)
+
+        # 아직 크롤링 및 태깅이 되지 않은 도서 선별 (is_review_crawled가 False인 도서 최대 10권씩 루프 처리하여 안정성 확보)
+        target_items = []
+        for item in book_data:
+            fields = item['fields'] if 'fields' in item else item
+            if fields.get('link') and not fields.get('is_review_crawled', False):
+                target_items.append(item)
+                if len(target_items) >= 10:  # 너무 무리하지 않게 한 번에 10권 단위 배치 크롤링
+                    break
+
+        if not target_items:
+            self.stdout.write(self.style.SUCCESS("🎉 이미 모든 도서의 크롤링 및 감정 분석 태깅이 완료되었습니다!"))
+            return
+
+        self.stdout.write(f"✓ 크롤링/분석이 필요한 도서 {len(target_items)}권을 탐색했습니다. Playwright 크롤러 기동!")
+
         user_agent_str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
         with sync_playwright() as p:
@@ -174,8 +135,12 @@ class Command(BaseCommand):
             context = browser.new_context(user_agent=user_agent_str)
             page = context.new_page()
 
-            for book in target_books:
-                self.stdout.write(f"태깅 시도: {book.title}")
+            for item in target_items:
+                fields = item['fields'] if 'fields' in item else item
+                title = fields.get('title', '제목 없음')
+                link = fields.get('link')
+
+                self.stdout.write(f"📖 크롤링 및 분석 시도: {title}")
 
                 if not browser.is_connected():
                     browser = p.chromium.launch(headless=True, args=["--disable-dev-shm-usage", "--no-sandbox"])
@@ -186,41 +151,51 @@ class Command(BaseCommand):
 
                 try:
                     context.clear_cookies()
-                    crawled_reviews = self.crawl_reviews(page, book.link)
+                    crawled_reviews = self.crawl_reviews(page, link)
                     review_count = len(crawled_reviews)
                     
-                    if(review_count > 0):
+                    if review_count > 0:
                         self.stdout.write(self.style.SUCCESS(f"    -> 리뷰 {review_count}개 크롤링 완료"))
 
-                        if(review_count < 10):
-                            self.stdout.write(self.style.WARNING("    -> 리뷰 수가 충분하지 않아 0,0으로 설정합니다"))
-                            self.update_book_emotion(book, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-
+                        if review_count < 10:
+                            self.stdout.write(self.style.WARNING("    -> 리뷰 수가 충분하지 않아(10개 미만) 감정을 0,0 기본값으로 매핑합니다."))
+                            for k in ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise', 'valence', 'arousal']:
+                                fields[k] = 0.0
+                            fields['is_review_crawled'] = True
                         else:
-                            """
-                            self.stdout.write("    [수집된 리뷰 미리보기]")
-                            for idx, review_text in enumerate(crawled_reviews, 1):
-                                # 너무 길면 터미널 창이 복잡해지므로 앞의 50글자만 잘라서 보여줍니다.
-                                preview = review_text[:50] + "..." if len(review_text) > 50 else review_text
-                                self.stdout.write(f"      {idx}. {preview}")
-                            self.stdout.write("    ------------------------")
-                            """
-                            joy, sadness, anger, fear, trust, surprise, valence, arousal = self.extract_emotion_vector(crawled_reviews)
+                            # [핵심 로직] 수집된 실시간 독자 리뷰 텍스트 결합 후 로컬 형태소 감정 분석 가동
+                            joy, sadness, anger, fear, trust, surprise, valence, arousal = self.extract_emotion_vector_local(crawled_reviews)
 
-                            if valence is not None:
-                                self.update_book_emotion(book, joy, sadness, anger, fear, trust, surprise, valence, arousal)
-                                self.stdout.write(self.style.SUCCESS(f"    -> 태깅 완료 (valence: {valence}, joy: {joy})"))
-
-                            else:
-                                self.stdout.write(self.style.WARNING("    -> 감정 벡터 추출 실패"))
-
+                            fields['joy'] = joy
+                            fields['sadness'] = sadness
+                            fields['anger'] = anger
+                            fields['fear'] = fear
+                            fields['trust'] = trust
+                            fields['surprise'] = surprise
+                            fields['valence'] = valence
+                            fields['arousal'] = arousal
+                            fields['is_review_crawled'] = True
+                            
+                            self.stdout.write(self.style.SUCCESS(f"    -> 🧠 로컬 형태소 분석기 연산 완료 (valence: {valence}, joy: {joy})"))
                     else:
-                        self.stdout.write(self.style.WARNING("    -> 수집된 리뷰 없음"))
+                        self.stdout.write(self.style.WARNING("    -> 수집된 독자 리뷰 없음 (기본값 설정)"))
+                        for k in ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise', 'valence', 'arousal']:
+                            fields[k] = 0.0
+                        fields['is_review_crawled'] = True
 
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f"    -> 루프 내부 처리 중 에러 발생: {e}"))
 
+                # 알라딘 서버 부하 방지 및 차단 회피를 위한 안전 지연시간
                 time.sleep(4)
+                
             browser.close()
 
-       
+        # 3. 분석 결과 원본 books_data.json에 직접 inplace 저장 진행
+        self.stdout.write(f"💾 원본 books_data.json 파일에 감정 덮어쓰기 진행 중 ({file_encoding})...")
+        try:
+            with open(output_file, 'w', encoding=file_encoding) as f:
+                json.dump(book_data, f, ensure_ascii=False, indent=4)
+            self.stdout.write(self.style.SUCCESS(f"🎉 성공! {len(target_items)}권의 도서 리뷰를 로컬에서 형태소 분석하여 원본 파일에 덮어쓰기 완료했습니다!"))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f"❌ 원본 JSON 저장 실패: {e}"))
