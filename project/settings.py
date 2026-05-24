@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # 맨 위쪽에 추가
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # 정적 파일 서빙용 whitenoise 미들웨어
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,12 +85,24 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+IS_RENDER = 'RENDER' in os.environ
+
+if IS_RENDER:
+    # Render 무료 티어 환경: 디스크가 없으므로 서버 임시 보존 경로 사용 (재배포 시 데이터 리셋됨)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    # 로컬 개발 환경
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -127,6 +140,17 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # 배포 시 static 파일들을 모을 경로
+
+# 정적 파일 저장을 위한 Whitenoise 압축/캐싱 설정
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -173,3 +197,14 @@ ALADIN_TTB_KEY = env('ALADIN_TTB_KEY', default='')
 
 # LLM API KEY (책 감정 태깅용 - Gemini)
 LLM_API_KEY = env('GEMINI_API_KEY', default='')
+
+# ===== 미디어 파일 저장 설정 =====
+MEDIA_URL = '/media/'
+
+if IS_RENDER:
+    # Render 무료 티어 환경: 임시 미디어 보존 경로 사용
+    MEDIA_ROOT = BASE_DIR / 'media'
+else:
+    MEDIA_ROOT = BASE_DIR / 'media'
+
+

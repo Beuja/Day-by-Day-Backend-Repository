@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Diary, DiaryEmotion, DailyRecommended
+from .models import Diary, DiaryEmotion
 
 
 class DiaryEmotionSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class DiarySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Diary
-        fields = ['id', 'content', 'created_at', 'emotion']
+        fields = ['id', 'content', 'created_at', 'emotion', 'weather', 'image']
 
 
 class AnalyzeEmotionRequestSerializer(serializers.Serializer):
@@ -26,16 +26,4 @@ class AnalyzeEmotionRequestSerializer(serializers.Serializer):
 class DiaryCreateRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diary
-        fields = ['content']
-
-class DailyRecommendedSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DailyRecommended
-        fields = [
-            'id', 
-            'diary', 
-            'recommended_books', 
-            'recommended_movies', 
-            'recommended_music'
-        ]
-        read_only_fields = ['id']
+        fields = ['content', 'weather', 'image']

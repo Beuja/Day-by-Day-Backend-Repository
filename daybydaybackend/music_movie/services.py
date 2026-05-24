@@ -1,7 +1,7 @@
 import json
 import os
-from diary.models import Diary, DailyRecommended
-from music_movie.models import Music, Movie
+from daybydaybackend.diary.models import Diary, DailyRecommended
+from daybydaybackend.music_movie.models import Music, Movie
 from .recommend_music_movie.recommend_music import MusicEmotionRecommender
 from .recommend_music_movie.recommend_movie import MovieEmotionRecommender
 
