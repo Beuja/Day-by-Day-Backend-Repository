@@ -121,6 +121,7 @@ class Command(BaseCommand):
                             Movie.objects.create(
                                 tmdb_id=item.get('id'),
                                 title=item.get('title'),
+                                director=item.get('director', ''),
                                 genre=item.get('genre', ''),
                                 overview=item.get('overview', ''),
                                 vote_average=item.get('vote_average'),
