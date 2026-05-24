@@ -74,7 +74,12 @@ class Command(BaseCommand):
                                 playcount=item.get('playcount', 0),
                                 tags=item.get('tags', []),
                                 image_url=item.get('image_url', ''),  # 자켓 이미지 바인딩 반영
-                                emotion_vector=emotion_vector,
+                                joy=emotion_vector.get('joy', 0.0),
+                                sadness=emotion_vector.get('sadness', 0.0),
+                                anger=emotion_vector.get('anger', 0.0),
+                                fear=emotion_vector.get('fear', 0.0),
+                                trust=emotion_vector.get('trust', 0.0),
+                                surprise=emotion_vector.get('surprise', 0.0),
                                 valence=valence,
                                 arousal=arousal,
                             )
@@ -109,6 +114,9 @@ class Command(BaseCommand):
                             release_date = item.get('release_date')
                             if not release_date or release_date == "":
                                 release_date = None
+                            
+                            # 영화 포스터 전체 URL을 poster_path에 원본 그대로 저장 (프론트엔드 작업 편의성)
+                            poster_path = item.get('image_url', '')
                                 
                             Movie.objects.create(
                                 tmdb_id=item.get('id'),
@@ -119,7 +127,13 @@ class Command(BaseCommand):
                                 vote_count=item.get('vote_count', 0),
                                 popularity=item.get('popularity', 0.0),
                                 release_date=release_date,
-                                poster_path=item.get('poster_path', ''),
+                                poster_path=poster_path,
+                                joy=emotion_vector.get('joy', 0.0),
+                                sadness=emotion_vector.get('sadness', 0.0),
+                                anger=emotion_vector.get('anger', 0.0),
+                                fear=emotion_vector.get('fear', 0.0),
+                                trust=emotion_vector.get('trust', 0.0),
+                                surprise=emotion_vector.get('surprise', 0.0),
                                 valence=valence,
                                 arousal=arousal,
                             )
