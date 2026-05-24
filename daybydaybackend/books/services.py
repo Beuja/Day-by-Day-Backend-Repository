@@ -2,6 +2,7 @@
 
 # import math
 import numpy as np
+from numpy.linalg import norm
 from .models import Book
 from django.db.models import Q
 
@@ -51,6 +52,24 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
 
     filtered_and_scored.sort(key=lambda x: x[0])
 
+    # Fallback: if no books fall within the emotional radius (prevents empty recommendation for bland emotions)
+    if not filtered_and_scored:
+        fallback_list = []
+        for book in all_books:
+            b_vec = np.array([
+                book.joy, book.sadness, book.anger, 
+                book.fear, book.trust, book.surprise
+            ])
+            pure_distance = np.sqrt(np.sum((u_vec - b_vec) ** 2))
+            norm_euclidean = _calculate_euclidean(u_vec, b_vec, w_vec)
+            cosine_dist = _calculate_cosine(u_vec, b_vec, u_norm)
+            final_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
+            
+            fallback_list.append((final_score, book, pure_distance))
+            
+        # Sort by absolute emotional distance to yield the closest match
+        fallback_list.sort(key=lambda x: x[2])
+        return [item[1] for item in fallback_list[:count]]
 
     return [item[1] for item in filtered_and_scored[:count]]
 
