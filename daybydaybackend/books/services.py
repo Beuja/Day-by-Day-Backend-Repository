@@ -5,6 +5,7 @@ import numpy as np
 from numpy.linalg import norm
 from .models import Book
 from django.db.models import Q
+from daybydaybackend.diary.models import DailyRecommended
 
 # 6가지 기본 감정 기반 도서 추천 서비스
 def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
@@ -72,6 +73,22 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
         return [item[1] for item in fallback_list[:count]]
 
     return [item[1] for item in filtered_and_scored[:count]]
+
+
+def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
+    daily_rec, _ = DailyRecommended.objects.get_or_create(diary=diary_obj)
+    recommended_books = recommend_books(user_emotion=user_emotion, mode=mode, count=count)
+    daily_rec.books.set(recommended_books)
+    return recommended_books
+
+
+def get_saved_book_metadata(diary_obj):
+    try:
+        daily_rec = DailyRecommended.objects.get(diary=diary_obj)
+    except DailyRecommended.DoesNotExist:
+        return []
+
+    return list(daily_rec.books.all())
 
 
 def _get_direction_weights(u_vec: np.ndarray, mode: str) -> np.ndarray:
