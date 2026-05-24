@@ -78,7 +78,6 @@ def recommend_books_views(request):
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary)
     daily_rec.books.set(book_pks)
 
-
     response_serializer = BookSerializer(recommended_books_list, many=True)
     
     return Response({

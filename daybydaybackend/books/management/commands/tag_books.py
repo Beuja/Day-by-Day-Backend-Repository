@@ -199,3 +199,4 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f"🎉 성공! {len(target_items)}권의 도서 리뷰를 로컬에서 형태소 분석하여 원본 파일에 덮어쓰기 완료했습니다!"))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"❌ 원본 JSON 저장 실패: {e}"))
+            

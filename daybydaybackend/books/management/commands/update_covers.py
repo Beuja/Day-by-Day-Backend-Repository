@@ -60,3 +60,4 @@ class Command(BaseCommand):
             time.sleep(0.1) 
 
         self.stdout.write(self.style.SUCCESS(f"작업 완료! (총 {updated_count}개 업데이트됨)"))
+        
