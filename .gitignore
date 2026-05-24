@@ -142,6 +142,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+day-by-day-key.pem
 
 # Spyder project settings
 .spyderproject

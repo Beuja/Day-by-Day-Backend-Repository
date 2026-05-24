@@ -16,17 +16,27 @@ import environ, os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables early
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # load .env for local development
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_aweoajs@^0g%yf)uecnvd=+^gnvp#c0mvf731cl*&=)!2f$&)'
+# Read from environment for deployment; fallback to a dev key for local testing
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-devlocalkey')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS: allow '*' or comma-separated list in .env
+_allowed = env('ALLOWED_HOSTS', default='*')
+if _allowed.strip() == '*':
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = [h.strip() for h in _allowed.split(',') if h.strip()]
 
 
 # Application definition
@@ -53,6 +63,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # 맨 위쪽에 추가
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # 정적 파일 서빙용 whitenoise 미들웨어
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,12 +95,24 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+IS_RENDER = 'RENDER' in os.environ
+
+if IS_RENDER:
+    # Render 무료 티어 환경: 디스크가 없으므로 서버 임시 보존 경로 사용 (재배포 시 데이터 리셋됨)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    # 로컬 개발 환경
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -127,17 +150,31 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # 배포 시 static 파일들을 모을 경로
+
+# 정적 파일 저장을 위한 Whitenoise 압축/캐싱 설정
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# 파일 맨 아래에 추가
-# React 개발 서버(localhost:3000)에서의 요청 허용
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+# CORS settings: support allow-all flag or explicit origins via .env
+# Set CORS_ALLOW_ALL_ORIGINS=True in .env to allow any origin (only for dev/demo)
+CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS', default=False)
+if CORS_ALLOW_ALL_ORIGINS:
+    # django-cors-headers: when True, all origins are allowed
+    CORS_ALLOWED_ORIGINS = []
+else:
+    CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['http://localhost:3000'])
 
 # DRF 기본 설정: 토큰 인증 사용
 REST_FRAMEWORK = {
@@ -160,13 +197,23 @@ SWAGGER_SETTINGS = {
     }
 }
 
-# .env 파일에서 환경 변수 읽기
-env = environ.Env(DEBUG=(bool, False))  # DEBUG 환경 변수는 bool 타입으로, 기본값은 False
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # .env 파일에서 환경 변수 읽기
-
 # ===== API 키 설정 =====
 # Gemini API KEY (일기 감정 분석용)
 GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
 
 # Aladin TTB API KEY (도서 추천용)
 ALADIN_TTB_KEY = env('ALADIN_TTB_KEY', default='')
+
+# LLM API KEY (책 감정 태깅용 - Gemini)
+LLM_API_KEY = env('GEMINI_API_KEY', default='')
+
+# ===== 미디어 파일 저장 설정 =====
+MEDIA_URL = '/media/'
+
+if IS_RENDER:
+    # Render 무료 티어 환경: 임시 미디어 보존 경로 사용
+    MEDIA_ROOT = BASE_DIR / 'media'
+else:
+    MEDIA_ROOT = BASE_DIR / 'media'
+
+

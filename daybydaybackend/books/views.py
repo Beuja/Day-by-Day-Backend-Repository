@@ -13,7 +13,7 @@ from .models import Book
 from .services import recommend_books
 from .serializers import BookSerializer, RecommendRequestSerializer
 
-from daybydaybackend.diary.models import DailyRecommended, Diary
+from daybydaybackend.diary.models import Diary, DailyRecommended
 
 class BookViewSet(viewsets.ModelViewSet): 
     queryset = Book.objects.all()
@@ -52,6 +52,7 @@ def recommend_books_views(request):
             status=status.HTTP_404_NOT_FOUND
         )
 
+
     try:
         count = int(request.data.get('count', 3))
     except (TypeError, ValueError):
@@ -75,6 +76,7 @@ def recommend_books_views(request):
     # 일기의 추천 데이터 없으면 생성, 있으면 가져옴
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary)
     daily_rec.books.set(recommended_books_list)
+
 
     response_serializer = BookSerializer(recommended_books_list, many=True)
     

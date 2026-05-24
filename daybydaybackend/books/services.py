@@ -3,6 +3,7 @@
 # import math
 import numpy as np
 from .models import Book
+from django.db.models import Q
 
 # 6가지 기본 감정 기반 도서 추천 서비스
 def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
@@ -15,7 +16,7 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
 
     w_vec = _get_direction_weights(u_vec, mode)
     # 태그 0,0,0,0,0,0,0,0 인 책은 추천에서 제외 (리뷰 부족)
-    all_books = Book.objects.filter(~Q(valence=0.0) & ~Q(arousal=0.0), link__isnull=False)
+    all_books = Book.objects.filter(~Q(valence=0.0) & ~Q(arousal=0.0), link__isnull=False, joy__isnull=False)
 
     filtered_and_scored = []
     
