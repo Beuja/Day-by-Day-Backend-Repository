@@ -74,7 +74,8 @@ def recommend_books_views(request):
 
     # 일기의 추천 데이터 없으면 생성, 있으면 가져옴
     DailyRecommended.objects.get_or_create(diary=diary)
-
+    diary_rec.books.set(recommended_books_list)
+    
     response_serializer = BookSerializer(recommended_books_list, many=True)
     
     return Response({
