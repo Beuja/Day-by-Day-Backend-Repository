@@ -4,105 +4,112 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from django.shortcuts import get_object_or_404
+from rest_framework import viewsets
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from daybydaybackend.diary.models import Diary
 from .models import Book
-from .utils import get_book_recommendations
+from .services import recommend_books
+from .serializers import BookSerializer, RecommendRequestSerializer
 
+from daybydaybackend.diary.models import Diary, DailyRecommended
 
-class BookSerializer:
-    """Book 모델을 위한 기본 직렬화 클래스"""
-    @staticmethod
-    def serialize(book):
-        return {
-            'isbn': book.isbn,
-            'title': book.title,
-            'author': book.author,
-            'category': book.category,
-            'description': book.description[:100] + '...' if len(book.description) > 100 else book.description,
-            'valence': book.valence,
-            'arousal': book.arousal,
-        }
-
+class BookViewSet(viewsets.ModelViewSet): 
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
 @swagger_auto_schema(
     method='post',
-    operation_summary="일기 감정 기반 도서 추천",
-    operation_description="diary_id로 선택한 일기의 감정 상태를 기준으로 추천 도서 목록을 반환합니다.",
-    security=[{'Token': []}],
-    manual_parameters=[
-        openapi.Parameter(
-            'diary_id',
-            openapi.IN_PATH,
-            description='추천에 사용할 일기 ID',
-            type=openapi.TYPE_INTEGER,
-            required=True,
-        )
-    ],
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'mode': openapi.Schema(
-                type=openapi.TYPE_STRING,
-                enum=['maintain', 'shift', 'amplification'],
-                description='어떤 감정 상태를 기준으로 도서를 추천할지'
-            ),
-            'count': openapi.Schema(type=openapi.TYPE_INTEGER, description='추천할 도서 갯수 (기본값: 3)')
-        },
-        required=[]
-    ),
+    operation_summary="감정 기반 도서 추천",
+    operation_description="사용자의 감정 데이터를 기반으로 맞춤형 도서를 추천합니다.",
+    request_body=RecommendRequestSerializer,
     responses={
-        200: openapi.Response('추천 성공', openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'books': openapi.Schema(
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(type=openapi.TYPE_OBJECT)
-                )
-            }
-        )),
-        400: '잘못된 요청',
-        401: '인증되지 않은 사용자'
+        200: openapi.Response('도서 추천 완료', BookSerializer(many=True)),
+        400: '잘못된 요청 (감정 정보 누락 또는 잘못된 count 포맷)'
     }
 )
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def recommend_books(request, diary_id):
-    """일기 감정을 기반으로 도서 추천"""
-    diary_obj = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
+def recommend_books_views(request):
+    diary_id = request.data.get('diary_id')
+    user_emotion = request.data.get('emotion')
+    mode = request.data.get('mode')
 
-    mode = request.data.get('mode', 'maintain')
-    count = request.data.get('count', 3)
+    if not diary_id:
+        return Response(
+            {'message': 'diary_id가 필요합니다.'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-    emotion = getattr(diary_obj, 'emotion', None)
-    valence = getattr(emotion, 'valence', 0.0) if emotion else 0.0
-    arousal = getattr(emotion, 'arousal', 0.0) if emotion else 0.0
-
-    # 입력값 검증
     try:
-        count = int(count)
-        
-        if not (-1.0 <= valence <= 1.0 and -1.0 <= arousal <= 1.0):
-            return Response(
-                {'message': '일기 감정 값은 -1.0에서 1.0 사이의 값이어야 합니다.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        diary = Diary.objects.get(id=diary_id, user=request.user)
+    except Diary.DoesNotExist:
+        return Response(
+            {'message': '해당 일기를 찾을 수 없습니다.'}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+
+    try:
+        count = int(request.data.get('count', 3))
     except (TypeError, ValueError):
         return Response(
-            {'message': '유효하지 않은 입력값입니다.'},
+            {'message': 'count가 유효한 숫자가 아닙니다.'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if not user_emotion:
+        return Response(
+            {'message': '사용자 감정 정보가 필요합니다.'}, 
             status=status.HTTP_400_BAD_REQUEST
         )
     
+    recommended_books_list = recommend_books(
+        user_emotion=user_emotion,
+        mode=mode,
+        count=count
+    )
+
+    # 일기의 추천 데이터 없으면 생성, 있으면 가져옴
+    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary)
+    daily_rec.books.set(recommended_books_list)
+
+
+    response_serializer = BookSerializer(recommended_books_list, many=True)
+    
+    return Response({
+            "status": "success",
+            "message": "도서 추천 완료",
+            "data": response_serializer.data
+        }, status=status.HTTP_201_CREATED)
+
+    """
+    serializer = RecommendRequestSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    diary_id = serializer.validated_data.get('diary_id')
+    mode = serializer.validated_data.get('mode')
+    count = serializer.validated_data.get('count')
+
+    try:
+        emotion = DiaryEmotion.objects.get(diary_id=diary_id, diary__user=request.user)
+        valence = emotion.valence
+        arousal = emotion.arousal
+    except DiaryEmotion.DoesNotExist:
+        return Response(
+            {'message': '해당 일기의 감정 분석 결과가 존재하지 않습니다.'}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+ 
     # 추천 도서 조회
-    books = get_book_recommendations(valence, arousal, mode, count)
-    serialized_books = [BookSerializer.serialize(book) for book in books]
+    books = recommend_books(valence, arousal, mode, count)
+    serialized_books = BookSerializer(books, many=True)
     
     return Response(
         {'books': serialized_books},
         status=status.HTTP_200_OK
     )
+    """
