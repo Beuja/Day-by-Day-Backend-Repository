@@ -6,6 +6,8 @@ import re
 from pathlib import Path
 
 from django.conf import settings
+from django.core.cache import cache
+from datetime import datetime
 from google import genai
 
 try:
@@ -18,40 +20,11 @@ EMOTION_KEYS = ("joy", "sadness", "anger", "fear", "trust", "surprise")
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_NRC_LEXICON = {
-    "행복": {"joy": 1.0, "trust": 0.6},
-    "기쁨": {"joy": 1.0, "surprise": 0.3},
-    "즐겁": {"joy": 0.9},
-    "신남": {"joy": 0.7, "surprise": 0.5},
-    "슬픔": {"sadness": 1.0},
-    "우울": {"sadness": 0.9, "fear": 0.2},
-    "불안": {"fear": 0.8, "sadness": 0.2},
-    "무섭": {"fear": 1.0},
-    "화나": {"anger": 1.0},
-    "분노": {"anger": 1.0},
-    "짜증": {"anger": 0.8, "sadness": 0.2},
-    "믿음": {"trust": 1.0},
-    "신뢰": {"trust": 1.0},
-    "놀람": {"surprise": 1.0},
-    "당황": {"surprise": 0.7, "fear": 0.3},
-}
-
-
-DEFAULT_KNU_LEXICON = {
-    "편안": {"trust": 0.5, "joy": 0.3},
-    "안정": {"trust": 0.7},
-    "만족": {"joy": 0.7, "trust": 0.3},
-    "외롭": {"sadness": 0.8},
-    "불쾌": {"anger": 0.4, "sadness": 0.6},
-    "긴장": {"fear": 0.6, "surprise": 0.2},
-}
-
-
 class EmotionAnalyzer:
     def __init__(self):
         self.kiwi = Kiwi() if Kiwi is not None else None
-        self.nrc_lexicon = self._load_lexicon("nrc_lexicon_ko.json", DEFAULT_NRC_LEXICON)
-        self.knu_lexicon = self._load_lexicon("knu_lexicon_ko.json", DEFAULT_KNU_LEXICON)
+        self.nrc_lexicon = self._load_lexicon("nrc_lexicon_ko.json")
+        self.knu_lexicon = self._load_lexicon("knu_lexicon_ko.json")
         self._client = None
         self._analysis_total = 0
         self._analysis_with_fallback = 0
@@ -75,7 +48,13 @@ class EmotionAnalyzer:
 
         has_dictionary_signal = self._has_signal(scores)
         fallback_scores = self._zero_scores()
-        should_call_gemini = self._should_call_gemini(tokens, matched_count, unresolved)
+        should_call_gemini = self._should_call_gemini(
+            text=text,
+            tokens=tokens,
+            matched_count=matched_count,
+            unresolved=unresolved,
+            has_dictionary_signal=has_dictionary_signal
+        )
         coverage = matched_count / len(tokens) if tokens else 0.0
 
         self._analysis_total += 1
@@ -164,10 +143,38 @@ class EmotionAnalyzer:
 
         return scores
 
-    def _should_call_gemini(self, tokens: list[str], matched_count: int, unresolved: list[str]) -> bool:
-        # 비용 절감: Gemini 호출 완전 비활성화
-        # 사전 기반 분석만 수행하고, 추후 필요 시 재활성화
-        return False
+    def _is_quota_exceeded(self) -> bool:
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        cache_key = f"gemini_quota:{today_str}"
+        current_count = cache.get(cache_key, 0)
+        limit = getattr(settings, "GEMINI_DAILY_LIMIT", 50)
+        return current_count >= limit
+
+    def _increment_quota(self) -> None:
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        cache_key = f"gemini_quota:{today_str}"
+        current_count = cache.get(cache_key, 0)
+        cache.set(cache_key, current_count + 1, timeout=86400) # 24시간 동안 유효
+
+    def _should_call_gemini(self, text: str, tokens: list[str], matched_count: int, unresolved: list[str], has_dictionary_signal: bool) -> bool:
+        # 1차 방어막: 공백 제외 15자 미만의 너무 짧은 일기 차단
+        clean_text = text.replace(" ", "").strip()
+        if len(clean_text) < 15:
+            logger.info("emotion-analysis | Gemini 호출 차단: 본문 15자 미만 (len=%s)", len(clean_text))
+            return False
+
+        # 2차 방어막: 형태소 분석을 통과한 유효 의미 토큰이 2개 미만일 때 차단
+        if len(tokens) < 2:
+            logger.info("emotion-analysis | Gemini 호출 차단: 유효 의미 토큰 수 부족 (count=%s)", len(tokens))
+            return False
+
+        # 3차 방어막: 일일 최대 API 쿼터 초과 여부 확인 (Circuit Breaker)
+        if self._is_quota_exceeded():
+            logger.warning("emotion-analysis | [WARNING] Gemini 호출 차단: 일일 API 쿼터 한도 초과!")
+            return False
+
+        # 사전 기반 분석에서 매칭된 감정 신호가 전혀 없고, 유효한 명사/동사/형사 분석 대상이 남아있을 때 백업 활성화
+        return not has_dictionary_signal and bool(tokens)
 
     def _analyze_unresolved_with_gemini(self, text: str, unresolved: list[str]) -> dict:
         api_key = getattr(settings, "GEMINI_API_KEY", "")
@@ -179,59 +186,68 @@ class EmotionAnalyzer:
 
         unresolved_unique = list(dict.fromkeys(unresolved))[:20]
         prompt = f"""
-다음 한국어 일기 텍스트를 분석해서 아래 6개 감정에 대해 0.0~1.0 범위의 점수를 JSON으로 반환해라.
+[Emotion Analysis Task based on Robert Plutchik's Wheel of Emotions]
+당신은 심리학자 Robert Plutchik의 감정 바퀴(Wheel of Emotions) 이론에 기반하여 사용자의 일기를 정밀 분석하는 전문 AI 감정 분석가입니다.
 
-감정 차원:
-- joy
-- sadness
-- anger
-- fear
-- trust
-- surprise
+아래 6가지 핵심 감정 차원에 대해 일기 전체의 문맥적 정황을 파악하여 각각 0.0 ~ 1.0 범위의 실수 점수를 매겨주세요.
+점수는 각 감정의 강도와 명확성을 의미합니다.
 
-중요 규칙:
-- 아래 미분류 핵심 토큰 목록을 우선 참고해라.
-- 조사, 접속어, 문장부호 같은 무의미 토큰은 무시해라.
-- 결과는 반드시 순수 JSON만 반환해라.
+[감정 차원의 심리학적 평가 가이드라인 (Scoring Rubric)]
+1. joy (기쁨): 일기에서 성취감, 만족, 기쁨, 따뜻함, 행복감을 표현한 강도.
+2. sadness (슬픔): 실망, 우울, 상실감, 무력감, 외로움을 내포하고 있는 강도.
+3. anger (분노): 불만, 짜증, 분노, 억울함, 적대감을 표출한 강도.
+4. fear (공포/불안): 초조함, 걱정, 위협감, 불안감, 긴장 상태를 호소한 강도.
+5. trust (신뢰/편안): 안정감, 안도감, 고마움, 타인이나 자신에 대한 수용/수긍의 강도.
+6. surprise (놀람/당황): 예측하지 못한 일에 대한 경이로움, 놀라움, 혹은 당황스러운 감정의 강도.
 
-미분류 핵심 토큰:
+[중요 규칙]
+- 분석 대상인 일기 본문의 감정선을 전체적으로 종합하고, 아래 '사전 분석 실패 핵심 토큰'들이 풍기는 뉘앙스를 최우선으로 반영하세요.
+- 각 감정 차원의 점수는 개별적으로 판단하며, 반드시 순수 JSON 형식만 반환하세요 (Markdown 백틱 ```json ... ``` 기호는 생략하거나 포함해도 무방하며, 순수 파싱이 가능해야 함).
+
+[사전 분석 실패 핵심 토큰]:
 {", ".join(unresolved_unique)}
 
-일기 본문:
+[일기 본문]:
 {text}
 
-반환 예시:
+[반환 예시 (JSON)]:
 {{
-  "joy": 0.3,
-  "sadness": 0.1,
-  "anger": 0.0,
-  "fear": 0.2,
-  "trust": 0.4,
+  "joy": 0.0,
+  "sadness": 0.5,
+  "anger": 0.2,
+  "fear": 0.1,
+  "trust": 0.0,
   "surprise": 0.0
 }}
 """
 
         try:
+            model_name = getattr(settings, "GEMINI_MODEL", "gemini-2.5-flash")
             response = self._client.models.generate_content(
-                model="gemini-2.0-flash-lite",
+                model=model_name,
                 contents=prompt,
             )
             result_text = response.text.strip()
             result_text = re.sub(r"^```(json)?\s*", "", result_text)
             result_text = re.sub(r"\s*```$", "", result_text)
             parsed = json.loads(result_text)
+            
             clean = self._zero_scores()
             for key in EMOTION_KEYS:
                 clean[key] = self._clamp_01(float(parsed.get(key, 0.0)))
+            
+            # API 호출 성공 및 쿼터 차감 기록
+            self._increment_quota()
             return clean
-        except Exception:
+        except Exception as e:
+            logger.error("emotion-analysis | [ERROR] Gemini API 호출 또는 파싱 중 예외 발생: %s", str(e))
             return self._zero_scores()
 
-    def _load_lexicon(self, filename: str, default_data: dict) -> dict:
+    def _load_lexicon(self, filename: str) -> dict:
         data_dir = Path(__file__).resolve().parent / "data"
         lexicon_path = data_dir / filename
         if not lexicon_path.exists():
-            return default_data
+            return {}
 
         try:
             with lexicon_path.open("r", encoding="utf-8") as f:
@@ -246,9 +262,9 @@ class EmotionAnalyzer:
                     for emotion, score in value.items()
                     if emotion in EMOTION_KEYS
                 }
-            return normalized or default_data
+            return normalized
         except (json.JSONDecodeError, OSError, ValueError):
-            return default_data
+            return {}
 
     def _normalize_scores(self, scores: dict) -> dict:
         total = sum(max(0.0, scores.get(key, 0.0)) for key in EMOTION_KEYS)
