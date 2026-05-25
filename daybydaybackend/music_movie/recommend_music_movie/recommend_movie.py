@@ -29,24 +29,31 @@ def build_6d_emotion_vector(tags):
 
     return [round(total_vector[key] / matched_count, 4) for key in ordered_keys]
 
-# 💡 [핵심 추가] 6차원 공간에서 모드별 실제 목표(타겟) 감정 벡터를 계산하는 함수
+# 💡 [도서 로직 반영] 추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성합니다.
 def _get_target_emotion_vector(u_vec, mode):
-    if mode == 'maintain':
-        return u_vec
-    elif mode == 'shift':
-        target_vec = [0.0] * 6
-        target_vec[0] = 0.6  # 기쁨(joy) 유도 지향
-        target_vec[4] = 0.4  # 신뢰/안정(trust) 유도 지향
-        return target_vec
+    """추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성합니다."""
+    target_vec = list(u_vec)  # 안전한 연산을 위해 리스트 복사
+    
+    # 인덱스: 0=joy, 1=sadness, 2=anger, 3=fear, 4=trust, 5=surprise
+    if mode == 'shift':
+        # 부정적 감정은 완전히 지우지 않고 20% 수준으로 남겨 자연스러운 공감 유도
+        target_vec[1] *= 0.2  # sadness
+        target_vec[2] *= 0.2  # anger
+        target_vec[3] *= 0.2  # fear
+        
+        # 긍정적 감정 증대 (최대 1.0 제한)
+        target_vec[0] = min(target_vec[0] + 0.5, 1.0)  # joy
+        target_vec[4] = min(target_vec[4] + 0.4, 1.0)  # trust
+        
     elif mode == 'amplification':
-        max_val = max(u_vec)
-        if max_val == 0:
-            return u_vec
-        max_idx = u_vec.index(max_val)
-        target_vec = [v * 2.5 if i == max_idx else v * 0.2 for i, v in enumerate(u_vec)]
-        total = sum(target_vec)
-        return [v / total for v in target_vec]
-    return u_vec
+        # 가장 지배적인 감정을 더욱 증폭
+        max_val = max(target_vec)
+        if max_val > 0:
+            max_idx = target_vec.index(max_val)
+            target_vec[max_idx] = min(target_vec[max_idx] * 1.5, 1.0)
+        
+    # maintain 모드일 경우는 target_vec이 u_vec과 동일하게 유지됨
+    return target_vec
 
 def _get_direction_weights(u_vec, mode):
     # 모드별 가중치 벡터 w 생성 함수
@@ -99,7 +106,7 @@ class MovieEmotionRecommender:
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
         
-        # 💡 [핵심 연동] 유저 감정에서 모드별 조율을 마친 타겟 감정 벡터 중심점 획득
+        # 💡 [핵심 연동] 유저 감정에서 도서 팀원의 알고리즘 조율을 마친 타겟 감정 벡터 중심점 획득
         target_vec = _get_target_emotion_vector(u_vec, mode)
         target_norm = math.sqrt(sum(t ** 2 for t in target_vec))
         if target_norm == 0:
@@ -132,7 +139,7 @@ class MovieEmotionRecommender:
                 float(movie.get('surprise', 0.0) if movie.get('surprise') is not None else 0.0),
             ]
             
-            # 💡 [핵심 연동] 순수 유클리드 거리 판단의 기준점을 u_vec 대신 모드별 target_vec으로 수정
+            # 💡 순수 유클리드 거리 판단의 기준점을 u_vec 대신 모드별 target_vec으로 수정
             pure_distance = math.sqrt(sum((t - b) ** 2 for t, b in zip(target_vec, b_vec)))
             
             if pure_distance <= radius_limit:
@@ -157,4 +164,39 @@ class MovieEmotionRecommender:
                 })
 
         filtered_and_scored.sort(key=lambda x: x['score'])
+        
+        # 💡 [도서 로직 반영] Fallback: 반경 임계값 내에 영화가 하나도 걸리지 않을 경우 예외 복구 분기
+        if not filtered_and_scored:
+            fallback_list = []
+            for movie in movie_data:
+                orig_tags = movie.get('tags', [])
+                b_vec = [
+                    float(movie.get('joy', 0.0) if movie.get('joy') is not None else 0.0),
+                    float(movie.get('sadness', 0.0) if movie.get('sadness') is not None else 0.0),
+                    float(movie.get('anger', 0.0) if movie.get('anger') is not None else 0.0),
+                    float(movie.get('fear', 0.0) if movie.get('fear') is not None else 0.0),
+                    float(movie.get('trust', 0.0) if movie.get('trust') is not None else 0.0),
+                    float(movie.get('surprise', 0.0) if movie.get('surprise') is not None else 0.0),
+                ]
+                pure_distance = math.sqrt(sum((target_vec - b) ** 2 for target_vec, b in zip(target_vec, b_vec)))
+                norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
+                cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
+                emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
+                
+                popularity = float(movie.get('popularity', 0.0))
+                popularity_score = min(1.0, popularity / 100000)
+                final_score = (emotion_score * 0.8) + ((1.0 - popularity_score) * 0.2)
+                
+                fallback_list.append(({
+                    'movie_id': movie.get('movie_id'),
+                    'title': movie.get('title'),
+                    'director': movie.get('director'),
+                    'image_url': movie.get('image_url', ''),
+                    'tags': orig_tags,
+                    'score': round(final_score, 4)
+                }, pure_distance))
+                
+            fallback_list.sort(key=lambda x: x[1])
+            return [item[0] for item in fallback_list[:top_n]]
+
         return filtered_and_scored[:top_n]
