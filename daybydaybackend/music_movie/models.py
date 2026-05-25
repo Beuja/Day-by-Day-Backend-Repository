@@ -1,6 +1,4 @@
 from django.db import models
-import json
-from daybydaybackend.diary.models import Diary  # diary 앱의 일기 모델 참조
 
 class Music(models.Model):
     title = models.CharField(max_length=255)
@@ -9,13 +7,13 @@ class Music(models.Model):
     listeners = models.IntegerField(default=0)
     playcount = models.IntegerField(default=0)
     
-    # [추가 반영] 프론트엔드 반환 및 캐싱 복원을 위한 자켓 이미지 주소 열
+    # 프론트엔드 반환 및 캐싱 복원을 위한 자켓 이미지 주소 열
     image_url = models.URLField(max_length=500, null=True, blank=True)
     
     # 태그들을 JSON으로 저장
     tags = models.JSONField(default=list)
     
-    # [정렬 패치] Books 모델 스펙에 맞춘 개별 감정 컬럼 분리 구축
+    # [필수 추가] Books 모델 스펙에 맞춘 개별 감정 컬럼 분리 구축
     joy = models.FloatField(default=0.0, null=True, blank=True)
     sadness = models.FloatField(default=0.0, null=True, blank=True)
     anger = models.FloatField(default=0.0, null=True, blank=True)
@@ -37,6 +35,7 @@ class Music(models.Model):
 class Movie(models.Model):
     tmdb_id = models.IntegerField(unique=True, primary_key=True)
     title = models.CharField(max_length=255)
+    director = models.CharField(max_length=255, null=True, blank=True)
     genre = models.CharField(max_length=100, null=True, blank=True)
     overview = models.TextField(blank=True)
     
@@ -45,9 +44,11 @@ class Movie(models.Model):
     popularity = models.FloatField(default=0.0)
     
     release_date = models.DateField(null=True, blank=True)
+    
+    # [필수 추가] load_content_data가 찾는 포스터 이미지 경로 컬럼
     poster_path = models.CharField(max_length=255, null=True, blank=True)
     
-    # [정렬 패치] Books 모델 스펙에 맞춘 개별 감정 컬럼 분리 구축
+    # [필수 추가] Books 모델 스펙에 맞춘 개별 감정 컬럼 분리 구축
     joy = models.FloatField(default=0.0, null=True, blank=True)
     sadness = models.FloatField(default=0.0, null=True, blank=True)
     anger = models.FloatField(default=0.0, null=True, blank=True)
@@ -63,4 +64,4 @@ class Movie(models.Model):
         return self.title
     
     class Meta:
-        ordering = ['-popularity']
+        ordering = ['-popularity']
