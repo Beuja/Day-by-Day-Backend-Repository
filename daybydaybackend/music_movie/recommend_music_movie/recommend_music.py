@@ -29,6 +29,25 @@ def build_6d_emotion_vector(tags):
 
     return [round(total_vector[key] / matched_count, 4) for key in ordered_keys]
 
+# 💡 [핵심 추가] 6차원 공간에서 모드별 실제 목표(타겟) 감정 벡터를 계산하는 함수
+def _get_target_emotion_vector(u_vec, mode):
+    if mode == 'maintain':
+        return u_vec
+    elif mode == 'shift':
+        target_vec = [0.0] * 6
+        target_vec[0] = 0.6  # 기쁨(joy) 유도 지향
+        target_vec[4] = 0.4  # 신뢰/안정(trust) 유도 지향
+        return target_vec
+    elif mode == 'amplification':
+        max_val = max(u_vec)
+        if max_val == 0:
+            return u_vec
+        max_idx = u_vec.index(max_val)
+        target_vec = [v * 2.5 if i == max_idx else v * 0.2 for i, v in enumerate(u_vec)]
+        total = sum(target_vec)
+        return [v / total for v in target_vec]
+    return u_vec
+
 def _get_direction_weights(u_vec, mode):
     # 모드별 가중치 벡터 w 생성 함수
     weights = [1.0] * 6 # np.ones(6) 대신 리스트 기본값 초기화
@@ -81,9 +100,12 @@ class MusicEmotionRecommender:
         # 계산을 위해 리스트 형태로 변경
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
-        u_norm = math.sqrt(sum(u ** 2 for u in u_vec))
-        if u_norm == 0:
-            u_norm = 1e-9
+        
+        # 💡 [핵심 연동] 유저 감정에서 모드별 조율을 마친 타겟 감정 벡터 중심점 획득
+        target_vec = _get_target_emotion_vector(u_vec, mode)
+        target_norm = math.sqrt(sum(t ** 2 for t in target_vec))
+        if target_norm == 0:
+            target_norm = 1e-9
             
         w_vec = _get_direction_weights(u_vec, mode)
         
@@ -113,12 +135,12 @@ class MusicEmotionRecommender:
                 float(track.get('surprise', 0.0) if track.get('surprise') is not None else 0.0),
             ]
             
-            # 순수 유클리드 거리
-            pure_distance = math.sqrt(sum((u - b) ** 2 for u, b in zip(u_vec, b_vec)))
+            # 💡 [핵심 연동] 순수 유클리드 거리 판단의 기준점을 u_vec 대신 모드별 target_vec으로 수정
+            pure_distance = math.sqrt(sum((t - b) ** 2 for t, b in zip(target_vec, b_vec)))
             
             if pure_distance <= radius_limit:
-                norm_euclidean = _calculate_euclidean(u_vec, b_vec, w_vec)
-                cosine_dist = _calculate_cosine(u_vec, b_vec, u_norm)
+                norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
+                cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
                 
                 # 최종 점수
                 emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
