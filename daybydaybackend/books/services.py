@@ -70,11 +70,25 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
             fallback_list.append((final_score, book, pure_distance))
             
         # Sort by absolute emotional distance to yield the closest match
-        fallback_list.sort(key=lambda x: x[0])
-        return [item[1] for item in fallback_list[:count]]
+        fallback_list.sort(key=lambda x: x[2])
+        return [item[1] for item in fallback_list[:count]], True
 
-    return [item[1] for item in filtered_and_scored[:count]]
+    return [item[1] for item in filtered_and_scored[:count]], False
 
+def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
+    daily_rec, _ = DailyRecommended.objects.get_or_create(diary=diary_obj)
+    recommended_books = recommend_books(user_emotion=user_emotion, mode=mode, count=count)
+    daily_rec.books.set(recommended_books)
+    return recommended_books
+
+
+def get_saved_book_metadata(diary_obj):
+    try:
+        daily_rec = DailyRecommended.objects.get(diary=diary_obj)
+    except DailyRecommended.DoesNotExist:
+        return []
+
+    return list(daily_rec.books.all())
 def _calculate_euclidean(u_vec: np.ndarray, b_vec: np.ndarray) -> float:
     # 가중 유클리드 거리 계산 및 정규화 (0~1 사이)
     ecuclidean_dist = np.sqrt(np.sum((t_vec - b_vec) ** 2))

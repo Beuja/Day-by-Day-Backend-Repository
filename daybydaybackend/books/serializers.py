@@ -6,11 +6,16 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = '__all__'
 
-class RecommendRequestSerializer(serializers.Serializer):
-    diary_id = serializers.IntegerField()
-    emotion = serializers.DictField(
-        child=serializers.FloatField(min_value=0.0, max_value=1.0),
-        help_text='사용자 감정 벡터 (joy, sadness, anger, fear, trust, surprise)'
-    )
+class ContentRecommendationRequestSerializer(serializers.Serializer):
     mode = serializers.ChoiceField(choices=['maintain', 'shift', 'amplification'], default='maintain')
     count = serializers.IntegerField(default=3, min_value=1)
+
+    class Meta:
+        ref_name = 'BooksContentRecommendationRequestSerializer'
+
+
+class BookRecommendationPathSerializer(serializers.Serializer):
+    diary_id = serializers.IntegerField(help_text='추천 대상 일기 ID')
+
+    class Meta:
+        ref_name = 'BookRecommendationPathSerializer'
