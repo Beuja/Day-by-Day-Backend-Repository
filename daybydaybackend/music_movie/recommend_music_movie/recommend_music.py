@@ -29,7 +29,6 @@ def build_6d_emotion_vector(tags):
 
     return [round(total_vector[key] / matched_count, 4) for key in ordered_keys]
 
-# 💡 [도서 로직 반영] 추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성합니다.
 def _get_target_emotion_vector(u_vec, mode):
     """추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성합니다."""
     target_vec = list(u_vec)  # 안전한 연산을 위해 리스트 복사
@@ -52,7 +51,6 @@ def _get_target_emotion_vector(u_vec, mode):
             max_idx = target_vec.index(max_val)
             target_vec[max_idx] = min(target_vec[max_idx] * 1.5, 1.0)
         
-    # maintain 모드일 경우는 target_vec이 u_vec과 동일하게 유지됨
     return target_vec
 
 def _get_direction_weights(u_vec, mode):
@@ -61,17 +59,14 @@ def _get_direction_weights(u_vec, mode):
     
     if mode == 'maintain':
         return weights
-    
     elif mode == 'shift':
         # sadness, anger, fear 패널티, joy, trust 인센티브, surprise 유지
-        # 추후 조정
         weights[0] = 0.5    # joy
         weights[1] = 2.0    # sadness
         weights[2] = 2.0    # anger
         weights[3] = 2.0    # fear
         weights[4] = 0.5    # trust
         weights[5] = 1.0    # surprise
-        
     elif mode == 'amplification':
         max_val = max(u_vec)
         max_emotion_idx = u_vec.index(max_val)
@@ -82,10 +77,8 @@ def _get_direction_weights(u_vec, mode):
 def _calculate_euclidean(u_vec, b_vec, w_vec):
     # 가중 유클리드 거리 계산 및 정규화 (0~1 사이)
     euclidean_dist = math.sqrt(sum(w * ((u - b) ** 2) for u, b, w in zip(u_vec, b_vec, w_vec)))
-    
     sum_w = sum(w_vec)
     max_euclidean = math.sqrt(sum(w * sum_w for w in w_vec))
-    
     if max_euclidean == 0:
         return 0.0
     return euclidean_dist / max_euclidean
@@ -93,10 +86,8 @@ def _calculate_euclidean(u_vec, b_vec, w_vec):
 def _calculate_cosine(u_vec, b_vec, u_norm):
     # 코사인 유사도 계산
     b_norm = math.sqrt(sum(b ** 2 for b in b_vec))
-
     if b_norm == 0:
         b_norm = 1e-9
-
     dot_product = sum(u * b for u, b in zip(u_vec, b_vec))
     cosine_sim = dot_product / (u_norm * b_norm)
     return 1.0 - cosine_sim
@@ -104,11 +95,13 @@ def _calculate_cosine(u_vec, b_vec, u_norm):
 
 class MusicEmotionRecommender:
     def recommend_music(self, user_emotion, music_data, mode='maintain', top_n=3):
+        from daybydaybackend.music_movie.models import Music  # 순환 참조 방지
+        
         # 계산을 위해 리스트 형태로 변경
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
         
-        # 💡 [핵심 연동] 유저 감정에서 도서 팀원의 알고리즘 조율을 마친 타겟 감정 벡터 중심점 획득
+        # 유저 감정에서 도서 팀원의 알고리즘 조율을 마친 타겟 감정 벡터 중심점 획득
         target_vec = _get_target_emotion_vector(u_vec, mode)
         target_norm = math.sqrt(sum(t ** 2 for t in target_vec))
         if target_norm == 0:
@@ -126,12 +119,10 @@ class MusicEmotionRecommender:
         else:
             radius_limit = 0.7
             
-        # 코사인 유사도&유클리드 거리 결합 가중치 (1에 가까울 수록 유클리드 거리 중시)
         alpha = 0.5
         filtered_and_scored = []
         
         for track in music_data:
-            # 장고 ORM과의 유연한 필드 매핑 및 문자열 tags 가공 지원
             orig_tags = track.get('tags', [])
             b_vec = [
                 float(track.get('joy', 0.0) if track.get('joy') is not None else 0.0),
@@ -142,7 +133,7 @@ class MusicEmotionRecommender:
                 float(track.get('surprise', 0.0) if track.get('surprise') is not None else 0.0),
             ]
             
-            # 💡 순수 유클리드 거리 판단의 기준점을 u_vec 대신 모드별 target_vec으로 수정
+            # 순수 유클리드 거리 판단의 기준점을 u_vec 대신 모드별 target_vec으로 수정
             pure_distance = math.sqrt(sum((t - b) ** 2 for t, b in zip(target_vec, b_vec)))
             
             if pure_distance <= radius_limit:
@@ -159,21 +150,16 @@ class MusicEmotionRecommender:
                 
                 filtered_and_scored.append({
                     'track_id': track.get('track_id'),
-                    'title': track.get('title'),
-                    'artist': track.get('artist'),
-                    'image_url': track.get('image_url', ''),
-                    'tags': orig_tags,
                     'score': round(final_score, 4)
                 })
                 
         # 거리가 가까운 순으로 오름차순 정렬 처리
         filtered_and_scored.sort(key=lambda x: x['score'])
         
-        # 💡 [도서 로직 반영] Fallback: 반경 임계값 내에 음악이 하나도 걸리지 않을 경우 예외 복구 분기
+        # [도서 로직 반영 Fallback] 반경 내에 음악이 하나도 걸리지 않을 경우 강제 예외 복구 분기
         if not filtered_and_scored:
             fallback_list = []
             for track in music_data:
-                orig_tags = track.get('tags', [])
                 b_vec = [
                     float(track.get('joy', 0.0) if track.get('joy') is not None else 0.0),
                     float(track.get('sadness', 0.0) if track.get('sadness') is not None else 0.0),
@@ -193,15 +179,30 @@ class MusicEmotionRecommender:
                 
                 fallback_list.append(({
                     'track_id': track.get('track_id'),
-                    'title': track.get('title'),
-                    'artist': track.get('artist'),
-                    'image_url': track.get('image_url', ''),
-                    'tags': orig_tags,
                     'score': round(final_score, 4)
                 }, pure_distance))
             
-            # 절대적인 감정 거리(pure_distance)가 가장 가까운 순서대로 강제 매칭 정렬
             fallback_list.sort(key=lambda x: x[1])
-            return [item[0] for item in fallback_list[:top_n]]
+            selected_tracks = fallback_list[:top_n]
+            track_ids = [item[0]['track_id'] for item in selected_tracks]
+            
+            music_map = {m.id: m for m in Music.objects.filter(id__in=track_ids)}
+            recommended_tracks = []
+            for item in selected_tracks:
+                tid = item[0]['track_id']
+                if tid in music_map:
+                    recommended_tracks.append(music_map[tid])
+            return {"recommendations": recommended_tracks}
         
-        return filtered_and_scored[:top_n]
+        # 정상 필터링 매칭 시 처리 영역
+        selected_tracks = filtered_and_scored[:top_n]
+        track_ids = [t['track_id'] for t in selected_tracks]
+        music_map = {m.id: m for m in Music.objects.filter(id__in=track_ids)}
+        
+        recommended_tracks = []
+        for t in selected_tracks:
+            tid = t['track_id']
+            if tid in music_map:
+                recommended_tracks.append(music_map[tid])
+                
+        return {"recommendations": recommended_tracks}

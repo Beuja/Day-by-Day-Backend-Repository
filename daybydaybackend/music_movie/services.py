@@ -1,3 +1,4 @@
+# music_movie/services.py
 import json
 import os
 from daybydaybackend.diary.models import Diary, DailyRecommended
@@ -72,10 +73,11 @@ def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str,
     music_data = load_music_data()
     
     recommender = MusicEmotionRecommender()
-    res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
+    result_dict = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
+    # 💡 딕셔너리 구조에서 장고 모델 인스턴스 목록을 안전하게 파싱합니다.
+    res = result_dict.get('recommendations', [])
     
-    # 💡 [수정] res가 이제 순수 리스트이므로 바로 루프를 수행합니다.
-    recommended_track_ids = [track['track_id'] for track in res]
+    recommended_track_ids = [track.id for track in res]
     music_instances = Music.objects.filter(id__in=recommended_track_ids)
     
     daily_rec.music.set(music_instances)
@@ -90,10 +92,11 @@ def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str,
             movie["genre"] = ", ".join(movie["genre"])
             
     recommender = MovieEmotionRecommender()
-    res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
+    result_dict = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
+    # 💡 딕셔너리 구조에서 장고 모델 인스턴스 목록을 안전하게 파싱합니다.
+    res = result_dict.get('recommendations', [])
     
-    # 💡 [수정] res가 순수 리스트이므로 바로 가공합니다.
-    recommended_movie_ids = [movie['movie_id'] for movie in res]
+    recommended_movie_ids = [movie.tmdb_id for movie in res]
     movie_instances = Movie.objects.filter(tmdb_id__in=recommended_movie_ids)
     
     daily_rec.movies.set(movie_instances)
@@ -125,14 +128,13 @@ def get_saved_movie_metadata(diary_obj):
         
     restored_movies = []
     for movie in daily_rec.movies.all():
-        # 데이터베이스의 한글 장르 텍스트/배열을 유연하게 리스트 묶음 처리
         movie_tags = [movie.genre] if movie.genre else []
         
         restored_movies.append({
             'movie_id': movie.tmdb_id,  # 원본 고유 식별자 PK 반환
             'title': movie.title,
             'director': getattr(movie, 'director', ''),
-            'image_url': movie.poster_path if movie.poster_path else '',  # DB의 전체 URL 직접 다이렉트 반환!
+            'image_url': movie.poster_path if movie.poster_path else '',  # DB의 전체 URL 직접 반환
             'tags': movie_tags
         })
     return restored_movies
