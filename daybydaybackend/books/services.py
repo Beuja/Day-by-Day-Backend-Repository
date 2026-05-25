@@ -78,9 +78,10 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
 
 def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
     daily_rec, _ = DailyRecommended.objects.get_or_create(diary=diary_obj)
-    recommended_books = recommend_books(user_emotion=user_emotion, mode=mode, count=count)
+    recommended_books, is_fallback = recommend_books(user_emotion=user_emotion, mode=mode, count=count)
+
     daily_rec.books.set(recommended_books)
-    return recommended_books
+    return recommended_books, is_fallback
 
 
 def get_saved_book_metadata(diary_obj):
@@ -90,21 +91,21 @@ def get_saved_book_metadata(diary_obj):
         return []
 
     return list(daily_rec.books.all())
-def _calculate_euclidean(u_vec: np.ndarray, b_vec: np.ndarray) -> float:
+def _calculate_euclidean(t_vec: np.ndarray, b_vec: np.ndarray) -> float:
     # 가중 유클리드 거리 계산 및 정규화 (0~1 사이)
     ecuclidean_dist = np.sqrt(np.sum((t_vec - b_vec) ** 2))
     max_euclidean = np.sqrt(6.0)
 
     return ecuclidean_dist / max_euclidean
 
-def _calculate_cosine(u_vec: np.ndarray, b_vec: np.ndarray, u_norm: float) -> float:
+def _calculate_cosine(t_vec: np.ndarray, b_vec: np.ndarray, t_norm: float) -> float:
     # 코사인 유사도 계산
     b_norm = norm(b_vec)
 
     if b_norm == 0:
         b_norm = 1e-9
 
-    cosine_sim = np.dot(u_vec, b_vec) / (u_norm * b_norm)
+    cosine_sim = np.dot(t_vec, b_vec) / (t_norm * b_norm)
     return 1.0 - cosine_sim
 
 def _get_target_emotion(u_vec: np.ndarray, mode: str) -> np.ndarray:
@@ -127,5 +128,5 @@ def _get_target_emotion(u_vec: np.ndarray, mode: str) -> np.ndarray:
         max_idx = np.argmax(target_vec)
         target_vec[max_idx] = min(target_vec[max_idx] * 1.5, 1.0)
         
-    # maintain 모드일 경우는 target_vec이 u_vec과 동일하게 유지됨
+    # maintain 모드일 경우는 target_vec이 u_vec과 동일
     return target_vec
