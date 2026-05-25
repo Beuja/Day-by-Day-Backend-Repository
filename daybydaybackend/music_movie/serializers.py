@@ -19,6 +19,7 @@ class MusicResponseSerializer(serializers.Serializer):
     artist = serializers.CharField(allow_blank=True, required=False, default='')
     image_url = serializers.URLField(allow_blank=True, required=False, default='')
     tags = serializers.ListField(child=serializers.CharField(), default=list)
+    score = serializers.FloatField(required=False, default=0.0)
 
 class MovieResponseSerializer(serializers.Serializer):
     movie_id = serializers.IntegerField()
@@ -26,3 +27,4 @@ class MovieResponseSerializer(serializers.Serializer):
     director = serializers.CharField(allow_blank=True, required=False, default='')
     image_url = serializers.URLField(allow_blank=True, required=False, default='')
     tags = serializers.ListField(child=serializers.CharField(), default=list)
+    score = serializers.FloatField(required=False, default=0.0)
