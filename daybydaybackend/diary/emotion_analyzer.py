@@ -20,40 +20,11 @@ EMOTION_KEYS = ("joy", "sadness", "anger", "fear", "trust", "surprise")
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_NRC_LEXICON = {
-    "행복": {"joy": 1.0, "trust": 0.6},
-    "기쁨": {"joy": 1.0, "surprise": 0.3},
-    "즐겁": {"joy": 0.9},
-    "신남": {"joy": 0.7, "surprise": 0.5},
-    "슬픔": {"sadness": 1.0},
-    "우울": {"sadness": 0.9, "fear": 0.2},
-    "불안": {"fear": 0.8, "sadness": 0.2},
-    "무섭": {"fear": 1.0},
-    "화나": {"anger": 1.0},
-    "분노": {"anger": 1.0},
-    "짜증": {"anger": 0.8, "sadness": 0.2},
-    "믿음": {"trust": 1.0},
-    "신뢰": {"trust": 1.0},
-    "놀람": {"surprise": 1.0},
-    "당황": {"surprise": 0.7, "fear": 0.3},
-}
-
-
-DEFAULT_KNU_LEXICON = {
-    "편안": {"trust": 0.5, "joy": 0.3},
-    "안정": {"trust": 0.7},
-    "만족": {"joy": 0.7, "trust": 0.3},
-    "외롭": {"sadness": 0.8},
-    "불쾌": {"anger": 0.4, "sadness": 0.6},
-    "긴장": {"fear": 0.6, "surprise": 0.2},
-}
-
-
 class EmotionAnalyzer:
     def __init__(self):
         self.kiwi = Kiwi() if Kiwi is not None else None
-        self.nrc_lexicon = self._load_lexicon("nrc_lexicon_ko.json", DEFAULT_NRC_LEXICON)
-        self.knu_lexicon = self._load_lexicon("knu_lexicon_ko.json", DEFAULT_KNU_LEXICON)
+        self.nrc_lexicon = self._load_lexicon("nrc_lexicon_ko.json")
+        self.knu_lexicon = self._load_lexicon("knu_lexicon_ko.json")
         self._client = None
         self._analysis_total = 0
         self._analysis_with_fallback = 0
@@ -271,11 +242,11 @@ class EmotionAnalyzer:
             logger.error("emotion-analysis | [ERROR] Gemini API 호출 또는 파싱 중 예외 발생: %s", str(e))
             return self._zero_scores()
 
-    def _load_lexicon(self, filename: str, default_data: dict) -> dict:
+    def _load_lexicon(self, filename: str) -> dict:
         data_dir = Path(__file__).resolve().parent / "data"
         lexicon_path = data_dir / filename
         if not lexicon_path.exists():
-            return default_data
+            return {}
 
         try:
             with lexicon_path.open("r", encoding="utf-8") as f:
@@ -290,9 +261,9 @@ class EmotionAnalyzer:
                     for emotion, score in value.items()
                     if emotion in EMOTION_KEYS
                 }
-            return normalized or default_data
+            return normalized
         except (json.JSONDecodeError, OSError, ValueError):
-            return default_data
+            return {}
 
     def _normalize_scores(self, scores: dict) -> dict:
         total = sum(max(0.0, scores.get(key, 0.0)) for key in EMOTION_KEYS)
