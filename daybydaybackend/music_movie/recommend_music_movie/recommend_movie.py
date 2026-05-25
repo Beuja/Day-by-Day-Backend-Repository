@@ -29,19 +29,16 @@ def build_6d_emotion_vector(tags):
 
     return [round(total_vector[key] / matched_count, 4) for key in ordered_keys]
 
-# 💡 [도서 로직 반영] 추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성합니다.
+# [도서 로직 반영] 추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성합니다.
 def _get_target_emotion_vector(u_vec, mode):
     """추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성합니다."""
-    target_vec = list(u_vec)  # 안전한 연산을 위해 리스트 복사
+    target_vec = list(u_vec)
     
-    # 인덱스: 0=joy, 1=sadness, 2=anger, 3=fear, 4=trust, 5=surprise
     if mode == 'shift':
-        # 부정적 감정은 완전히 지우지 않고 20% 수준으로 남겨 자연스러운 공감 유도
         target_vec[1] *= 0.2  # sadness
         target_vec[2] *= 0.2  # anger
         target_vec[3] *= 0.2  # fear
         
-        # 긍정적 감정 증대 (최대 1.0 제한)
         target_vec[0] = min(target_vec[0] + 0.5, 1.0)  # joy
         target_vec[4] = min(target_vec[4] + 0.4, 1.0)  # trust
         
@@ -52,25 +49,19 @@ def _get_target_emotion_vector(u_vec, mode):
             max_idx = target_vec.index(max_val)
             target_vec[max_idx] = min(target_vec[max_idx] * 1.5, 1.0)
         
-    # maintain 모드일 경우는 target_vec이 u_vec과 동일하게 유지됨
     return target_vec
 
 def _get_direction_weights(u_vec, mode):
-    # 모드별 가중치 벡터 w 생성 함수
     weights = [1.0] * 6
-    
     if mode == 'maintain':
         return weights
-    
     elif mode == 'shift':
-        # sadness, anger, fear 패널티, joy, trust 인센티브, surprise 유지
         weights[0] = 0.5    # joy
         weights[1] = 2.0    # sadness
         weights[2] = 2.0    # anger
         weights[3] = 2.0    # fear
         weights[4] = 0.5    # trust
         weights[5] = 1.0    # surprise
-        
     elif mode == 'amplification':
         max_val = max(u_vec)
         max_emotion_idx = u_vec.index(max_val)
@@ -79,22 +70,17 @@ def _get_direction_weights(u_vec, mode):
     return weights
 
 def _calculate_euclidean(u_vec, b_vec, w_vec):
-    # 가중 유클리드 거리 계산 및 정규화 (0~1 사이)
     euclidean_dist = math.sqrt(sum(w * ((u - b) ** 2) for u, b, w in zip(u_vec, b_vec, w_vec)))
     sum_w = sum(w_vec)
     max_euclidean = math.sqrt(sum(w * sum_w for w in w_vec))
-    
     if max_euclidean == 0:
         return 0.0
     return euclidean_dist / max_euclidean
 
 def _calculate_cosine(u_vec, b_vec, u_norm):
-    # 코사인 유사도 계산
     b_norm = math.sqrt(sum(b ** 2 for b in b_vec))
-
     if b_norm == 0:
         b_norm = 1e-9
-
     dot_product = sum(u * b for u, b in zip(u_vec, b_vec))
     cosine_sim = dot_product / (u_norm * b_norm)
     return 1.0 - cosine_sim
@@ -108,7 +94,6 @@ class MovieEmotionRecommender:
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
         
-        # 💡 [핵심 연동] 유저 감정에서 도서 팀원의 알고리즘 조율을 마친 타겟 감정 벡터 중심점 획득
         target_vec = _get_target_emotion_vector(u_vec, mode)
         target_norm = math.sqrt(sum(t ** 2 for t in target_vec))
         if target_norm == 0:
@@ -116,7 +101,6 @@ class MovieEmotionRecommender:
             
         w_vec = _get_direction_weights(u_vec, mode)
         
-        # 감정 범위 임계값
         if mode == 'maintain':
             radius_limit = 0.4
         elif mode == 'shift':
@@ -126,7 +110,6 @@ class MovieEmotionRecommender:
         else:
             radius_limit = 0.7
             
-        # 코사인 유사도&유클리드 거리 결합 가중치 (1에 가까울 수록 유클리드 거리 중시)
         alpha = 0.5
         filtered_and_scored = []
         
@@ -140,17 +123,14 @@ class MovieEmotionRecommender:
                 float(movie.get('surprise', 0.0) if movie.get('surprise') is not None else 0.0),
             ]
             
-            # 💡 순수 유클리드 거리 판단의 기준점을 u_vec 대신 모드별 target_vec으로 수정
             pure_distance = math.sqrt(sum((t - b) ** 2 for t, b in zip(target_vec, b_vec)))
             
             if pure_distance <= radius_limit:
                 norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
                 cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
                 
-                # 최종 점수
                 emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
                 
-                # 영화 popularity 기반 대중성 점수 반영
                 popularity = float(movie.get('popularity', 0.0))
                 popularity_score = min(1.0, popularity / 100000)
                 final_score = (emotion_score * 0.8) + ((1.0 - popularity_score) * 0.2)
@@ -162,7 +142,7 @@ class MovieEmotionRecommender:
 
         filtered_and_scored.sort(key=lambda x: x['score'])
         
-        # 💡 [도서 로직 반영] Fallback: 반경 임계값 내에 영화가 하나도 걸리지 않을 경우 예외 복구 분기
+        # [도서 로직 반영 Fallback] 반경 내에 영화가 하나도 걸리지 않을 경우 강제 예외 복구 분기
         if not filtered_and_scored:
             fallback_list = []
             for movie in movie_data:
@@ -174,7 +154,6 @@ class MovieEmotionRecommender:
                     float(movie.get('trust', 0.0) if movie.get('trust') is not None else 0.0),
                     float(movie.get('surprise', 0.0) if movie.get('surprise') is not None else 0.0),
                 ]
-                # 💡 [수정] 변수명 간섭 오타 교정 완료 (target_vec -> t)
                 pure_distance = math.sqrt(sum((t - b) ** 2 for t, b in zip(target_vec, b_vec)))
                 norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
                 cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
@@ -198,11 +177,10 @@ class MovieEmotionRecommender:
             for item in selected_movies:
                 mid = item[0]['movie_id']
                 if mid in movie_map:
-                    obj = movie_map[mid]
-                    obj.score = item[0]['score']
-                    recommended_movies.append(obj)
+                    recommended_movies.append(movie_map[mid])
             return {"recommendations": recommended_movies}
 
+        # 정상 매칭 결과 변환 처리 영역
         selected_movies = filtered_and_scored[:top_n]
         movie_ids = [m['movie_id'] for m in selected_movies]
         movie_map = {m.tmdb_id: m for m in Movie.objects.filter(tmdb_id__in=movie_ids)}
@@ -211,7 +189,5 @@ class MovieEmotionRecommender:
         for m in selected_movies:
             mid = m['movie_id']
             if mid in movie_map:
-                obj = movie_map[mid]
-                obj.score = m['score']
-                recommended_movies.append(obj)
+                recommended_movies.append(movie_map[mid])
         return {"recommendations": recommended_movies}
