@@ -222,8 +222,9 @@ class EmotionAnalyzer:
 """
 
         try:
+            model_name = getattr(settings, "GEMINI_MODEL", "gemini-2.5-flash")
             response = self._client.models.generate_content(
-                model="gemini-2.0-flash-lite",
+                model=model_name,
                 contents=prompt,
             )
             result_text = response.text.strip()
