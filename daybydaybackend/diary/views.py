@@ -14,9 +14,87 @@ from .models import Diary
 from .serializers import (
     DiarySerializer, AnalyzeEmotionRequestSerializer,
     DiaryCreateRequestSerializer,
-    BookSerializer, MovieSerializer, MusicSerializer
+    BookSerializer, MovieSerializer, MusicSerializer,
+    MainRecommendationResponseSerializer, CalendarResponseSerializer
 )
 from . import services
+
+
+# Swagger에 노출할 메인 추천 응답 스키마 상세 정의
+main_recommendation_response_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'has_diaries': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="해당 유저의 최근 일기 작성 데이터가 존재하여 추천이 가능한지 여부"),
+        'emotion_status': openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'joy': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'sadness': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'anger': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'fear': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'trust': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'surprise': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'valence': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'arousal': openapi.Schema(type=openapi.TYPE_NUMBER),
+            },
+            description="최근 5개 일기의 Plutchik 6대 감정 평균 수치 (일기가 전혀 없으면 null)",
+            allow_null=True
+        ),
+        'books': openapi.Schema(
+            type=openapi.TYPE_ARRAY,
+            items=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'isbn': openapi.Schema(type=openapi.TYPE_STRING, description="도서 ISBN 번호"),
+                    'title': openapi.Schema(type=openapi.TYPE_STRING, description="도서 제목"),
+                    'author': openapi.Schema(type=openapi.TYPE_STRING, description="저자 이름"),
+                    'cover_url': openapi.Schema(type=openapi.TYPE_STRING, description="도서 표지 자켓 이미지 URL"),
+                    'category': openapi.Schema(type=openapi.TYPE_STRING, description="도서 카테고리/장르"),
+                    'description': openapi.Schema(type=openapi.TYPE_STRING, description="도서 소개 미리보기 텍스트"),
+                }
+            ),
+            description="맞춤형 추천 도서 목록 2개 (일기가 전혀 없으면 빈 배열)"
+        ),
+        'music': openapi.Schema(
+            type=openapi.TYPE_ARRAY,
+            items=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'track_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="음악 트랙 ID"),
+                    'title': openapi.Schema(type=openapi.TYPE_STRING, description="음악 제목"),
+                    'artist': openapi.Schema(type=openapi.TYPE_STRING, description="아티스트명"),
+                    'image_url': openapi.Schema(type=openapi.TYPE_STRING, description="앨범 커버 이미지 URL"),
+                    'tags': openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(type=openapi.TYPE_STRING),
+                        description="음악 태그 리스트"
+                    ),
+                    'score': openapi.Schema(type=openapi.TYPE_NUMBER, description="추천 매칭 점수 (낮을수록 매칭도 우수)"),
+                }
+            ),
+            description="맞춤형 추천 음악 목록 2개 (일기가 전혀 없으면 빈 배열)"
+        ),
+        'movies': openapi.Schema(
+            type=openapi.TYPE_ARRAY,
+            items=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'movie_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="영화 ID"),
+                    'title': openapi.Schema(type=openapi.TYPE_STRING, description="영화 제목"),
+                    'director': openapi.Schema(type=openapi.TYPE_STRING, description="감독명"),
+                    'image_url': openapi.Schema(type=openapi.TYPE_STRING, description="영화 포스터 이미지 URL"),
+                    'tags': openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(type=openapi.TYPE_STRING),
+                        description="영화 태그 리스트"
+                    ),
+                    'score': openapi.Schema(type=openapi.TYPE_NUMBER, description="추천 매칭 점수 (낮을수록 매칭도 우수)"),
+                }
+            ),
+            description="맞춤형 추천 영화 목록 2개 (일기가 전혀 없으면 빈 배열)"
+        ),
+    }
+)
 
 
 # ===== 일기 작성 API =====
@@ -91,21 +169,10 @@ def analyze_diary_emotion(request):
 @swagger_auto_schema(
     method='get',
     operation_summary="메인 화면 통합 개인화 추천",
-    operation_description="최근 작성한 5개 일기의 감정을 종합 분석하여 책, 음악, 영화를 분야별로 2개씩 추출해 통합 반환합니다.",
+    operation_description="최근 작성한 5개 일기의 감정을 종합 분석하여 책, 음악, 영화를 분야별로 2개씩 추출해 통합 반환합니다. 작성된 일기가 없는 신규 유저 시나리오(has_diaries=False, 빈 리스트 반환)도 상세히 표시됩니다.",
     security=[{'Token': []}],
     responses={
-        200: openapi.Response('추천 성공', openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'emotion_status': openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    description='사용자의 분석된 평균 감정 상태'
-                ),
-                'books': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_OBJECT)),
-                'music': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_OBJECT)),
-                'movies': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_OBJECT)),
-            }
-        )),
+        200: openapi.Response('추천 성공 (감정 분석 결과 및 추천 목록)', main_recommendation_response_schema),
         401: '인증되지 않은 사용자'
     }
 )
@@ -168,9 +235,11 @@ def get_main_recommendations(request):
     movie_result = movie_recommender.recommend_movies(user_6d_emotion, load_movie_data(), mode='maintain', top_n=2)
     
     # 5. 데이터 정제 및 직렬화
+    from daybydaybackend.music_movie.serializers import MusicResponseSerializer, MovieResponseSerializer
+    
     serialized_books = BookSerializer(books, many=True).data
-    serialized_music = MusicSerializer(music_result.get('recommendations', []), many=True).data
-    serialized_movies = MovieSerializer(movie_result.get('recommendations', []), many=True).data
+    serialized_music = MusicResponseSerializer(music_result.get('recommendations', []), many=True).data
+    serialized_movies = MovieResponseSerializer(movie_result.get('recommendations', []), many=True).data
 
     # 6. DailyRecommended 캐시에 추천 콘텐츠 저장 (가장 최신의 일기 객체를 기준점으로 복원 캐싱)
     if diaries.exists():
@@ -205,28 +274,7 @@ def get_main_recommendations(request):
         openapi.Parameter('month', openapi.IN_QUERY, description="조회할 월 (예: 5)", type=openapi.TYPE_INTEGER, required=False),
     ],
     responses={
-        200: openapi.Response('조회 성공', openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'has_diaries': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="해당 월에 작성된 일기 존재 여부"),
-                'year': openapi.Schema(type=openapi.TYPE_INTEGER),
-                'month': openapi.Schema(type=openapi.TYPE_INTEGER),
-                'calendar_data': openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    description="날짜를 Key로 하는 캘린더 감정 해시맵",
-                    additional_properties=openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'diary_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-                            'weather': openapi.Schema(type=openapi.TYPE_STRING),
-                            'primary_emotion': openapi.Schema(type=openapi.TYPE_STRING, description="대표 감정 한글명"),
-                            'emotion_key': openapi.Schema(type=openapi.TYPE_STRING, description="대표 감정 영문 식별자"),
-                            'preview': openapi.Schema(type=openapi.TYPE_STRING, description="20자 내외 내용 미리보기"),
-                        }
-                    )
-                )
-            }
-        )),
+        200: openapi.Response('조회 성공 (날짜별 감정 해시맵)', CalendarResponseSerializer),
         401: '인증되지 않은 사용자'
     }
 )
