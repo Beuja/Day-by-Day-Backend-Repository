@@ -140,4 +140,4 @@ class MusicEmotionRecommender:
         # 거리가 가까운 순으로 오름차순 정렬 처리
         filtered_and_scored.sort(key=lambda x: x['score'])
         
-        return  [item[1] for item in filtered_and_scored[:top_n]]
+        return filtered_and_scored[:top_n]

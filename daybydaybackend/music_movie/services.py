@@ -74,31 +74,30 @@ def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str,
     recommender = MusicEmotionRecommender()
     res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
     
-    # 알고리즘 track_id 수치를 마스터 음악 테이블 고유 PK id와 싱크 얼라인
-    recommended_track_ids = [track['track_id'] for track in res['recommendations']]
+    # 💡 [수정] res가 이제 순수 리스트이므로 바로 루프를 수행합니다.
+    recommended_track_ids = [track['track_id'] for track in res]
     music_instances = Music.objects.filter(id__in=recommended_track_ids)
     
     daily_rec.music.set(music_instances)
-    return res['recommendations']
+    return res
 
 def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj)
     movie_data = load_movie_data()
     
-    # 런타임 오류 방어: 영화 추천기 가동 전 한글 리스트 장르 포맷 우회 전처리 보정
     for movie in movie_data:
         if isinstance(movie.get("genre"), list):
-            movie["genre"] = ", ".join(movie["genre"]) # 리스트를 문자열로 결합하여 알고리즘 호환성 충돌 제거
+            movie["genre"] = ", ".join(movie["genre"])
             
     recommender = MovieEmotionRecommender()
     res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
     
-    # 알고리즘 내부 movie_id 출력을 마스터 영화 테이블 프라이머리 키인 tmdb_id와 매핑
-    recommended_movie_ids = [movie['movie_id'] for movie in res['recommendations']]
+    # 💡 [수정] res가 순수 리스트이므로 바로 가공합니다.
+    recommended_movie_ids = [movie['movie_id'] for movie in res]
     movie_instances = Movie.objects.filter(tmdb_id__in=recommended_movie_ids)
     
     daily_rec.movies.set(movie_instances)
-    return res['recommendations']
+    return res
 
 # --- GET: 달력 과거 내역 복원 역참조 메타데이터 변환 함수 ---
 def get_saved_music_metadata(diary_obj):
