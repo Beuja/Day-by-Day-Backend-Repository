@@ -113,7 +113,8 @@ def analyze_diary_emotion(request):
 @permission_classes([IsAuthenticated])
 def get_main_recommendations(request):
     """
-    최근 일기 5개의 감정을 분석하여 분야별 2개 콘텐츠 통합 맞춤 추천 반환
+    최근 일기 5개의 감정을 분석하여 분야별 2개 콘텐츠 통합 맞춤 추천 반환.
+    작성된 일기가 없는 경우 Option A (has_diaries=False, 빈 리스트 반환) 방식을 취합니다.
     """
     from daybydaybackend.books.services import recommend_books
     from daybydaybackend.music_movie.recommend_music_movie.recommend_music import MusicEmotionRecommender
@@ -123,27 +124,29 @@ def get_main_recommendations(request):
     # 1. 최근 5개 일기 및 감정정보 조회 (select_related 적용으로 N+1 문제 해소)
     diaries = Diary.objects.filter(user=request.user).select_related('emotion')[:5]
     
-    # 2. 감정 데이터 추출 및 평균 계산
+    # 2. 작성된 일기가 아예 없거나 감정 분석 데이터가 하나도 없는 신규 유저 예외 처리 (Option A)
     emotions = [d.emotion for d in diaries if hasattr(d, 'emotion') and d.emotion is not None]
     
     if not emotions:
-        # 일기가 없는 경우 평온한 상태(Valence=0.0, Arousal=0.0)를 기본 상태로 하는 Fallback 데이터 적용
-        avg_emotion = {
-            'joy': 0.0, 'sadness': 0.0, 'anger': 0.0, 'fear': 0.0, 'trust': 0.0, 'surprise': 0.0,
-            'valence': 0.0, 'arousal': 0.0
-        }
-    else:
-        count = len(emotions)
-        avg_emotion = {
-            'joy': round(sum(e.joy for e in emotions) / count, 4),
-            'sadness': round(sum(e.sadness for e in emotions) / count, 4),
-            'anger': round(sum(e.anger for e in emotions) / count, 4),
-            'fear': round(sum(e.fear for e in emotions) / count, 4),
-            'trust': round(sum(e.trust for e in emotions) / count, 4),
-            'surprise': round(sum(e.surprise for e in emotions) / count, 4),
-            'valence': round(sum(e.valence for e in emotions) / count, 4),
-            'arousal': round(sum(e.arousal for e in emotions) / count, 4),
-        }
+        return Response({
+            'has_diaries': False,
+            'emotion_status': None,
+            'books': [],
+            'music': [],
+            'movies': []
+        }, status=status.HTTP_200_OK)
+        
+    count = len(emotions)
+    avg_emotion = {
+        'joy': round(sum(e.joy for e in emotions) / count, 4),
+        'sadness': round(sum(e.sadness for e in emotions) / count, 4),
+        'anger': round(sum(e.anger for e in emotions) / count, 4),
+        'fear': round(sum(e.fear for e in emotions) / count, 4),
+        'trust': round(sum(e.trust for e in emotions) / count, 4),
+        'surprise': round(sum(e.surprise for e in emotions) / count, 4),
+        'valence': round(sum(e.valence for e in emotions) / count, 4),
+        'arousal': round(sum(e.arousal for e in emotions) / count, 4),
+    }
         
     # 3. 6차원 감정 기반 음악 및 영화와 보조를 맞춰 책 추천 6D 호출
     user_6d_emotion = {
@@ -158,15 +161,6 @@ def get_main_recommendations(request):
     books = recommend_books(user_6d_emotion, mode='maintain', count=2)
     
     # 4. 6차원 음악 및 영화 추천 API 호출
-    user_6d_emotion = {
-        'joy': avg_emotion['joy'],
-        'sadness': avg_emotion['sadness'],
-        'anger': avg_emotion['anger'],
-        'fear': avg_emotion['fear'],
-        'trust': avg_emotion['trust'],
-        'surprise': avg_emotion['surprise'],
-    }
-
     music_recommender = MusicEmotionRecommender()
     movie_recommender = MovieEmotionRecommender()
     music_result = music_recommender.recommend_music(user_6d_emotion, load_music_data(), mode='maintain', top_n=2)
@@ -189,6 +183,7 @@ def get_main_recommendations(request):
     serialized_movies = movie_result.get('recommendations', [])
     
     return Response({
+        'has_diaries': True,
         'emotion_status': avg_emotion,
         'books': serialized_books,
         'music': serialized_music,
