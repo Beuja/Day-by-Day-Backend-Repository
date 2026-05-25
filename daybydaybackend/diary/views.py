@@ -189,3 +189,113 @@ def get_main_recommendations(request):
         'music': serialized_music,
         'movies': serialized_movies
     }, status=status.HTTP_200_OK)
+
+
+@swagger_auto_schema(
+    method='get',
+    operation_summary="월별 캘린더 감정 조회 (해시맵 방식)",
+    operation_description="연도(year)와 월(month)을 입력받아 해당 월의 일기 작성 데이터 및 감정 요약본을 날짜별(YYYY-MM-DD) 해시맵 구조로 반환합니다. 작성된 일기가 없는 날짜는 키에서 누락되며, 일기가 아예 없는 월은 has_diaries=False가 내려갑니다.",
+    security=[{'Token': []}],
+    manual_parameters=[
+        openapi.Parameter('year', openapi.IN_QUERY, description="조회할 연도 (예: 2026)", type=openapi.TYPE_INTEGER, required=False),
+        openapi.Parameter('month', openapi.IN_QUERY, description="조회할 월 (예: 5)", type=openapi.TYPE_INTEGER, required=False),
+    ],
+    responses={
+        200: openapi.Response('조회 성공', openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'has_diaries': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="해당 월에 작성된 일기 존재 여부"),
+                'year': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'month': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'calendar_data': openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    description="날짜를 Key로 하는 캘린더 감정 해시맵",
+                    additional_properties=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'diary_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                            'weather': openapi.Schema(type=openapi.TYPE_STRING),
+                            'primary_emotion': openapi.Schema(type=openapi.TYPE_STRING, description="대표 감정 한글명"),
+                            'emotion_key': openapi.Schema(type=openapi.TYPE_STRING, description="대표 감정 영문 식별자"),
+                            'preview': openapi.Schema(type=openapi.TYPE_STRING, description="20자 내외 내용 미리보기"),
+                        }
+                    )
+                )
+            }
+        )),
+        401: '인증되지 않은 사용자'
+    }
+)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_calendar_view(request):
+    import calendar
+    import re
+    from datetime import date
+    
+    # 1. 쿼리 파라미터 파싱 및 기본값(오늘 기준) 세팅
+    today = date.today()
+    try:
+        year = int(request.query_params.get('year', today.year))
+        month = int(request.query_params.get('month', today.month))
+        if not (1 <= month <= 12):
+            raise ValueError
+    except (TypeError, ValueError):
+        return Response({'message': '유효하지 않은 연도 또는 월 형식입니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    # 2. 해당 월의 시작일과 마지막일 범위 산출
+    start_date = date(year, month, 1)
+    last_day = calendar.monthrange(year, month)[1]
+    end_date = date(year, month, last_day)
+    
+    # 3. 로그인된 유저의 일기 중 범위 내에 포함되는 데이터 로드 (select_related로 N+1 방지)
+    diaries = Diary.objects.filter(
+        user=request.user,
+        created_at__date__range=(start_date, end_date)
+    ).select_related('emotion')
+    
+    # 4. 해시맵 조립
+    calendar_data = {}
+    for diary in diaries:
+        date_str = diary.created_at.date().strftime("%Y-%m-%d")
+        emotion = getattr(diary, 'emotion', None)
+        
+        # 기본 감정 정보 세팅
+        emotion_key = "neutral"
+        primary_emotion = "알수없음"
+        
+        if emotion:
+            primary_emotion = emotion.primary_emotion
+            
+            # Plutchik 6대 기본 감정 수치 대조
+            emotion_values = {
+                'joy': getattr(emotion, 'joy', 0.0),
+                'sadness': getattr(emotion, 'sadness', 0.0),
+                'anger': getattr(emotion, 'anger', 0.0),
+                'fear': getattr(emotion, 'fear', 0.0),
+                'trust': getattr(emotion, 'trust', 0.0),
+                'surprise': getattr(emotion, 'surprise', 0.0),
+            }
+            # 감정 중 최대값을 지닌 감정의 영문 식별자(emotion_key)를 도출
+            if any(val > 0.0 for val in emotion_values.values()):
+                emotion_key = max(emotion_values, key=emotion_values.get)
+                
+        # 본문 미리보기 정제 (20글자 내외)
+        clean_content = re.sub(r'\s+', ' ', diary.content).strip()
+        preview = clean_content[:20] + '...' if len(clean_content) > 20 else clean_content
+        
+        calendar_data[date_str] = {
+            "diary_id": diary.id,
+            "weather": diary.weather,
+            "primary_emotion": primary_emotion,
+            "emotion_key": emotion_key,
+            "preview": preview
+        }
+        
+    return Response({
+        "has_diaries": bool(calendar_data),
+        "year": year,
+        "month": month,
+        "calendar_data": calendar_data
+    }, status=status.HTTP_200_OK)
