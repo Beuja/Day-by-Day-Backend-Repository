@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Diary, DiaryEmotion
-
+from daybydaybackend.music_movie.models import Movie, Music
+from daybydaybackend.books.models import Book
 
 class DiaryEmotionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,3 +28,18 @@ class DiaryCreateRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diary
         fields = ['content', 'weather', 'image']
+
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = '__all__'
+
+class MovieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = '__all__'
+
+class MusicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Music
+        fields = '__all__'
