@@ -101,3 +101,8 @@ def _primary_emotion(emotions: dict) -> str:
     return label_map[key]
 
 
+def analyze_emotion_with_gemini(text: str) -> dict:
+    """
+    하위 호환용 함수. 기존 호출부를 위해 유지하며 내부적으로 하이브리드 분석을 사용한다.
+    """
+    return analyze_emotion_hybrid(text)
