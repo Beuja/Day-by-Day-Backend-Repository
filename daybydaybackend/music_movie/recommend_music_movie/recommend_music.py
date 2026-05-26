@@ -27,7 +27,7 @@ def _get_target_emotion_vector(u_vec, mode):
     target_vec = list(u_vec)
     
     if mode == 'shift':
-        # 💡 [알고리즘 교정] 정반대 감정으로 기분 전환 스위칭(Cross-Inversion)
+        # 정반대 감정으로 기분 전환 스위칭(Cross-Inversion)
         target_vec[0] = u_vec[1] # joy <- sadness
         target_vec[1] = u_vec[0] # sadness <- joy
         target_vec[2] = u_vec[4] # anger <- trust
@@ -41,7 +41,6 @@ def _get_target_emotion_vector(u_vec, mode):
             target_vec[4] = 0.5
             
     elif mode == 'amplification':
-        # 가장 지배적인 감정을 더욱 증폭하고 나머지는 억제
         max_val = max(target_vec)
         if max_val > 0:
             max_idx = target_vec.index(max_val)
@@ -58,19 +57,16 @@ def _get_direction_weights(u_vec, mode):
         return weights
         
     elif mode == 'shift':
-        # 스위칭된 새 목표 감정(Target)에 집중하도록 가중치 동적 부여
         target = _get_target_emotion_vector(u_vec, mode)
         weights = [2.0 if t > 0.5 else 1.0 for t in target]
         
     elif mode == 'amplification':
         max_emotion_idx = u_vec.index(max(u_vec))
-        # 💡 [알고리즘 교정] 극대화를 위해 해당 감정의 거리 점수 가중치를 3.0으로 높임
         weights[max_emotion_idx] = 3.0 
     return weights
 
 def _calculate_euclidean(u_vec, b_vec, w_vec):
     euclidean_dist = math.sqrt(sum(w * ((u - b) ** 2) for u, b, w in zip(u_vec, b_vec, w_vec)))
-    # 💡 [알고리즘 교정] 최대 거리를 구하는 수학 공식 분모 버그 수정
     max_euclidean = math.sqrt(sum(w_vec)) 
     if max_euclidean == 0:
         return 0.0
@@ -92,7 +88,6 @@ class MusicEmotionRecommender:
         target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
         w_vec = _get_direction_weights(u_vec, mode)
         
-        # shift는 정반대의 감정을 찾아야 하므로 반경 한계를 넓게 잡음
         radius_limit = 0.5 if mode == 'maintain' else (1.2 if mode == 'shift' else 0.8)
         alpha = 0.5
         filtered_and_scored = []

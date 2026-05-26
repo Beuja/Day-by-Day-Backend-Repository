@@ -27,7 +27,7 @@ def _get_target_emotion_vector(u_vec, mode):
     target_vec = list(u_vec)
     
     if mode == 'shift':
-        # 💡 [알고리즘 교정] 정반대 감정으로 기분 전환 스위칭(Cross-Inversion)
+        # 정반대 감정으로 기분 전환 스위칭(Cross-Inversion)
         target_vec[0] = u_vec[1] 
         target_vec[1] = u_vec[0] 
         target_vec[2] = u_vec[4] 
@@ -97,7 +97,7 @@ class MovieEmotionRecommender:
                 cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
                 emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
                 
-                # 💡 [알고리즘 교정] 영화 인기도(popularity) 점수 덮어쓰기 현상 차단 (10만 -> 500 스케일 축소)
+                # 영화 인기도 점수 비율 스케일 축소
                 popularity = float(movie.get('popularity', 0.0))
                 popularity_score = min(1.0, popularity / 500.0)
                 final_score = (emotion_score * 0.8) + ((1.0 - popularity_score) * 0.2)

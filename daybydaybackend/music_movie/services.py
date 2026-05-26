@@ -75,7 +75,7 @@ def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str,
     res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
     
     # 알고리즘 track_id 수치를 마스터 음악 테이블 고유 PK id와 싱크 얼라인
-    recommended_track_ids = [track['track_id'] for track in res['recommendations']]
+    recommended_track_ids = [track.track_id for track in res['recommendations']]
     music_instances = Music.objects.filter(id__in=recommended_track_ids)
     
     daily_rec.music.set(music_instances)
@@ -94,7 +94,7 @@ def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str,
     res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
     
     # 알고리즘 내부 movie_id 출력을 마스터 영화 테이블 프라이머리 키인 tmdb_id와 매핑
-    recommended_movie_ids = [movie['movie_id'] for movie in res['recommendations']]
+    recommended_movie_ids = [movie.movie_id for movie in res['recommendations']]
     movie_instances = Movie.objects.filter(tmdb_id__in=recommended_movie_ids)
     
     daily_rec.movies.set(movie_instances)

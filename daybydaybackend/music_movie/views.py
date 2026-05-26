@@ -58,13 +58,12 @@ movie_recommendation_response_schema = openapi.Schema(
 def recommend_music_view(request, diary_id):
     diary_obj = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
     
-    # 1. 달력 클릭 시 과거 저장 데이터 복원 조회 (GET)
     if request.method == 'GET':
         data = services.get_saved_music_metadata(diary_obj)
         serializer = serializers.MusicResponseSerializer(data, many=True)
-        return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
+        # diary DB에 mode 컬럼이 없으므로 GET 요청 시 상태값을 알 수 없음을 명시
+        return Response({"mode": "기록없음(diary DB 연동필요)", "recommendations": serializer.data}, status=status.HTTP_200_OK)
         
-    # 2. 일기 작성 완료 후 최초 추천 결과 저장 연산 (POST)
     elif request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
         req_serializer.is_valid(raise_exception=True)
@@ -72,7 +71,6 @@ def recommend_music_view(request, diary_id):
         mode = req_serializer.validated_data.get('mode', 'maintain')
         count = req_serializer.validated_data.get('count', 3)
         
-        # diary 앱에 저장된 6차원 emotion 값을 그대로 사용
         raw_emotion = getattr(diary_obj, 'emotion', None)
         user_6d_emotion = {
             'joy': getattr(raw_emotion, 'joy', 0.0),
@@ -107,13 +105,12 @@ def recommend_music_view(request, diary_id):
 def recommend_movie_view(request, diary_id):
     diary_obj = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
     
-    # 1. 달력 클릭 시 과거 저장 데이터 복원 조회 (GET)
     if request.method == 'GET':
         data = services.get_saved_movie_metadata(diary_obj)
         serializer = serializers.MovieResponseSerializer(data, many=True)
-        return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
+        # diary DB에 mode 컬럼이 없으므로 GET 요청 시 상태값을 알 수 없음을 명시
+        return Response({"mode": "기록없음(diary DB 연동필요)", "recommendations": serializer.data}, status=status.HTTP_200_OK)
         
-    # 2. 일기 작성 완료 후 최초 추천 결과 저장 연산 (POST)
     elif request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
         req_serializer.is_valid(raise_exception=True)
