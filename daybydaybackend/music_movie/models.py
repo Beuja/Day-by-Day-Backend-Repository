@@ -46,6 +46,7 @@ class Movie(models.Model):
     
     release_date = models.DateField(null=True, blank=True)
     poster_path = models.CharField(max_length=255, null=True, blank=True)
+    director = models.CharField(max_length=255, null=True, blank=True)
     
     # [정렬 패치] Books 모델 스펙에 맞춘 개별 감정 컬럼 분리 구축
     joy = models.FloatField(default=0.0, null=True, blank=True)
