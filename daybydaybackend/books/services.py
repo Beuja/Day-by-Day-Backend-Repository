@@ -20,10 +20,15 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
         t_norm = 1e-9
 
     # 태그 0,0,0,0,0,0,0,0 인 책은 추천에서 제외 (리뷰 부족)
-    all_books = Book.objects.filter(~Q(valence=0.0) & ~Q(arousal=0.0), link__isnull=False, joy__isnull=False)
+    all_books = Book.objects.filter(
+        ~Q(valence=0.0) & ~Q(arousal=0.0) 
+        & ~Q(joy=0.0) & ~Q(sadness=0.0) & ~Q(anger=0.0) & ~Q(fear=0.0) & ~Q(trust=0.0) & ~Q(surprise=0.0),
+        link__isnull=False, joy__isnull=False
+    )
 
     filtered_and_scored = []
-    
+    fallback_list = []
+
     # 감정 범위 임계값
     if mode == 'maintain':
         radius_limit = 0.4
@@ -42,39 +47,27 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
             book.joy, book.sadness, book.anger, 
             book.fear, book.trust, book.surprise
         ])
-        # 순수 유클리드 거리
+
         pure_distance = np.sqrt(np.sum((target_vec - b_vec) ** 2))
+        norm_euclidean = _calculate_euclidean(target_vec, b_vec)
+        cosine_dist = _calculate_cosine(target_vec, b_vec, t_norm)
 
+        final_score = (alpha * norm_euclidean) + ((1.0 - alpha) * cosine_dist)
+        
+        # 임계값 내에 있는 콘텐츠만 filtered_and_scored에 추가
         if pure_distance <= radius_limit:
-            norm_euclidean = _calculate_euclidean(target_vec, b_vec)
-            cosine_dist = _calculate_cosine(target_vec, b_vec, t_norm)
+            filtered_and_scored.append((final_score, book)) 
 
-            # 최종 점수
-            final_score = (alpha * norm_euclidean) + ((1.0 - alpha) * cosine_dist)
-            filtered_and_scored.append((final_score, book))
+        fallback_list.append((final_score, book, pure_distance))
 
-    filtered_and_scored.sort(key=lambda x: x[0])
+    if len(filtered_and_scored) >= count:
+        filtered_and_scored.sort(key=lambda x: x[0])
+        return [item[1] for item in filtered_and_scored[:count]], False
 
-    # Fallback: if no books fall within the emotional radius (prevents empty recommendation for bland emotions)
-    if not filtered_and_scored:
-        fallback_list = []
-        for book in all_books:
-            b_vec = np.array([
-                book.joy, book.sadness, book.anger, 
-                book.fear, book.trust, book.surprise
-            ])
-            pure_distance = np.sqrt(np.sum((target_vec - b_vec) ** 2))
-            norm_euclidean = _calculate_euclidean(target_vec, b_vec)
-            cosine_dist = _calculate_cosine(target_vec, b_vec, t_norm)
-            final_score = (alpha * norm_euclidean) + ((1.0 - alpha) * cosine_dist)
-            
-            fallback_list.append((final_score, book, pure_distance))
-            
-        # Sort by absolute emotional distance to yield the closest match
-        fallback_list.sort(key=lambda x: x[2])
-        return [item[1] for item in fallback_list[:count]], True
+    # 추천 콘텐츠 수 < count 일 떄
+    fallback_list.sort(key=lambda x: x[0])
+    return [item[1] for item in fallback_list[:count]], True
 
-    return [item[1] for item in filtered_and_scored[:count]], False
 
 def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
     daily_rec, _ = DailyRecommended.objects.get_or_create(diary=diary_obj)
