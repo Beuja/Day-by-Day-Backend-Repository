@@ -11,6 +11,7 @@ class Book(models.Model):
     description = models.TextField()
     link = models.URLField(null=True, blank=True)
     is_review_crawled = models.BooleanField(default=False)
+    cover_url = models.URLField(null=True, blank=True)
     
     # 2차원 감정 벡터
     valence = models.FloatField(null=True, blank=True)

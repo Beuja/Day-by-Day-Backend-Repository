@@ -14,26 +14,82 @@ from . import serializers
 from . import services
 
 
-music_recommendation_response_schema = openapi.Schema(
+diary_id_path_parameter = openapi.Parameter(
+    name='diary_id',
+    in_=openapi.IN_PATH,
+    description='추천 대상 일기 ID',
+    type=openapi.TYPE_INTEGER,
+    required=True,
+)
+
+music_properties = {
+    'track_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="음악 트랙 ID"),
+    'title': openapi.Schema(type=openapi.TYPE_STRING, description="음악 제목"),
+    'artist': openapi.Schema(type=openapi.TYPE_STRING, description="아티스트명"),
+    'image_url': openapi.Schema(type=openapi.TYPE_STRING, description="앨범 커버 이미지 URL"),
+    'tags': openapi.Schema(
+        type=openapi.TYPE_ARRAY,
+        items=openapi.Schema(type=openapi.TYPE_STRING),
+        description="음악 태그 리스트"
+    ),
+    'score': openapi.Schema(type=openapi.TYPE_NUMBER, description="감정 가중치 및 대중성 반영 추천 매칭 점수 (낮을수록 감정과 가깝거나 매칭도가 높은 순위)"),
+}
+
+movie_properties = {
+    'movie_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="영화 ID"),
+    'title': openapi.Schema(type=openapi.TYPE_STRING, description="영화 제목"),
+    'director': openapi.Schema(type=openapi.TYPE_STRING, description="감독명"),
+    'image_url': openapi.Schema(type=openapi.TYPE_STRING, description="영화 포스터 이미지 URL"),
+    'tags': openapi.Schema(
+        type=openapi.TYPE_ARRAY,
+        items=openapi.Schema(type=openapi.TYPE_STRING),
+        description="영화 태그 리스트"
+    ),
+    'score': openapi.Schema(type=openapi.TYPE_NUMBER, description="감정 가중치 및 대중성 반영 추천 매칭 점수 (낮을수록 감정과 가깝거나 매칭도가 높은 순위)"),
+}
+
+music_get_response_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        'mode': openapi.Schema(type=openapi.TYPE_STRING, description='추천 전략'),
         'recommendations': openapi.Schema(
             type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(type=openapi.TYPE_OBJECT),
-            description='추천된 음악 목록',
+            items=openapi.Schema(type=openapi.TYPE_OBJECT, properties=music_properties),
+            description='일기 상세에 저장 및 복원된 음악 추천 목록',
         ),
     },
 )
 
-movie_recommendation_response_schema = openapi.Schema(
+music_post_response_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        'mode': openapi.Schema(type=openapi.TYPE_STRING, description='추천 전략'),
+        'mode': openapi.Schema(type=openapi.TYPE_STRING, description='적용된 음악 추천 전략 모드 (maintain, shift, amplification)'),
         'recommendations': openapi.Schema(
             type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(type=openapi.TYPE_OBJECT),
-            description='추천된 영화 목록',
+            items=openapi.Schema(type=openapi.TYPE_OBJECT, properties=music_properties),
+            description='감정 기반으로 실시간 맞춤 생성된 추천 음악 목록',
+        ),
+    },
+)
+
+movie_get_response_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'recommendations': openapi.Schema(
+            type=openapi.TYPE_ARRAY,
+            items=openapi.Schema(type=openapi.TYPE_OBJECT, properties=movie_properties),
+            description='일기 상세에 저장 및 복원된 영화 추천 목록',
+        ),
+    },
+)
+
+movie_post_response_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'mode': openapi.Schema(type=openapi.TYPE_STRING, description='적용된 영화 추천 전략 모드 (maintain, shift, amplification)'),
+        'recommendations': openapi.Schema(
+            type=openapi.TYPE_ARRAY,
+            items=openapi.Schema(type=openapi.TYPE_OBJECT, properties=movie_properties),
+            description='감정 기반으로 실시간 맞춤 생성된 추천 영화 목록',
         ),
     },
 )
@@ -43,14 +99,15 @@ movie_recommendation_response_schema = openapi.Schema(
     method='get',
     operation_summary='저장된 음악 추천 조회',
     operation_description='일기 상세에 저장된 음악 추천 결과를 복원해서 반환합니다. 현재는 6차원 감정 벡터 기반 추천이 기본이며, 하위 호환용 2D(valence/arousal) 추천 로직도 서비스 계층에 함께 존재합니다.',
-    responses={200: openapi.Response('조회 성공', music_recommendation_response_schema)},
+    manual_parameters=[diary_id_path_parameter],
+    responses={200: openapi.Response('조회 성공', music_get_response_schema)},
 )
 @swagger_auto_schema(
     method='post',
     operation_summary='감정 기반 음악 추천 생성',
     operation_description='일기의 6차원 감정 벡터를 기반으로 음악 추천 결과를 생성합니다. 요청 바디의 mode 파라미터를 통해 세 가지 추천 전략 중 하나를 사용할 수 있습니다.\n\n- maintain: 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 음악을 추천합니다 (기본값).\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 밝은 감정으로 전환(Shift)할 수 있는 음악을 추천합니다.\n- amplification: 현재의 신나고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 신나는 음악을 추천합니다.',
     request_body=serializers.ContentRecommendationRequestSerializer,
-    responses={200: openapi.Response('생성 성공', music_recommendation_response_schema)},
+    responses={200: openapi.Response('생성 성공', music_post_response_schema)},
 )
 @api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
@@ -98,14 +155,15 @@ def recommend_music_view(request, diary_id):
     method='get',
     operation_summary='저장된 영화 추천 조회',
     operation_description='일기 상세에 저장된 영화 추천 결과를 복원해서 반환합니다. 현재는 6차원 감정 벡터 기반 추천이 기본이며, 하위 호환용 2D(valence/arousal) 추천 로직도 서비스 계층에 함께 존재합니다.',
-    responses={200: openapi.Response('조회 성공', movie_recommendation_response_schema)},
+    manual_parameters=[diary_id_path_parameter],
+    responses={200: openapi.Response('조회 성공', movie_get_response_schema)},
 )
 @swagger_auto_schema(
     method='post',
     operation_summary='감정 기반 영화 추천 생성',
     operation_description='일기의 6차원 감정 벡터를 기반으로 영화 추천 결과를 생성합니다. 요청 바디의 mode 파라미터를 통해 세 가지 추천 전략 중 하나를 사용할 수 있습니다.\n\n- maintain : 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 영화를 추천합니다 (기본값).\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 편안한 감정으로 전환(Shift)할 수 있는 영화를 추천합니다.\n- amplification: 현재의 행복하고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 흥미진진한 영화를 추천합니다.',
     request_body=serializers.ContentRecommendationRequestSerializer,
-    responses={200: openapi.Response('생성 성공', movie_recommendation_response_schema)},
+    responses={200: openapi.Response('생성 성공', movie_post_response_schema)},
 )
 @api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])

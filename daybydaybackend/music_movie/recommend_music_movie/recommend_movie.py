@@ -70,6 +70,7 @@ def _calculate_euclidean(u_vec, b_vec, w_vec):
 
 def _calculate_cosine(u_vec, b_vec, u_norm):
     b_norm = math.sqrt(sum(b ** 2 for b in b_vec)) or 1e-9
+    b_norm = math.sqrt(sum(b ** 2 for b in b_vec)) or 1e-9
     dot_product = sum(u * b for u, b in zip(u_vec, b_vec))
     return 1.0 - (dot_product / (u_norm * b_norm))
 
@@ -77,8 +78,13 @@ class MovieEmotionRecommender:
     def recommend_movies(self, user_emotion, movie_data, mode='maintain', top_n=3):
         from daybydaybackend.music_movie.models import Movie
         
+        from daybydaybackend.music_movie.models import Movie
+        
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
+        
+        target_vec = _get_target_emotion_vector(u_vec, mode)
+        target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
         
         target_vec = _get_target_emotion_vector(u_vec, mode)
         target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
@@ -89,6 +95,8 @@ class MovieEmotionRecommender:
         filtered_and_scored = []
         
         for movie in movie_data:
+            b_vec = [float(movie.get(k, 0.0) or 0.0) for k in ordered_keys]
+            pure_distance = math.sqrt(sum((t_val - b) ** 2 for t_val, b in zip(target_vec, b_vec)))
             b_vec = [float(movie.get(k, 0.0) or 0.0) for k in ordered_keys]
             pure_distance = math.sqrt(sum((t_val - b) ** 2 for t_val, b in zip(target_vec, b_vec)))
             

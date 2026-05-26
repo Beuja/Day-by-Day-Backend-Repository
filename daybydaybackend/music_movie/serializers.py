@@ -1,3 +1,4 @@
+# music_movie/serializers.py
 from rest_framework import serializers
 
 class ContentRecommendationRequestSerializer(serializers.Serializer):
@@ -17,31 +18,9 @@ class ContentRecommendationRequestSerializer(serializers.Serializer):
 class MusicResponseSerializer(serializers.Serializer):
     track_id = serializers.SerializerMethodField()
     title = serializers.CharField()
-    artist = serializers.SerializerMethodField()
-    image_url = serializers.SerializerMethodField()
-    tags = serializers.SerializerMethodField()
-    score = serializers.SerializerMethodField()
-
-    def get_track_id(self, obj):
-        if hasattr(obj, 'id'): return obj.id
-        return obj.get('track_id') if isinstance(obj, dict) else None
-
-    def get_artist(self, obj):
-        if hasattr(obj, 'artist'): return obj.artist if obj.artist else ''
-        return obj.get('artist', '') if isinstance(obj, dict) else ''
-
-    def get_image_url(self, obj):
-        if hasattr(obj, 'image_url'): return obj.image_url if obj.image_url else ''
-        return obj.get('image_url', '') if isinstance(obj, dict) else ''
-
-    def get_tags(self, obj):
-        if hasattr(obj, 'tags'): return obj.tags if isinstance(obj.tags, list) else []
-        return obj.get('tags', []) if isinstance(obj, dict) else []
-
-    def get_score(self, obj):
-        if hasattr(obj, 'score'): return obj.score
-        return obj.get('score', 0.0) if isinstance(obj, dict) else 0.0
-
+    artist = serializers.CharField(allow_blank=True, required=False, default='')
+    image_url = serializers.URLField(allow_blank=True, required=False, default='')
+    tags = serializers.ListField(child=serializers.CharField(), default=list)
 
 class MovieResponseSerializer(serializers.Serializer):
     movie_id = serializers.SerializerMethodField()
