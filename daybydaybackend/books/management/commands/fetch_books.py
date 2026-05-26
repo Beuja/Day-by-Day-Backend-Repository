@@ -24,15 +24,13 @@ class Command(BaseCommand):
             'CategoryId': '1',  # 소설 / 시 / 희곡 카테고리
             'output': 'js',
             'Version': '20131101',
-            'OptResult': 'description',
-            'Cover': 'Big'
+            'OptResult': 'description'
         }
 
         try:
             response = requests.get(url, params=params)
             items = response.json().get('item', [])
             saved_count = 0
-            updated_count = 0
 
             for item in items:
                 self.stdout.write(f"저장 시도: {item.get('title')}")
@@ -50,16 +48,10 @@ class Command(BaseCommand):
                         'category': full_category.split('>')[-1] if full_category else '기타',
                         'description': item.get('description', ''),
                         'link': item.get('link'),
-                        'cover_url': item.get('cover', '')
                     }
                 )
                 if created:
                     saved_count += 1
-                    self.stdout.write(f"신규 저장: {book.title}")
-                else:
-                    updated_count += 1
-                    self.stdout.write(f"기존 업데이트: {book.title}")
-
             self.stdout.write(self.style.SUCCESS(f"도서 수집 완료 ({saved_count}개 저장)"))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"오류: {e}"))
