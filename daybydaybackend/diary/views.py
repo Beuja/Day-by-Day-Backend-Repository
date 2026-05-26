@@ -248,8 +248,13 @@ def get_main_recommendations(request):
             'arousal': b.arousal,
         })
         
-    serialized_music = music_result.get('recommendations', [])
-    serialized_movies = movie_result.get('recommendations', [])
+    from daybydaybackend.music_movie.serializers import MusicResponseSerializer, MovieResponseSerializer
+
+    music_objects = music_result.get('recommendations', [])
+    movie_objects = movie_result.get('recommendations', [])
+
+    serialized_music = MusicResponseSerializer(music_objects, many=True).data
+    serialized_movies = MovieResponseSerializer(movie_objects, many=True).data
     
     return Response({
         'has_diaries': True,
