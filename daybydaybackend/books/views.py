@@ -121,4 +121,4 @@ def recommend_books_views(request, diary_id):
 
     books, is_fallback = get_or_create_book_recommendation(diary, user_6d_emotion, mode, count)
     serializer = BookSerializer(books, many=True)
-    return Response({"mode": mode, "recommendations": serializer.data}, status=status.HTTP_200_OK)
+    return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": serializer.data}, status=status.HTTP_200_OK)
