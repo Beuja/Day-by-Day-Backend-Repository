@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 
-from daybydaybackend.diary.models import Diary
+from daybydaybackend.diary.models import Diary, DailyRecommended
 from . import serializers
 from . import services
 
@@ -61,8 +61,16 @@ def recommend_music_view(request, diary_id):
     if request.method == 'GET':
         data = services.get_saved_music_metadata(diary_obj)
         serializer = serializers.MusicResponseSerializer(data, many=True)
-        # diary DB에 mode 컬럼이 없으므로 GET 요청 시 상태값을 알 수 없음을 명시
-        return Response({"mode": "기록없음(diary DB 연동필요)", "recommendations": serializer.data}, status=status.HTTP_200_OK)
+        
+        # DB에서 저장된 모드를 직접 읽어와 반환합니다
+        mode = "maintain"
+        try:
+            daily_rec = DailyRecommended.objects.get(diary=diary_obj)
+            mode = getattr(daily_rec, 'mode', 'maintain')
+        except DailyRecommended.DoesNotExist:
+            pass
+            
+        return Response({"mode": mode, "recommendations": serializer.data}, status=status.HTTP_200_OK)
         
     elif request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
@@ -108,8 +116,16 @@ def recommend_movie_view(request, diary_id):
     if request.method == 'GET':
         data = services.get_saved_movie_metadata(diary_obj)
         serializer = serializers.MovieResponseSerializer(data, many=True)
-        # diary DB에 mode 컬럼이 없으므로 GET 요청 시 상태값을 알 수 없음을 명시
-        return Response({"mode": "기록없음(diary DB 연동필요)", "recommendations": serializer.data}, status=status.HTTP_200_OK)
+        
+        # DB에서 저장된 모드를 직접 읽어와 반환합니다
+        mode = "maintain"
+        try:
+            daily_rec = DailyRecommended.objects.get(diary=diary_obj)
+            mode = getattr(daily_rec, 'mode', 'maintain')
+        except DailyRecommended.DoesNotExist:
+            pass
+            
+        return Response({"mode": mode, "recommendations": serializer.data}, status=status.HTTP_200_OK)
         
     elif request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
