@@ -13,7 +13,8 @@ from drf_yasg import openapi
 from .models import Diary
 from .serializers import (
     DiarySerializer, AnalyzeEmotionRequestSerializer,
-    DiaryCreateRequestSerializer
+    DiaryCreateRequestSerializer,
+    MainRecommendationResponseSerializer, CalendarResponseSerializer
 )
 from . import services
 
@@ -23,6 +24,7 @@ main_recommendation_response_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
         'has_diaries': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="해당 유저의 최근 일기 작성 데이터가 존재하여 추천이 가능한지 여부"),
+        'is_fallback': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="도서 추천이 사용량 부족 등으로 인해 대체(Fallback) 추천되었는지 여부"),
         'emotion_status': openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -196,6 +198,7 @@ def get_main_recommendations(request):
     if not emotions:
         return Response({
             'has_diaries': False,
+            'is_fallback': False,
             'emotion_status': None,
             'books': [],
             'music': [],
@@ -224,7 +227,7 @@ def get_main_recommendations(request):
         'surprise': avg_emotion['surprise'],
     }
     
-    books = recommend_books(user_6d_emotion, mode='maintain', count=2)
+    books, is_fallback = recommend_books(user_6d_emotion, mode='maintain', count=2)
     
     # 4. 6차원 음악 및 영화 추천 API 호출
     music_recommender = MusicEmotionRecommender()
@@ -250,6 +253,7 @@ def get_main_recommendations(request):
     
     return Response({
         'has_diaries': True,
+        'is_fallback': is_fallback,
         'emotion_status': avg_emotion,
         'books': serialized_books,
         'music': serialized_music,
