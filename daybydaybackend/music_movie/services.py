@@ -63,6 +63,11 @@ def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str,
     res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
     music_instances = res['recommendations']
     daily_rec.music.set(music_instances)
+    
+    # 💡 [버그 수정] 추천을 생성(POST)할 때 사용된 mode를 명시적으로 DB에 저장합니다!
+    daily_rec.mode = mode
+    daily_rec.save()
+    
     return music_instances
 
 def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
@@ -75,6 +80,11 @@ def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str,
     res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
     movie_instances = res['recommendations']
     daily_rec.movies.set(movie_instances)
+    
+    # 💡 [버그 수정] 추천을 생성(POST)할 때 사용된 mode를 명시적으로 DB에 저장합니다!
+    daily_rec.mode = mode
+    daily_rec.save()
+    
     return movie_instances
 
 def get_saved_music_metadata(diary_obj):
@@ -94,6 +104,10 @@ def get_saved_music_metadata(diary_obj):
     target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
     w_vec = _get_direction_weights(u_vec, mode)
     
+    if mode == 'maintain': alpha = 0.90
+    elif mode == 'amplification': alpha = 0.10
+    else: alpha = 0.50
+    
     restored_music = []
     for music in daily_rec.music.all():
         b_vec = [getattr(music, 'joy', 0.0), getattr(music, 'sadness', 0.0), getattr(music, 'anger', 0.0), getattr(music, 'fear', 0.0), getattr(music, 'trust', 0.0), getattr(music, 'surprise', 0.0)]
@@ -103,7 +117,7 @@ def get_saved_music_metadata(diary_obj):
             
         norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
         cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
-        emotion_score = (0.5 * norm_euclidean) + (0.5 * cosine_dist)
+        emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
         
         popularity = float(getattr(music, 'listeners', 0) or 0)
         popularity_score = min(1.0, popularity / 50000000.0)
@@ -137,6 +151,10 @@ def get_saved_movie_metadata(diary_obj):
     target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
     w_vec = _get_direction_weights(u_vec, mode)
 
+    if mode == 'maintain': alpha = 0.90
+    elif mode == 'amplification': alpha = 0.10
+    else: alpha = 0.50
+
     restored_movies = []
     for movie in daily_rec.movies.all():
         b_vec = [getattr(movie, 'joy', 0.0), getattr(movie, 'sadness', 0.0), getattr(movie, 'anger', 0.0), getattr(movie, 'fear', 0.0), getattr(movie, 'trust', 0.0), getattr(movie, 'surprise', 0.0)]
@@ -146,7 +164,7 @@ def get_saved_movie_metadata(diary_obj):
             
         norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
         cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
-        emotion_score = (0.5 * norm_euclidean) + (0.5 * cosine_dist)
+        emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
         
         popularity = float(getattr(movie, 'popularity', 0.0) or 0.0)
         popularity_score = min(1.0, popularity / 500.0)
