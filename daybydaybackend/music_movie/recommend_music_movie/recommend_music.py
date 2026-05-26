@@ -140,8 +140,47 @@ class MusicEmotionRecommender:
         # 거리가 가까운 순으로 오름차순 정렬 처리
         filtered_and_scored.sort(key=lambda x: x['score'])
         
-        return {
-            'mode': mode,
-            'radius_limit': radius_limit,
-            'recommendations': filtered_and_scored[:top_n]
-        }
+        # [예외 복구 분기]
+        if not filtered_and_scored:
+            fallback_list = []
+            for track in music_data:
+                b_vec = [float(track.get(k, 0.0) or 0.0) for k in ordered_keys]
+                pure_distance = math.sqrt(sum((t_val - b) ** 2 for t_val, b in zip(target_vec, b_vec)))
+                norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
+                cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
+                emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
+                
+                popularity = int(track.get('listeners', 0))
+                popularity_score = min(1.0, popularity / 1000000)
+                final_score = (emotion_score * 0.8) + ((1.0 - popularity_score) * 0.2)
+                
+                fallback_list.append(({'track_id': track.get('track_id'), 'score': round(final_score, 4)}, pure_distance))
+            
+            fallback_list.sort(key=lambda x: x[1])
+            selected_tracks = fallback_list[:top_n]
+            track_ids = [item[0]['track_id'] for item in selected_tracks]
+            
+            music_map = {m.id: m for m in Music.objects.filter(id__in=track_ids)}
+            recommended_tracks = []
+            for item in selected_tracks:
+                tid = item[0]['track_id']
+                if tid in music_map:
+                    obj = music_map[tid]
+                    obj.score = item[0]['score'] # 💡 에러 방지용 점수 주입!
+                    recommended_tracks.append(obj)
+            return {"recommendations": recommended_tracks}
+        
+        # [정상 매칭 분기]
+        selected_tracks = filtered_and_scored[:top_n]
+        track_ids = [t['track_id'] for t in selected_tracks]
+        music_map = {m.id: m for m in Music.objects.filter(id__in=track_ids)}
+        
+        recommended_tracks = []
+        for t in selected_tracks:
+            tid = t['track_id']
+            if tid in music_map:
+                obj = music_map[tid]
+                obj.score = t['score'] # 💡 에러 방지용 점수 주입
+                recommended_tracks.append(obj)
+                
+        return {"recommendations": recommended_tracks}

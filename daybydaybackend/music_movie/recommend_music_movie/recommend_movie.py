@@ -125,18 +125,32 @@ class MovieEmotionRecommender:
                 popularity_score = min(1.0, popularity / 100000)
                 final_score = (emotion_score * 0.8) + ((1.0 - popularity_score) * 0.2)
                 
-                filtered_and_scored.append({
-                    'movie_id': movie.get('movie_id'),
-                    'title': movie.get('title'),
-                    'director': movie.get('director'),
-                    'image_url': movie.get('image_url', ''),
-                    'tags': orig_tags,
-                    'score': round(final_score, 4)
-                })
+                fallback_list.append(({'movie_id': movie.get('movie_id'), 'score': round(final_score, 4)}, pure_distance))
+                
+            fallback_list.sort(key=lambda x: x[1])
+            selected_movies = fallback_list[:top_n]
+            movie_ids = [item[0]['movie_id'] for item in selected_movies]
+            
+            movie_map = {m.tmdb_id: m for m in Movie.objects.filter(tmdb_id__in=movie_ids)}
+            recommended_movies = []
+            for item in selected_movies:
+                mid = item[0]['movie_id']
+                if mid in movie_map:
+                    obj = movie_map[mid]
+                    obj.score = item[0]['score'] # 💡 에러 방지용 점수 주입
+                    recommended_movies.append(obj)
+            return {"recommendations": recommended_movies}
 
-        filtered_and_scored.sort(key=lambda x: x['score'])
-        return {
-            'mode': mode,
-            'radius_limit': radius_limit,
-            'recommendations': filtered_and_scored[:top_n]
-        }
+        # [정상 매칭 분기]
+        selected_movies = filtered_and_scored[:top_n]
+        movie_ids = [m['movie_id'] for m in selected_movies]
+        movie_map = {m.tmdb_id: m for m in Movie.objects.filter(tmdb_id__in=movie_ids)}
+        
+        recommended_movies = []
+        for m in selected_movies:
+            mid = m['movie_id']
+            if mid in movie_map:
+                obj = movie_map[mid]
+                obj.score = m['score'] # 💡 에러 방지용 점수 주입
+                recommended_movies.append(obj)
+        return {"recommendations": recommended_movies}
