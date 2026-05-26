@@ -117,7 +117,7 @@ class MovieEmotionRecommender:
                 mid = item[0]['movie_id']
                 if mid in movie_map:
                     obj = movie_map[mid]
-                    obj.score = item[0]['score'] # 💡 에러 방지용 점수 주입!
+                    obj.score = item[0]['score'] # 💡 에러 방지용 점수 주입
                     recommended_movies.append(obj)
             return {"recommendations": recommended_movies}
 
