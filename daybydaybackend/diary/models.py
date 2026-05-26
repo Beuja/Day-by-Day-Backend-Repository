@@ -54,10 +54,14 @@ class DiaryEmotion(models.Model):
 
 #TODO: 일단 구현해 놓는 데이터 베이스 구조
 class DailyRecommended(models.Model):
-    diary = models.OneToOneField(Diary, on_delete=models.CASCADE, related_name='recommendation')
+    diary = models.ForeignKey(Diary, on_delete=models.CASCADE, related_name='recommendation')
     music = models.ManyToManyField('music_movie.Music', blank=True, related_name='daily_recommendations')
     movies = models.ManyToManyField('music_movie.Movie', blank=True, related_name='daily_recommendations')
     books = models.ManyToManyField('books.Book', blank=True, related_name='daily_recommendations')
+    mode = models.CharField(max_length=20, default='maintain')
+    
+    class Meta:
+        unique_together = ('diary', 'mode')
 
     def __str__(self):
         return f"Recommendation for Diary {self.diary.id}"

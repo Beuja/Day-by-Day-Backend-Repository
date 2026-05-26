@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import Book
 from .services import get_or_create_book_recommendation, get_saved_book_metadata
-from .serializers import BookSerializer, ContentRecommendationRequestSerializer
+from .serializers import BookSerializer, ContentRecommendationRequestSerializer, DailyRecommendedSerializer
 
 from daybydaybackend.diary.models import Diary
 
@@ -100,7 +100,7 @@ def recommend_books_views(request, diary_id):
 
     if request.method == 'GET':
         books = get_saved_book_metadata(diary)
-        serializer = BookSerializer(books, many=True)
+        serializer = DailyRecommendedSerializer(books, many=True)
         return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
 
     req_serializer = ContentRecommendationRequestSerializer(data=request.data)

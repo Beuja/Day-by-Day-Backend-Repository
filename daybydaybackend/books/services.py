@@ -65,25 +65,30 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
         return [item[1] for item in filtered_and_scored[:count]], False
 
     # 추천 콘텐츠 수 < count 일 떄
-    fallback_list.sort(key=lambda x: x[0])
+    fallback_list.sort(key=lambda x: x[2])
     return [item[1] for item in fallback_list[:count]], True
 
 
 def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
-    daily_rec, _ = DailyRecommended.objects.get_or_create(diary=diary_obj)
-    recommended_books, is_fallback = recommend_books(user_emotion=user_emotion, mode=mode, count=count)
+    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj, mode=mode)
+    saved_count = daily_rec.books.count()
 
-    daily_rec.books.set(recommended_books)
+    if created or saved_count == 0 or saved_count < count:
+        recommended_books, is_fallback = recommend_books(user_emotion=user_emotion, mode=mode, count=count)
+        # fallback 아닐 때만 저장
+        if not is_fallback:
+            daily_rec.books.set(recommended_books)
+    
+    else:
+        recommended_books = daily_rec.books.all()[:count]
+        is_fallback = False
+        
     return recommended_books, is_fallback
 
 
 def get_saved_book_metadata(diary_obj):
-    try:
-        daily_rec = DailyRecommended.objects.get(diary=diary_obj)
-    except DailyRecommended.DoesNotExist:
-        return []
+    return DailyRecommended.objects.filter(diary=diary_obj).prefetch_related('books')
 
-    return list(daily_rec.books.all())
 def _calculate_euclidean(t_vec: np.ndarray, b_vec: np.ndarray) -> float:
     # 가중 유클리드 거리 계산 및 정규화 (0~1 사이)
     ecuclidean_dist = np.sqrt(np.sum((t_vec - b_vec) ** 2))
