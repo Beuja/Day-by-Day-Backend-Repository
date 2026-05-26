@@ -1,6 +1,9 @@
 # books/models.py
 from django.db import models
 
+class BookManager(models.Manager):
+    def get_by_natural_key(self, isbn):
+        return self.get(isbn=isbn)
 
 class Book(models.Model):
     # ISBN을 기본키로 사용
@@ -25,8 +28,8 @@ class Book(models.Model):
     trust = models.FloatField(null=True, blank=True)
     surprise = models.FloatField(null=True, blank=True)
 
-    def __str__(self):
-        return self.title
+    def natural_key(self):
+        return (self.isbn,)
     
     class Meta:
         ordering = ['-title']
