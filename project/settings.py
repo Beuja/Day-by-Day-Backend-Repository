@@ -200,7 +200,6 @@ SWAGGER_SETTINGS = {
 # ===== API 키 설정 =====
 # Gemini API KEY (일기 감정 분석용)
 GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
-GEMINI_MODEL = env('GEMINI_MODEL', default='gemini-2.5-flash')
 
 # Aladin TTB API KEY (도서 추천용)
 ALADIN_TTB_KEY = env('ALADIN_TTB_KEY', default='')
