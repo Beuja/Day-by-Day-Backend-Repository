@@ -187,7 +187,6 @@ class Command(BaseCommand):
                             description=fields.get('description', ''),
                             link=fields.get('link', ''),
                             is_review_crawled=fields.get('is_review_crawled', False),
-                            cover_url=fields.get('cover_url', ''),
                             valence=fields.get('valence', 0.0),
                             arousal=fields.get('arousal', 0.0),
                             joy=fields.get('joy', 0.0),
