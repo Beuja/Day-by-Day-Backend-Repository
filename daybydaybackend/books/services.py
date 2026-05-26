@@ -102,24 +102,20 @@ def _calculate_cosine(t_vec: np.ndarray, b_vec: np.ndarray, t_norm: float) -> fl
     return 1.0 - cosine_sim
 
 def _get_target_emotion(u_vec: np.ndarray, mode: str) -> np.ndarray:
-    """추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성합니다."""
+    # 추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성
     target_vec = u_vec.copy()
     
-    # 인덱스: 0=joy, 1=sadness, 2=anger, 3=fear, 4=trust, 5=surprise
     if mode == 'shift':
-        # 부정적 감정은 완전히 지우지 않고 20% 수준으로 남겨 자연스러운 공감 유도
         target_vec[1] *= 0.2  # sadness
         target_vec[2] *= 0.2  # anger
         target_vec[3] *= 0.2  # fear
         
-        # 긍정적 감정 증대 (최대 1.0 제한)
         target_vec[0] = min(target_vec[0] + 0.5, 1.0)  # joy
         target_vec[4] = min(target_vec[4] + 0.4, 1.0)  # trust
         
     elif mode == 'amplification':
-        # 가장 지배적인 감정을 더욱 증폭
         max_idx = np.argmax(target_vec)
         target_vec[max_idx] = min(target_vec[max_idx] * 1.5, 1.0)
         
-    # maintain 모드일 경우는 target_vec이 u_vec과 동일
+    # maintain 모드일 경우
     return target_vec
