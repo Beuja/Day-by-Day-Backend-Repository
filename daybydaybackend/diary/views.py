@@ -12,88 +12,9 @@ from drf_yasg import openapi
 from .models import Diary, DailyRecommended
 from .serializers import (
     DiarySerializer, AnalyzeEmotionRequestSerializer,
-    DiaryCreateRequestSerializer,
-    MainRecommendationResponseSerializer, CalendarResponseSerializer
+    DiaryCreateRequestSerializer
 )
 from . import services
-
-
-# Swagger에 노출할 메인 추천 응답 스키마 상세 정의
-main_recommendation_response_schema = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    properties={
-        'has_diaries': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="해당 유저의 최근 일기 작성 데이터가 존재하여 추천이 가능한지 여부"),
-        'is_fallback': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="도서 추천이 사용량 부족 등으로 인해 대체(Fallback) 추천되었는지 여부"),
-        'emotion_status': openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'joy': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'sadness': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'anger': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'fear': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'trust': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'surprise': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'valence': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'arousal': openapi.Schema(type=openapi.TYPE_NUMBER),
-            },
-            description="최근 5개 일기의 Plutchik 6대 감정 평균 수치 (일기가 전혀 없으면 null)",
-            allow_null=True
-        ),
-        'books': openapi.Schema(
-            type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'isbn': openapi.Schema(type=openapi.TYPE_STRING, description="도서 ISBN 번호"),
-                    'title': openapi.Schema(type=openapi.TYPE_STRING, description="도서 제목"),
-                    'author': openapi.Schema(type=openapi.TYPE_STRING, description="저자 이름"),
-                    'cover_url': openapi.Schema(type=openapi.TYPE_STRING, description="도서 표지 자켓 이미지 URL"),
-                    'category': openapi.Schema(type=openapi.TYPE_STRING, description="도서 카테고리/장르"),
-                    'description': openapi.Schema(type=openapi.TYPE_STRING, description="도서 소개 미리보기 텍스트"),
-                }
-            ),
-            description="맞춤형 추천 도서 목록 2개 (일기가 전혀 없으면 빈 배열)"
-        ),
-        'music': openapi.Schema(
-            type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'track_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="음악 트랙 ID"),
-                    'title': openapi.Schema(type=openapi.TYPE_STRING, description="음악 제목"),
-                    'artist': openapi.Schema(type=openapi.TYPE_STRING, description="아티스트명"),
-                    'image_url': openapi.Schema(type=openapi.TYPE_STRING, description="앨범 커버 이미지 URL"),
-                    'tags': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_STRING),
-                        description="음악 태그 리스트"
-                    ),
-                    'score': openapi.Schema(type=openapi.TYPE_NUMBER, description="추천 매칭 점수 (낮을수록 매칭도 우수)"),
-                }
-            ),
-            description="맞춤형 추천 음악 목록 2개 (일기가 전혀 없으면 빈 배열)"
-        ),
-        'movies': openapi.Schema(
-            type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'movie_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="영화 ID"),
-                    'title': openapi.Schema(type=openapi.TYPE_STRING, description="영화 제목"),
-                    'director': openapi.Schema(type=openapi.TYPE_STRING, description="감독명"),
-                    'image_url': openapi.Schema(type=openapi.TYPE_STRING, description="영화 포스터 이미지 URL"),
-                    'tags': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_STRING),
-                        description="영화 태그 리스트"
-                    ),
-                    'score': openapi.Schema(type=openapi.TYPE_NUMBER, description="추천 매칭 점수 (낮을수록 매칭도 우수)"),
-                }
-            ),
-            description="맞춤형 추천 영화 목록 2개 (일기가 전혀 없으면 빈 배열)"
-        ),
-    }
-)
 
 
 # ===== 일기 작성 API =====
@@ -163,7 +84,7 @@ def analyze_diary_emotion(request):
 @swagger_auto_schema(
     method='get',
     operation_summary="메인 화면 통합 개인화 추천",
-    operation_description="최근 작성한 5개 일기의 감정을 종합 분석하여 책, 음악, 영화를 분야별로 2개씩 추출해 통합 반환합니다. 작성된 일기가 없는 신규 유저 시나리오(has_diaries=False, 빈 리스트 반환)도 상세히 표시됩니다.",
+    operation_description="최근 작성한 5개 일기의 감정을 종합 분석하여 책, 음악, 영화를 분야별로 2개씩 추출해 통합 반환합니다.",
     security=[{'Token': []}],
     manual_parameters=[
         openapi.Parameter('mode', openapi.IN_QUERY, description="추천 모드 (maintain, shift, amplification)", type=openapi.TYPE_STRING, required=False)
@@ -172,7 +93,7 @@ def analyze_diary_emotion(request):
         200: openapi.Response('추천 성공', openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'mode': openapi.Schema(type=openapi.TYPE_STRING, description="적용된 추천 전략 모드"), # 💡 모드 반환 추가
+                'mode': openapi.Schema(type=openapi.TYPE_STRING, description="적용된 추천 전략 모드"),
                 'emotion_status': openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     description='사용자의 분석된 평균 감정 상태'
@@ -195,7 +116,6 @@ def get_main_recommendations(request):
     from daybydaybackend.music_movie.services import load_music_data, load_movie_data
     from daybydaybackend.music_movie.serializers import MusicResponseSerializer, MovieResponseSerializer
     
-    # 💡 URL 파라미터에서 mode 읽어오기 (기본값 maintain)
     current_mode = request.query_params.get('mode', 'maintain')
     if current_mode not in ['maintain', 'shift', 'amplification']:
         current_mode = 'maintain'
@@ -227,7 +147,6 @@ def get_main_recommendations(request):
         
     user_6d_emotion = {k: avg_emotion[k] for k in ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']}
     
-    # 💡 하드코딩되었던 maintain을 동적 변수 current_mode 로 교체
     books = recommend_books(user_6d_emotion, mode=current_mode, count=2)
     
     music_recommender = MusicEmotionRecommender()
@@ -241,24 +160,23 @@ def get_main_recommendations(request):
     serialized_books = []
     for b in books:
         serialized_books.append({
-            'isbn': b.isbn,
-            'title': b.title,
-            'author': b.author,
-            'category': b.category,
-            'description': b.description[:100] + '...' if b.description and len(b.description) > 100 else (b.description or ""),
-            'valence': b.valence,
-            'arousal': b.arousal,
+            'isbn': getattr(b, 'isbn', ''),
+            'title': getattr(b, 'title', ''),
+            'author': getattr(b, 'author', ''),
+            'category': getattr(b, 'category', ''),
+            'description': getattr(b, 'description', '')[:100] + '...' if getattr(b, 'description', '') and len(getattr(b, 'description', '')) > 100 else (getattr(b, 'description', '') or ""),
+            'valence': getattr(b, 'valence', 0.0),
+            'arousal': getattr(b, 'arousal', 0.0),
         })
         
     serialized_music = MusicResponseSerializer(music_list, many=True).data
     serialized_movies = MovieResponseSerializer(movie_list, many=True).data
 
-    # 💡 분석 결과 DB 캐싱 및 모드(mode) 기록
     if diaries.exists():
         latest_diary = diaries[0]
         daily_rec, created = DailyRecommended.objects.get_or_create(diary=latest_diary)
         
-        daily_rec.mode = current_mode # 모드 저장
+        daily_rec.mode = current_mode
         
         book_pks = [b.pk for b in books]
         music_pks = [m.id if hasattr(m, 'id') else m.get('track_id') for m in music_list if m]
@@ -270,9 +188,86 @@ def get_main_recommendations(request):
         daily_rec.save()
 
     return Response({
-        'mode': current_mode, # 💡 최종 응답 상단에 모드 출력
+        'mode': current_mode,
         'emotion_status': avg_emotion,
         'books': serialized_books,
         'music': serialized_music,
         'movies': serialized_movies
+    }, status=status.HTTP_200_OK)
+
+
+# ===== 월별 캘린더 감정 조회 API (복구됨!) =====
+@swagger_auto_schema(
+    method='get',
+    operation_summary="월별 캘린더 감정 조회 (해시맵 방식)",
+    operation_description="연도(year)와 월(month)을 입력받아 해당 월의 일기 작성 데이터 및 감정 요약본을 날짜별(YYYY-MM-DD) 해시맵 구조로 반환합니다.",
+    security=[{'Token': []}],
+    manual_parameters=[
+        openapi.Parameter('year', openapi.IN_QUERY, description="조회할 연도", type=openapi.TYPE_INTEGER, required=False),
+        openapi.Parameter('month', openapi.IN_QUERY, description="조회할 월", type=openapi.TYPE_INTEGER, required=False),
+    ]
+)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_calendar_view(request):
+    import calendar
+    import re
+    from datetime import date
+    
+    today = date.today()
+    try:
+        year = int(request.query_params.get('year', today.year))
+        month = int(request.query_params.get('month', today.month))
+        if not (1 <= month <= 12):
+            raise ValueError
+    except (TypeError, ValueError):
+        return Response({'message': '유효하지 않은 연도 또는 월 형식입니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    start_date = date(year, month, 1)
+    last_day = calendar.monthrange(year, month)[1]
+    end_date = date(year, month, last_day)
+    
+    diaries = Diary.objects.filter(
+        user=request.user,
+        created_at__date__range=(start_date, end_date)
+    ).select_related('emotion')
+    
+    calendar_data = {}
+    for diary in diaries:
+        date_str = diary.created_at.date().strftime("%Y-%m-%d")
+        emotion = getattr(diary, 'emotion', None)
+        
+        emotion_key = "neutral"
+        primary_emotion = "알수없음"
+        
+        if emotion:
+            primary_emotion = emotion.primary_emotion
+            emotion_values = {
+                'joy': getattr(emotion, 'joy', 0.0),
+                'sadness': getattr(emotion, 'sadness', 0.0),
+                'anger': getattr(emotion, 'anger', 0.0),
+                'fear': getattr(emotion, 'fear', 0.0),
+                'trust': getattr(emotion, 'trust', 0.0),
+                'surprise': getattr(emotion, 'surprise', 0.0),
+            }
+            if any(val > 0.0 for val in emotion_values.values()):
+                emotion_key = max(emotion_values, key=emotion_values.get)
+                
+        clean_content = re.sub(r'\s+', ' ', diary.content).strip()
+        preview = clean_content[:20] + '...' if len(clean_content) > 20 else clean_content
+        
+        calendar_data[date_str] = {
+            "diary_id": diary.id,
+            "weather": diary.weather,
+            "primary_emotion": primary_emotion,
+            "emotion_key": emotion_key,
+            "preview": preview
+        }
+        
+    return Response({
+        "has_diaries": bool(calendar_data),
+        "year": year,
+        "month": month,
+        "calendar_data": calendar_data
     }, status=status.HTTP_200_OK)

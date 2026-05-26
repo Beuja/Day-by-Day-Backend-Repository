@@ -1,4 +1,3 @@
-# music_movie/services.py
 import json
 import os
 from daybydaybackend.diary.models import Diary, DailyRecommended
@@ -78,7 +77,6 @@ def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str,
     daily_rec.movies.set(movie_instances)
     return movie_instances
 
-# 💡 [버그 수정] 조회 시 0점 문제를 해결하기 위해 실시간 점수 재계산 도입
 def get_saved_music_metadata(diary_obj):
     try:
         daily_rec = DailyRecommended.objects.get(diary=diary_obj)
@@ -117,7 +115,7 @@ def get_saved_music_metadata(diary_obj):
             'artist': getattr(music, 'artist', ''),
             'image_url': getattr(music, 'image_url', ''),
             'tags': raw_tags,
-            'score': round(final_score, 4) # 실시간 점수 복구!
+            'score': round(final_score, 4)
         })
     restored_music.sort(key=lambda x: x['score'])
     return restored_music
@@ -157,10 +155,10 @@ def get_saved_movie_metadata(diary_obj):
         restored_movies.append({
             'movie_id': movie.tmdb_id,
             'title': movie.title,
-            'director': 'DB 모델에 감독 컬럼 없음', # 💡 공백 대신 명확한 사유 표시
+            'director': getattr(movie, 'director', ''),
             'image_url': movie.poster_path if movie.poster_path else '',
             'tags': movie_tags,
-            'score': round(final_score, 4) # 실시간 점수 복구!
+            'score': round(final_score, 4)
         })
     restored_movies.sort(key=lambda x: x['score'])
     return restored_movies
