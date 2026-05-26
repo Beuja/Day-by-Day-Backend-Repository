@@ -133,7 +133,7 @@ class MusicEmotionRecommender:
             tid = t['track_id']
             if tid in music_map:
                 obj = music_map[tid]
-                obj.score = t['score'] # 💡 에러 방지용 점수 주입!
+                obj.score = t['score'] # 💡 에러 방지용 점수 주입
                 recommended_tracks.append(obj)
                 
         return {"recommendations": recommended_tracks}
