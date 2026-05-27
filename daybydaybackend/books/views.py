@@ -72,13 +72,13 @@ book_properties = {
 @swagger_auto_schema(
     method='post',
     operation_summary="감정 기반 도서 추천",
-    operation_description='일기 감정 데이터를 기반으로 맞춤형 도서를 추천합니다. 요청 바디의 mode 파라미터를 통해 세 가지 추천 전략 중 하나를 사용할 수 있습니다.\n\n- maintain: 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 도서를 추천합니다 (기본값).\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 밝은 감정으로 전환(Shift)할 수 있는 도서를 추천합니다.\n- amplification: 현재의 신나고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 도서를 추천합니다.',
+    operation_description='일기 감정 데이터를 기반으로 맞춤형 도서를 추천합니다. 요청 바디의 mode 파라미터를 통해 추천 전략을 사용할 수 있습니다.\n\n- auto: 최근 5일간의 감정 누적 이력(평균 및 분산)을 분석하여 기분 유지(maintain), 전환(shift), 극대화(amplification) 중 가장 알맞은 전략을 백엔드에서 자율 결정합니다 (기본값).\n- maintain: 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 도서를 추천합니다.\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 밝은 감정으로 전환(Shift)할 수 있는 도서를 추천합니다.\n- amplification: 현재의 신나고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 도서를 추천합니다.',
     request_body=ContentRecommendationRequestSerializer,
     responses={
         200: openapi.Response('도서 추천 완료', openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'mode': openapi.Schema(type=openapi.TYPE_STRING, description="적용된 도서 추천 전략 모드 (maintain, shift, amplification)"),
+                'mode': openapi.Schema(type=openapi.TYPE_STRING, description="최종 결정 및 적용된 도서 추천 전략 모드 (maintain, shift, amplification)"),
                 'recommendations': openapi.Schema(
                     type=openapi.TYPE_ARRAY,
                     items=openapi.Schema(
@@ -106,8 +106,12 @@ def recommend_books_views(request, diary_id):
     req_serializer = ContentRecommendationRequestSerializer(data=request.data)
     req_serializer.is_valid(raise_exception=True)
 
-    mode = req_serializer.validated_data.get('mode', 'maintain')
+    mode = req_serializer.validated_data.get('mode', 'auto')
     count = req_serializer.validated_data.get('count', 3)
+
+    if mode == 'auto':
+        from daybydaybackend.diary.services import determine_auto_recommendation_mode
+        mode = determine_auto_recommendation_mode(request.user, diary)
 
     raw_emotion = getattr(diary, 'emotion', None)
     user_6d_emotion = {

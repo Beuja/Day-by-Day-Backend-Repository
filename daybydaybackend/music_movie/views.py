@@ -17,7 +17,7 @@ from .serializers import MusicDailyRecommendedSerializer, MovieDailyRecommendedS
 music_recommendation_response_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        'mode': openapi.Schema(type=openapi.TYPE_STRING, description='추천 전략'),
+        'mode': openapi.Schema(type=openapi.TYPE_STRING, description='최종 결정 및 적용된 추천 전략 모드 (maintain, shift, amplification)'),
         'recommendations': openapi.Schema(
             type=openapi.TYPE_ARRAY,
             items=openapi.Schema(type=openapi.TYPE_OBJECT),
@@ -29,7 +29,7 @@ music_recommendation_response_schema = openapi.Schema(
 movie_recommendation_response_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        'mode': openapi.Schema(type=openapi.TYPE_STRING, description='추천 전략'),
+        'mode': openapi.Schema(type=openapi.TYPE_STRING, description='최종 결정 및 적용된 추천 전략 모드 (maintain, shift, amplification)'),
         'recommendations': openapi.Schema(
             type=openapi.TYPE_ARRAY,
             items=openapi.Schema(type=openapi.TYPE_OBJECT),
@@ -48,7 +48,7 @@ movie_recommendation_response_schema = openapi.Schema(
 @swagger_auto_schema(
     method='post',
     operation_summary='감정 기반 음악 추천 생성',
-    operation_description='일기의 6차원 감정 벡터를 기반으로 음악 추천 결과를 생성합니다. 요청 바디의 mode 파라미터를 통해 세 가지 추천 전략 중 하나를 사용할 수 있습니다.\n\n- maintain: 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 음악을 추천합니다 (기본값).\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 밝은 감정으로 전환(Shift)할 수 있는 음악을 추천합니다.\n- amplification: 현재의 신나고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 신나는 음악을 추천합니다.',
+    operation_description='일기의 6차원 감정 벡터를 기반으로 음악 추천 결과를 생성합니다. 요청 바디의 mode 파라미터를 통해 추천 전략을 사용할 수 있습니다.\n\n- auto: 최근 5일간의 감정 누적 이력(평균 및 분산)을 분석하여 기분 유지(maintain), 전환(shift), 극대화(amplification) 중 가장 알맞은 전략을 백엔드에서 자율 결정합니다 (기본값).\n- maintain: 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 음악을 추천합니다.\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 밝은 감정으로 전환(Shift)할 수 있는 음악을 추천합니다.\n- amplification: 현재의 신나고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 신나는 음악을 추천합니다.',
     request_body=serializers.ContentRecommendationRequestSerializer,
     responses={200: openapi.Response('생성 성공', music_recommendation_response_schema)},
 )
@@ -67,8 +67,12 @@ def recommend_music_view(request, diary_id):
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
         req_serializer.is_valid(raise_exception=True)
         
-        mode = req_serializer.validated_data.get('mode', 'maintain')
+        mode = req_serializer.validated_data.get('mode', 'auto')
         count = req_serializer.validated_data.get('count', 3)
+        
+        if mode == 'auto':
+            from daybydaybackend.diary.services import determine_auto_recommendation_mode
+            mode = determine_auto_recommendation_mode(request.user, diary_obj)
         
         raw_emotion = getattr(diary_obj, 'emotion', None)
         user_6d_emotion = {
@@ -94,7 +98,7 @@ def recommend_music_view(request, diary_id):
 @swagger_auto_schema(
     method='post',
     operation_summary='감정 기반 영화 추천 생성',
-    operation_description='일기의 6차원 감정 벡터를 기반으로 영화 추천 결과를 생성합니다. 요청 바디의 mode 파라미터를 통해 세 가지 추천 전략 중 하나를 사용할 수 있습니다.\n\n- maintain : 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 영화를 추천합니다 (기본값).\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 편안한 감정으로 전환(Shift)할 수 있는 영화를 추천합니다.\n- amplification: 현재의 행복하고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 흥미진진한 영화를 추천합니다.',
+    operation_description='일기의 6차원 감정 벡터를 기반으로 영화 추천 결과를 생성합니다. 요청 바디의 mode 파라미터를 통해 추천 전략을 사용할 수 있습니다.\n\n- auto: 최근 5일간의 감정 누적 이력(평균 및 분산)을 분석하여 기분 유지(maintain), 전환(shift), 극대화(amplification) 중 가장 알맞은 전략을 백엔드에서 자율 결정합니다 (기본값).\n- maintain: 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 영화를 추천합니다.\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 편안한 감정으로 전환(Shift)할 수 있는 영화를 추천합니다.\n- amplification: 현재의 행복하고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 흥미진진한 영화를 추천합니다.',
     request_body=serializers.ContentRecommendationRequestSerializer,
     responses={200: openapi.Response('생성 성공', movie_recommendation_response_schema)},
 )
@@ -113,8 +117,12 @@ def recommend_movie_view(request, diary_id):
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
         req_serializer.is_valid(raise_exception=True)
         
-        mode = req_serializer.validated_data.get('mode', 'maintain')
+        mode = req_serializer.validated_data.get('mode', 'auto')
         count = req_serializer.validated_data.get('count', 3)
+        
+        if mode == 'auto':
+            from daybydaybackend.diary.services import determine_auto_recommendation_mode
+            mode = determine_auto_recommendation_mode(request.user, diary_obj)
         
         raw_emotion = getattr(diary_obj, 'emotion', None)
         user_6d_emotion = {

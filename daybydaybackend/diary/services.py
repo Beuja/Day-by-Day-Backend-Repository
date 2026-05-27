@@ -125,4 +125,100 @@ def get_user_recent_average_emotion(user):
     return avg_emotion, diaries
 
 
+def determine_auto_recommendation_mode(user, current_diary) -> str:
+    """
+    유저의 최근 5개 일기(현재 일기 포함)의 감정 데이터를 조회하고,
+    통계적 분산(Variance)과 평균을 계산하여 추천 모드를 자동으로 결정합니다.
+    """
+    from .models import DiaryEmotion, Diary
+    
+    # 1. 최근 5개 일기 수집 (현재 일기가 항상 맨 앞에 배치되도록 보장)
+    diaries = list(Diary.objects.filter(user=user).exclude(id=current_diary.id).order_by('-created_at')[:4])
+    diaries.insert(0, current_diary)
+    
+    emotions = []
+    for d in diaries:
+        try:
+            if hasattr(d, 'emotion') and d.emotion is not None:
+                emotions.append(d.emotion)
+        except DiaryEmotion.DoesNotExist:
+            continue
+            
+    if not emotions:
+        return 'maintain'
+        
+    # 과거 -> 현재 순서로 정렬
+    emotions.reverse()
+    count = len(emotions)
+    
+    # 2. 통계치 계산을 위한 부정 감정 리스트 수집
+    neg_keys = ['sadness', 'anger', 'fear']
+    neg_data = {key: [getattr(e, key, 0.0) or 0.0 for e in emotions] for key in neg_keys}
+    
+    def calc_mean_and_variance(data_list):
+        n = len(data_list)
+        if n == 0:
+            return 0.0, 0.0
+        mean_val = sum(data_list) / n
+        if n <= 1:
+            return mean_val, 0.0
+        variance_val = sum((x - mean_val) ** 2 for x in data_list) / (n - 1)
+        return mean_val, variance_val
+
+    # 3. 장기적 정서 고착(Stagnation) 여부 판정
+    # 규칙 A: 특정 부정 감정의 평균 >= 0.35 이고 분산 < 0.025 (표본 수가 2개 이상일 때)
+    stagnant_by_stats = False
+    for key in neg_keys:
+        mean_v, var_v = calc_mean_and_variance(neg_data[key])
+        if count >= 2 and mean_v >= 0.35 and var_v < 0.025:
+            stagnant_by_stats = True
+            break
+            
+    # 규칙 B: 연속 3일 이상 특정 부정 감정이 대표 감정으로 나타남
+    stagnant_by_continuity = False
+    if count >= 3:
+        neg_korean_labels = {'sadness': '슬픔', 'anger': '분노', 'fear': '두려움'}
+        primary_emotions = [e.primary_emotion for e in emotions]
+        
+        for label in neg_korean_labels.values():
+            consecutive = 0
+            for pe in primary_emotions:
+                if pe == label:
+                    consecutive += 1
+                    if consecutive >= 3:
+                        stagnant_by_continuity = True
+                        break
+                else:
+                    consecutive = 0
+            if stagnant_by_continuity:
+                break
+                
+    if stagnant_by_stats or stagnant_by_continuity:
+        return 'shift'
+        
+    # 4. 일시적 정서적 일탈(Volatility) 판정
+    # 평균은 높으나 분산이 크면(감정이 요동쳤으면) 일시적인 기분 스파이크로 해석
+    volatile_by_stats = False
+    for key in neg_keys:
+        mean_v, var_v = calc_mean_and_variance(neg_data[key])
+        if count >= 2 and mean_v >= 0.35 and var_v >= 0.025:
+            volatile_by_stats = True
+            break
+            
+    if volatile_by_stats:
+        return 'maintain'
+        
+    # 5. 긍정 정서의 지속 및 극대화(Amplification) 판정
+    current_emotion = emotions[-1]
+    if current_emotion.primary_emotion in ['기쁨', '신뢰']:
+        joy_data = [getattr(e, 'joy', 0.0) or 0.0 for e in emotions]
+        joy_mean, _ = calc_mean_and_variance(joy_data)
+        if joy_mean >= 0.3:
+            return 'amplification'
+            
+    # 6. 기본 상태
+    return 'maintain'
+
+
+
 
