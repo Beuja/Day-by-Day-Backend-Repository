@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from daybydaybackend.diary.models import DailyRecommended
 
 class ContentRecommendationRequestSerializer(serializers.Serializer):
     mode = serializers.ChoiceField(
@@ -12,7 +13,6 @@ class ContentRecommendationRequestSerializer(serializers.Serializer):
         help_text="감정 추천 전략 모드: maintain (현재 감정 유지), shift (반대 감정으로 전환), amplification (현재 감정 극대화)"
     )
     count = serializers.IntegerField(default=3, min_value=1, max_value=20, required=False)
-
 
 class MusicResponseSerializer(serializers.Serializer):
     track_id = serializers.SerializerMethodField()
@@ -72,3 +72,18 @@ class MovieResponseSerializer(serializers.Serializer):
     def get_score(self, obj):
         if hasattr(obj, 'score'): return obj.score
         return obj.get('score', 0.0) if isinstance(obj, dict) else 0.0
+
+
+class MusicDailyRecommendedSerializer(serializers.ModelSerializer):
+    musics = MusicResponseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = DailyRecommended
+        fields = ['mode', 'musics']
+
+class MovieDailyRecommendedSerializer(serializers.ModelSerializer):
+    movies = MovieResponseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = DailyRecommended
+        fields = ['mode', 'movies']

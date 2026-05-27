@@ -79,7 +79,8 @@ class MusicEmotionRecommender:
         radius_limit = 0.6 if mode == 'maintain' else (1.2 if mode == 'shift' else 0.8)
         alpha = 0.5
         filtered_and_scored = []
-        
+        fallback_list = []
+
         for track in music_data:
             b_vec = [float(track.get(k, 0.0) or 0.0) for k in ordered_keys]
             if sum(b_vec) < 0.01:
@@ -92,59 +93,33 @@ class MusicEmotionRecommender:
                 b_vec = build_6d_emotion_vector(raw_tags)
             
             pure_distance = math.sqrt(sum((t_val - b) ** 2 for t_val, b in zip(target_vec, b_vec)))
-            
+            norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
+            cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
+            emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
+                
+            popularity = float(track.get('listeners', 0) or 0)
+            popularity_score = min(1.0, popularity / 50000000.0)
+            # 💡 감정 점수 반영률 90%, 대중성 10% 로 조정 (동점 방지)
+            final_score = (emotion_score * 0.9) + ((1.0 - popularity_score) * 0.1)
+            track_info = {'track_id': track.get('track_id'), 'score': round(final_score, 4)}
+                
             if pure_distance <= radius_limit:
-                norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
-                cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
-                emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
-                
-                popularity = float(track.get('listeners', 0) or 0)
-                popularity_score = min(1.0, popularity / 50000000.0)
-                # 💡 감정 점수 반영률 90%, 대중성 10% 로 조정 (동점 방지)
-                final_score = (emotion_score * 0.9) + ((1.0 - popularity_score) * 0.1)
-                filtered_and_scored.append({'track_id': track.get('track_id'), 'score': round(final_score, 4)})
-                
-        filtered_and_scored.sort(key=lambda x: x['score'])
+                filtered_and_scored.append(track_info)
         
-        if not filtered_and_scored:
-            fallback_list = []
-            for track in music_data:
-                b_vec = [float(track.get(k, 0.0) or 0.0) for k in ordered_keys]
-                if sum(b_vec) < 0.01:
-                    raw_tags = track.get('tags', [])
-                    if isinstance(raw_tags, str):
-                        raw_tags = raw_tags.replace("'", '"')
-                        try: raw_tags = json.loads(raw_tags)
-                        except: raw_tags = [raw_tags]
-                    elif not isinstance(raw_tags, list): raw_tags = []
-                    b_vec = build_6d_emotion_vector(raw_tags)
+            fallback_list.append((track_info, pure_distance))
 
-                pure_distance = math.sqrt(sum((t_val - b) ** 2 for t_val, b in zip(target_vec, b_vec)))
-                norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
-                cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
-                emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
-                
-                popularity = float(track.get('listeners', 0) or 0)
-                popularity_score = min(1.0, popularity / 50000000.0)
-                final_score = (emotion_score * 0.95) + ((1.0 - popularity_score) * 0.05)
-                fallback_list.append(({'track_id': track.get('track_id'), 'score': round(final_score, 4)}, pure_distance))
-            
+        if len(filtered_and_scored) >= top_n:
+            filtered_and_scored.sort(key=lambda x: x['score'])
+            selected_tracks = filtered_and_scored[:top_n]
+            is_fallback = False
+        else:
             fallback_list.sort(key=lambda x: x[0]['score'])
-            selected_tracks = fallback_list[:top_n]
-            track_ids = [item[0]['track_id'] for item in selected_tracks]
-            music_map = {m.id: m for m in Music.objects.filter(id__in=track_ids)}
-            recommended_tracks = []
-            for item in selected_tracks:
-                tid = item[0]['track_id']
-                if tid in music_map:
-                    obj = music_map[tid]
-                    obj.score = item[0]['score']
-                    recommended_tracks.append(obj)
-            return {"recommendations": recommended_tracks}
-        
-        selected_tracks = filtered_and_scored[:top_n]
+            selected_tracks = [item[0] for item in fallback_list[:top_n]]
+            is_fallback = True
+
         track_ids = [t['track_id'] for t in selected_tracks]
         music_map = {m.id: m for m in Music.objects.filter(id__in=track_ids)}
+        
         recommended_tracks = []
         for t in selected_tracks:
             tid = t['track_id']
@@ -152,4 +127,8 @@ class MusicEmotionRecommender:
                 obj = music_map[tid]
                 obj.score = t['score']
                 recommended_tracks.append(obj)
-        return {"recommendations": recommended_tracks}
+
+        return {
+            "recommendations": recommended_tracks,
+            "is_fallback": is_fallback
+        }

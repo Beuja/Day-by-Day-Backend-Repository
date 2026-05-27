@@ -57,126 +57,53 @@ def convert_emotion_to_6d_vector(emotion_vector: dict) -> dict:
     }
 
 def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
-    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj)
-    music_data = load_music_data()
-    recommender = MusicEmotionRecommender()
-    res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
-    music_instances = res['recommendations']
-    daily_rec.music.set(music_instances)
-    
-    # 💡 [버그 수정] 추천을 생성(POST)할 때 사용된 mode를 명시적으로 DB에 저장합니다!
-    daily_rec.mode = mode
-    daily_rec.save()
-    
-    return music_instances
+    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj, mode=mode)
+    saved_count = daily_rec.musics.count()
+
+    if created or saved_count == 0 or saved_count < count:
+        music_data = load_music_data()
+        recommender = MusicEmotionRecommender()
+        res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
+        
+        music_instances = res.get('recommendations', [])
+        is_fallback = res.get('is_fallback', False) 
+        
+        # fallback이 아닐 때만 저장
+        if not is_fallback:
+            daily_rec.musics.set(music_instances)
+            
+    else:
+        music_instances = daily_rec.musics.all()[:count]
+        is_fallback = False
+        
+    return music_instances, is_fallback
 
 def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
-    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj)
-    movie_data = load_movie_data()
-    for movie in movie_data:
-        if isinstance(movie.get("genre"), list):
-            movie["genre"] = ", ".join(movie["genre"])
-    recommender = MovieEmotionRecommender()
-    res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
-    movie_instances = res['recommendations']
-    daily_rec.movies.set(movie_instances)
+    daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj, mode=mode)
+    saved_count = daily_rec.movies.count()
+
+    if created or saved_count == 0 or saved_count < count:
+        movie_data = load_movie_data()
+        for movie in movie_data:
+            if isinstance(movie.get("genre"), list):
+                movie["genre"] = ", ".join(movie["genre"])
+        recommender = MovieEmotionRecommender()
+        res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
+
+        movie_instances = res.get('recommendations', [])
+        is_fallback = res.get('is_fallback', False)
+
+        if not is_fallback:
+            daily_rec.movies.set(movie_instances)
+
+    else:
+        movie_instances = daily_rec.movies.all()[:count]
+        is_fallback = False
     
-    # 💡 [버그 수정] 추천을 생성(POST)할 때 사용된 mode를 명시적으로 DB에 저장합니다!
-    daily_rec.mode = mode
-    daily_rec.save()
-    
-    return movie_instances
+    return movie_instances, is_fallback
 
 def get_saved_music_metadata(diary_obj):
-    try:
-        daily_rec = DailyRecommended.objects.get(diary=diary_obj)
-    except DailyRecommended.DoesNotExist:
-        return []
-    
-    mode = getattr(daily_rec, 'mode', 'maintain')
-    raw_e = getattr(diary_obj, 'emotion', None)
-    u_vec = [getattr(raw_e, 'joy', 0.0), getattr(raw_e, 'sadness', 0.0), getattr(raw_e, 'anger', 0.0), getattr(raw_e, 'fear', 0.0), getattr(raw_e, 'trust', 0.0), getattr(raw_e, 'surprise', 0.0)]
-    
-    from .recommend_music_movie.recommend_music import _get_target_emotion_vector, _get_direction_weights, _calculate_euclidean, _calculate_cosine, build_6d_emotion_vector
-    import math
-    
-    target_vec = _get_target_emotion_vector(u_vec, mode)
-    target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
-    w_vec = _get_direction_weights(u_vec, mode)
-    
-    if mode == 'maintain': alpha = 0.90
-    elif mode == 'amplification': alpha = 0.10
-    else: alpha = 0.50
-    
-    restored_music = []
-    for music in daily_rec.music.all():
-        b_vec = [getattr(music, 'joy', 0.0), getattr(music, 'sadness', 0.0), getattr(music, 'anger', 0.0), getattr(music, 'fear', 0.0), getattr(music, 'trust', 0.0), getattr(music, 'surprise', 0.0)]
-        raw_tags = music.tags if isinstance(music.tags, list) else []
-        if sum(b_vec) < 0.01:
-            b_vec = build_6d_emotion_vector(raw_tags)
-            
-        norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
-        cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
-        emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
-        
-        popularity = float(getattr(music, 'listeners', 0) or 0)
-        popularity_score = min(1.0, popularity / 50000000.0)
-        final_score = (emotion_score * 0.95) + ((1.0 - popularity_score) * 0.05)
-        
-        restored_music.append({
-            'track_id': music.id,
-            'title': music.title,
-            'artist': getattr(music, 'artist', ''),
-            'image_url': getattr(music, 'image_url', ''),
-            'tags': raw_tags,
-            'score': round(final_score, 4)
-        })
-    restored_music.sort(key=lambda x: x['score'])
-    return restored_music
+    return DailyRecommended.objects.filter(diary=diary_obj).prefetch_related('musics')
 
 def get_saved_movie_metadata(diary_obj):
-    try:
-        daily_rec = DailyRecommended.objects.get(diary=diary_obj)
-    except DailyRecommended.DoesNotExist:
-        return []
-        
-    mode = getattr(daily_rec, 'mode', 'maintain')
-    raw_e = getattr(diary_obj, 'emotion', None)
-    u_vec = [getattr(raw_e, 'joy', 0.0), getattr(raw_e, 'sadness', 0.0), getattr(raw_e, 'anger', 0.0), getattr(raw_e, 'fear', 0.0), getattr(raw_e, 'trust', 0.0), getattr(raw_e, 'surprise', 0.0)]
-    
-    from .recommend_music_movie.recommend_movie import _get_target_emotion_vector, _get_direction_weights, _calculate_euclidean, _calculate_cosine, build_6d_emotion_vector
-    import math
-    
-    target_vec = _get_target_emotion_vector(u_vec, mode)
-    target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
-    w_vec = _get_direction_weights(u_vec, mode)
-
-    if mode == 'maintain': alpha = 0.90
-    elif mode == 'amplification': alpha = 0.10
-    else: alpha = 0.50
-
-    restored_movies = []
-    for movie in daily_rec.movies.all():
-        b_vec = [getattr(movie, 'joy', 0.0), getattr(movie, 'sadness', 0.0), getattr(movie, 'anger', 0.0), getattr(movie, 'fear', 0.0), getattr(movie, 'trust', 0.0), getattr(movie, 'surprise', 0.0)]
-        movie_tags = [movie.genre] if movie.genre else []
-        if sum(b_vec) < 0.01:
-            b_vec = build_6d_emotion_vector(movie_tags)
-            
-        norm_euclidean = _calculate_euclidean(target_vec, b_vec, w_vec)
-        cosine_dist = _calculate_cosine(target_vec, b_vec, target_norm)
-        emotion_score = (alpha * norm_euclidean) + ((1 - alpha) * cosine_dist)
-        
-        popularity = float(getattr(movie, 'popularity', 0.0) or 0.0)
-        popularity_score = min(1.0, popularity / 500.0)
-        final_score = (emotion_score * 0.95) + ((1.0 - popularity_score) * 0.05)
-        
-        restored_movies.append({
-            'movie_id': movie.tmdb_id,
-            'title': movie.title,
-            'director': getattr(movie, 'director', ''),
-            'image_url': movie.poster_path if movie.poster_path else '',
-            'tags': movie_tags,
-            'score': round(final_score, 4)
-        })
-    restored_movies.sort(key=lambda x: x['score'])
-    return restored_movies
+    return DailyRecommended.objects.filter(diary=diary_obj).prefetch_related('movies')
