@@ -26,9 +26,11 @@ class Command(BaseCommand):
 
         existing_isbns = set()
         for item in book_data_list:
-            fields = item.get('fields', item)
-            if 'isbn' in fields:
-                existing_isbns.add(fields['isbn'])
+            fields = item.get('fields', item) if isinstance(item, dict) else {}
+            
+            extracted_isbn = fields.get('isbn') or fields.get('isbn13') or item.get('isbn') or item.get('isbn13')
+            if extracted_isbn:
+                existing_isbns.add(str(extracted_isbn).strip())
 
         ttb_key = getattr(settings, 'ALADIN_TTB_KEY', None)
         if not ttb_key:
