@@ -168,12 +168,8 @@ class Command(BaseCommand):
                 with transaction.atomic():
                     for item in book_data:
                         # [장고 Fixture 픽스처 규격 유연 분석 가드]
-                        if 'fields' in item and 'pk' in item:
-                            isbn = item['pk']
-                            fields = item['fields']
-                        else:
-                            isbn = item.get('isbn') or item.get('isbn13')
-                            fields = item
+                        fields = item.get('fields', item)
+                        isbn = item.get('pk') or fields.get('isbn') or fields.get('isbn13')
                             
                         # isbn 유무 안전 점검
                         if not isbn:
@@ -186,6 +182,7 @@ class Command(BaseCommand):
                             category=fields.get('category', fields.get('categoryName', '')),
                             description=fields.get('description', ''),
                             link=fields.get('link', ''),
+                            cover_url=fields.get('cover_url', ''),
                             is_review_crawled=fields.get('is_review_crawled', False),
                             valence=fields.get('valence', 0.0),
                             arousal=fields.get('arousal', 0.0),
