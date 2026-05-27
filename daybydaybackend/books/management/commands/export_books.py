@@ -25,6 +25,7 @@ class Command(BaseCommand):
                     "description": book.description,
                     "link": book.link,
                     "cover_url": book.cover_url,
+                    "is_review_crawled": book.is_review_crawled,
                     "valence": book.valence,
                     "arousal": book.arousal,
                     "joy": book.joy,

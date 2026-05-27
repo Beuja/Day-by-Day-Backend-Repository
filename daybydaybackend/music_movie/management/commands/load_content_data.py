@@ -182,6 +182,7 @@ class Command(BaseCommand):
                             category=fields.get('category', fields.get('categoryName', '')),
                             description=fields.get('description', ''),
                             link=fields.get('link', ''),
+                            cover_url=fields.get('cover_url', ''),
                             is_review_crawled=fields.get('is_review_crawled', False),
                             valence=fields.get('valence', 0.0),
                             arousal=fields.get('arousal', 0.0),

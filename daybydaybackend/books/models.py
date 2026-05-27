@@ -1,10 +1,6 @@
 # books/models.py
 from django.db import models
 
-class BookManager(models.Manager):
-    def get_by_natural_key(self, isbn):
-        return self.get(isbn=isbn)
-
 class Book(models.Model):
     # ISBN을 기본키로 사용
     isbn = models.CharField(max_length=13, unique=True, primary_key=True)
@@ -13,6 +9,7 @@ class Book(models.Model):
     category = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField()
     link = models.URLField(null=True, blank=True)
+    cover_url = models.URLField(null=True, blank=True)
     is_review_crawled = models.BooleanField(default=False)
     
     # 2차원 감정 벡터
@@ -27,8 +24,8 @@ class Book(models.Model):
     trust = models.FloatField(null=True, blank=True)
     surprise = models.FloatField(null=True, blank=True)
 
-    def natural_key(self):
-        return (self.isbn,)
+    def __str__(self):
+        return self.title
     
     class Meta:
         ordering = ['-title']
