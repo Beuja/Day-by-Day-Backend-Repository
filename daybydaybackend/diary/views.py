@@ -179,20 +179,18 @@ main_recommendation_response_schema = openapi.Schema(
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_main_recommendations(request):
-    from daybydaybackend.books.services import recommend_books
-    from daybydaybackend.music_movie.recommend_music_movie.recommend_music import MusicEmotionRecommender
-    from daybydaybackend.music_movie.recommend_music_movie.recommend_movie import MovieEmotionRecommender
-    from daybydaybackend.music_movie.services import load_music_data, load_movie_data
+    from daybydaybackend.books.services import get_or_create_book_recommendation
+    from daybydaybackend.music_movie.services import get_or_create_music_recommendation, get_or_create_movie_recommendation
+    from daybydaybackend.diary.services import get_user_recent_average_emotion
     from daybydaybackend.music_movie.serializers import MusicResponseSerializer, MovieResponseSerializer
     
     current_mode = request.query_params.get('mode', 'maintain')
     if current_mode not in ['maintain', 'shift', 'amplification']:
         current_mode = 'maintain'
         
-    diaries = Diary.objects.filter(user=request.user).select_related('emotion')[:5]
-    emotions = [d.emotion for d in diaries if hasattr(d, 'emotion') and d.emotion is not None]
+    avg_emotion, diaries = get_user_recent_average_emotion(request.user)
     
-    if not emotions:
+    if not avg_emotion:
         return Response({
             'has_diaries': False,
             'is_fallback': False,
@@ -203,29 +201,12 @@ def get_main_recommendations(request):
             'movies': []
         }, status=status.HTTP_200_OK)
         
-    count = len(emotions)
-    avg_emotion = {
-        'joy': round(sum(e.joy for e in emotions) / count, 4),
-        'sadness': round(sum(e.sadness for e in emotions) / count, 4),
-        'anger': round(sum(e.anger for e in emotions) / count, 4),
-        'fear': round(sum(e.fear for e in emotions) / count, 4),
-        'trust': round(sum(e.trust for e in emotions) / count, 4),
-        'surprise': round(sum(e.surprise for e in emotions) / count, 4),
-        'valence': round(sum(e.valence for e in emotions) / count, 4),
-        'arousal': round(sum(e.arousal for e in emotions) / count, 4),
-    }
-        
+    latest_diary = diaries[0]
     user_6d_emotion = {k: avg_emotion[k] for k in ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']}
     
-    books, is_fallback = recommend_books(user_6d_emotion, mode=current_mode, count=2, user=request.user)
-    
-    music_recommender = MusicEmotionRecommender()
-    movie_recommender = MovieEmotionRecommender()
-    music_result = music_recommender.recommend_music(user_6d_emotion, load_music_data(), mode=current_mode, top_n=2, user=request.user)
-    movie_result = movie_recommender.recommend_movies(user_6d_emotion, load_movie_data(), mode=current_mode, top_n=2, user=request.user)
-    
-    music_list = music_result.get('recommendations', [])
-    movie_list = movie_result.get('recommendations', [])
+    books, is_fallback = get_or_create_book_recommendation(latest_diary, user_6d_emotion, current_mode, count=2, user=request.user)
+    music_list, is_fallback_music = get_or_create_music_recommendation(latest_diary, user_6d_emotion, current_mode, count=2, user=request.user)
+    movie_list, is_fallback_movie = get_or_create_movie_recommendation(latest_diary, user_6d_emotion, current_mode, count=2, user=request.user)
     
     serialized_books = []
     for b in books:
@@ -242,21 +223,6 @@ def get_main_recommendations(request):
     serialized_music = MusicResponseSerializer(music_list, many=True).data
     serialized_movies = MovieResponseSerializer(movie_list, many=True).data
 
-    if diaries.exists():
-        latest_diary = diaries[0]
-        daily_rec, created = DailyRecommended.objects.get_or_create(diary=latest_diary)
-        
-        daily_rec.mode = current_mode
-        
-        book_pks = [b.pk for b in books]
-        music_pks = [m.id if hasattr(m, 'id') else m.get('track_id') for m in music_list if m]
-        movie_pks = [m.tmdb_id if hasattr(m, 'tmdb_id') else m.get('movie_id') for m in movie_list if m]
-
-        daily_rec.books.set(book_pks)
-        daily_rec.music.set(music_pks)
-        daily_rec.movies.set(movie_pks)
-        daily_rec.save()
-
     return Response({
         'has_diaries': True,
         'is_fallback': is_fallback,
@@ -266,6 +232,7 @@ def get_main_recommendations(request):
         'music': serialized_music,
         'movies': serialized_movies
     }, status=status.HTTP_200_OK)
+
 
 
 # ===== 월별 캘린더 감정 조회 API (복구됨!) =====
