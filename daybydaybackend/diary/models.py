@@ -51,12 +51,10 @@ class DiaryEmotion(models.Model):
 
 class DailyRecommended(models.Model):
     diary = models.ForeignKey(Diary, on_delete=models.CASCADE, related_name='recommendation')
-    # 💡 [핵심] 조회 시 어떤 모드로 추천받았는지 알 수 있도록 모드 기록 컬럼 추가
     mode = models.CharField(max_length=20, default='maintain', help_text='추천이 생성된 감정 모드')
-    music = models.ManyToManyField('music_movie.Music', blank=True, related_name='daily_recommendations')
+    musics = models.ManyToManyField('music_movie.Music', blank=True, related_name='daily_recommendations')
     movies = models.ManyToManyField('music_movie.Movie', blank=True, related_name='daily_recommendations')
     books = models.ManyToManyField('books.Book', blank=True, related_name='daily_recommendations')
-    mode = models.CharField(max_length=20, default='maintain')
     
     class Meta:
         unique_together = ('diary', 'mode')
