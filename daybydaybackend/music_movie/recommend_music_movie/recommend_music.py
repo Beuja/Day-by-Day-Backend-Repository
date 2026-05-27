@@ -52,7 +52,7 @@ def _get_direction_weights(u_vec, mode):
     elif mode == 'amplification':
         max_emotion_idx = u_vec.index(max(u_vec)) if max(u_vec) > 0.01 else 0
         weights = [0.1] * 6
-        weights[max_emotion_idx] = 5.0 # 💡 감정 증폭 가중치 10배 상승
+        weights[max_emotion_idx] = 6.0 # 💡 감정 증폭 가중치 상승
     return weights
 
 def _calculate_euclidean(u_vec, b_vec, w_vec):
