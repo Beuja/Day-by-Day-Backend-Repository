@@ -101,3 +101,28 @@ def _primary_emotion(emotions: dict) -> str:
     return label_map[key]
 
 
+def get_user_recent_average_emotion(user):
+    """
+    유저의 최근 5개 일기의 감정 데이터를 평균내어 반환합니다.
+    일기 데이터가 없거나 감정 분석 결과가 없으면 None을 반환합니다.
+    """
+    diaries = Diary.objects.filter(user=user).select_related('emotion')[:5]
+    emotions = [d.emotion for d in diaries if hasattr(d, 'emotion') and d.emotion is not None]
+    if not emotions:
+        return None, diaries
+    
+    count = len(emotions)
+    avg_emotion = {
+        'joy': round(sum(e.joy for e in emotions) / count, 4),
+        'sadness': round(sum(e.sadness for e in emotions) / count, 4),
+        'anger': round(sum(e.anger for e in emotions) / count, 4),
+        'fear': round(sum(e.fear for e in emotions) / count, 4),
+        'trust': round(sum(e.trust for e in emotions) / count, 4),
+        'surprise': round(sum(e.surprise for e in emotions) / count, 4),
+        'valence': round(sum(e.valence for e in emotions) / count, 4),
+        'arousal': round(sum(e.arousal for e in emotions) / count, 4),
+    }
+    return avg_emotion, diaries
+
+
+
