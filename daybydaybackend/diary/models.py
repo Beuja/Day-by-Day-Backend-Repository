@@ -61,3 +61,29 @@ class DailyRecommended(models.Model):
 
     def __str__(self):
         return f"Recommendation for Diary {self.diary.id} ({self.mode})"
+
+
+class UserFeedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedbacks')
+    book = models.ForeignKey('books.Book', on_delete=models.CASCADE, null=True, blank=True, related_name='feedbacks')
+    music = models.ForeignKey('music_movie.Music', on_delete=models.CASCADE, null=True, blank=True, related_name='feedbacks')
+    movie = models.ForeignKey('music_movie.Movie', on_delete=models.CASCADE, null=True, blank=True, related_name='feedbacks')
+    is_like = models.BooleanField(help_text="True: 좋아요, False: 싫어요")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        constraints = [
+            # 유저가 특정 도서, 음악, 영화당 단 하나의 피드백만 기록할 수 있도록 조건부 유니크 제약 설정
+            models.UniqueConstraint(fields=['user', 'book'], name='unique_user_book_feedback', condition=models.Q(book__isnull=False)),
+            models.UniqueConstraint(fields=['user', 'music'], name='unique_user_music_feedback', condition=models.Q(music__isnull=False)),
+            models.UniqueConstraint(fields=['user', 'movie'], name='unique_user_movie_feedback', condition=models.Q(movie__isnull=False)),
+        ]
+
+    def __str__(self):
+        target = ""
+        if self.book: target = f"Book {self.book.isbn}"
+        elif self.music: target = f"Music {self.music.id}"
+        elif self.movie: target = f"Movie {self.movie.tmdb_id}"
+        opinion = "Like" if self.is_like else "Dislike"
+        return f"{self.user.username} - {target} ({opinion})"
