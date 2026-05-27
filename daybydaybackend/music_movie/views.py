@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 from daybydaybackend.diary.models import Diary, DailyRecommended
 from . import serializers
 from . import services
-
+from .serializers import MusicDailyRecommendedSerializer, MovieDailyRecommendedSerializer
 
 music_recommendation_response_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
@@ -60,19 +60,10 @@ def recommend_music_view(request, diary_id):
     
     if request.method == 'GET':
         data = services.get_saved_music_metadata(diary_obj)
-        serializer = serializers.MusicResponseSerializer(data, many=True)
+        serializer = MusicDailyRecommendedSerializer(data, many=True)
+        return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
         
-        # 💡 [버그 수정] DB에서 저장된 모드를 직접 읽어와 반환합니다!
-        mode = "maintain"
-        try:
-            daily_rec = DailyRecommended.objects.get(diary=diary_obj)
-            mode = getattr(daily_rec, 'mode', 'maintain')
-        except DailyRecommended.DoesNotExist:
-            pass
-            
-        return Response({"mode": mode, "recommendations": serializer.data}, status=status.HTTP_200_OK)
-        
-    elif request.method == 'POST':
+    if request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
         req_serializer.is_valid(raise_exception=True)
         
@@ -89,9 +80,9 @@ def recommend_music_view(request, diary_id):
             'surprise': getattr(raw_emotion, 'surprise', 0.0),
         }
         
-        data = services.get_or_create_music_recommendation(diary_obj, user_6d_emotion, mode, count)
-        res_serializer = serializers.MusicResponseSerializer(data, many=True)
-        return Response({"mode": mode, "recommendations": res_serializer.data}, status=status.HTTP_200_OK)
+        music_instances, is_fallback = services.get_or_create_music_recommendation(diary_obj, user_6d_emotion, mode, count)
+        res_serializer = serializers.MusicResponseSerializer(music_instances, many=True)
+        return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": res_serializer.data}, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(
@@ -112,22 +103,13 @@ def recommend_music_view(request, diary_id):
 @permission_classes([IsAuthenticated])
 def recommend_movie_view(request, diary_id):
     diary_obj = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
-    
+
     if request.method == 'GET':
         data = services.get_saved_movie_metadata(diary_obj)
-        serializer = serializers.MovieResponseSerializer(data, many=True)
+        serializer = MovieDailyRecommendedSerializer(data, many=True)
+        return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
         
-        # 💡 [버그 수정] DB에서 저장된 모드를 직접 읽어와 반환합니다!
-        mode = "maintain"
-        try:
-            daily_rec = DailyRecommended.objects.get(diary=diary_obj)
-            mode = getattr(daily_rec, 'mode', 'maintain')
-        except DailyRecommended.DoesNotExist:
-            pass
-            
-        return Response({"mode": mode, "recommendations": serializer.data}, status=status.HTTP_200_OK)
-        
-    elif request.method == 'POST':
+    if request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
         req_serializer.is_valid(raise_exception=True)
         
@@ -144,6 +126,6 @@ def recommend_movie_view(request, diary_id):
             'surprise': getattr(raw_emotion, 'surprise', 0.0),
         }
         
-        data = services.get_or_create_movie_recommendation(diary_obj, user_6d_emotion, mode, count)
-        res_serializer = serializers.MovieResponseSerializer(data, many=True)
-        return Response({"mode": mode, "recommendations": res_serializer.data}, status=status.HTTP_200_OK)
+        movie_instances, is_fallback = services.get_or_create_movie_recommendation(diary_obj, user_6d_emotion, mode, count)
+        res_serializer = serializers.MovieResponseSerializer(movie_instances, many=True)
+        return Response({"mode": mode,"is_fallback": is_fallback, "recommendations": res_serializer.data}, status=status.HTTP_200_OK)
