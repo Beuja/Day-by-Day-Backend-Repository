@@ -1,4 +1,3 @@
-# music_movie/serializers.py
 from rest_framework import serializers
 
 class ContentRecommendationRequestSerializer(serializers.Serializer):
@@ -14,6 +13,7 @@ class ContentRecommendationRequestSerializer(serializers.Serializer):
     )
     count = serializers.IntegerField(default=3, min_value=1, max_value=20, required=False)
 
+
 class MusicResponseSerializer(serializers.Serializer):
     track_id = serializers.SerializerMethodField()
     title = serializers.CharField()
@@ -23,12 +23,13 @@ class MusicResponseSerializer(serializers.Serializer):
     score = serializers.SerializerMethodField()
 
     def get_track_id(self, obj):
+        # 💡 [500 에러 해결] 객체면 id를, 딕셔너리이면 track_id를 유연하게 뽑아냅니다.
         if hasattr(obj, 'id'): return obj.id
         return obj.get('track_id') if isinstance(obj, dict) else None
 
     def get_artist(self, obj):
-        if hasattr(obj, 'artist'): return obj.artist if obj.artist else ''
-        return obj.get('artist', '') if isinstance(obj, dict) else ''
+        val = getattr(obj, 'artist', '') if not isinstance(obj, dict) else obj.get('artist', '')
+        return val if val else '아티스트 미상'
 
     def get_image_url(self, obj):
         if hasattr(obj, 'image_url'): return obj.image_url if obj.image_url else ''
@@ -41,6 +42,7 @@ class MusicResponseSerializer(serializers.Serializer):
     def get_score(self, obj):
         if hasattr(obj, 'score'): return obj.score
         return obj.get('score', 0.0) if isinstance(obj, dict) else 0.0
+
 
 class MovieResponseSerializer(serializers.Serializer):
     movie_id = serializers.SerializerMethodField()
@@ -55,8 +57,9 @@ class MovieResponseSerializer(serializers.Serializer):
         return obj.get('movie_id') if isinstance(obj, dict) else None
 
     def get_director(self, obj):
-        if hasattr(obj, 'director'): return obj.director if obj.director else ''
-        return obj.get('director', '') if isinstance(obj, dict) else ''
+        # 💡 [공백 해결] DB에 값이 아예 없거나, ""(빈 문자열)인 경우를 모두 잡아냅니다.
+        val = getattr(obj, 'director', '') if not isinstance(obj, dict) else obj.get('director', '')
+        return val if val else '감독 정보 없음'
 
     def get_image_url(self, obj):
         if hasattr(obj, 'poster_path'): return obj.poster_path if obj.poster_path else ''
