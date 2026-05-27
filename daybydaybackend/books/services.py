@@ -119,8 +119,8 @@ def _get_target_emotion(u_vec: np.ndarray, mode: str) -> np.ndarray:
         target_vec[4] = min(target_vec[4] + 0.4, 1.0)  # trust
         
     elif mode == 'amplification':
-        max_idx = np.argmax(target_vec)
-        target_vec[max_idx] = min(target_vec[max_idx] * 1.5, 1.0)
+        target_vec[0] = min((target_vec[0] + 0.2) * 1.5, 1.0)  # joy
+        target_vec[4] = min((target_vec[4] + 0.2) * 1.5, 1.0)  # trust
         
-    # maintain 모드일 경우
+    # maintain 모드일 경우 그대로
     return target_vec
