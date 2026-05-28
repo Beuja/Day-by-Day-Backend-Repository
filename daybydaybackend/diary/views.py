@@ -118,7 +118,7 @@ main_recommendation_response_schema = openapi.Schema(
             ),
             description="맞춤형 추천 도서 목록 2개 (일기가 전혀 없으면 빈 배열)"
         ),
-        'music': openapi.Schema(
+        'musics': openapi.Schema(
             type=openapi.TYPE_ARRAY,
             items=openapi.Schema(
                 type=openapi.TYPE_OBJECT,
@@ -198,7 +198,7 @@ def get_main_recommendations(request):
             'mode': current_mode,
             'emotion_status': None,
             'books': [],
-            'music': [],
+            'musics': [],
             'movies': []
         }, status=status.HTTP_200_OK)
         
@@ -216,15 +216,17 @@ def get_main_recommendations(request):
         
     user_6d_emotion = {k: avg_emotion[k] for k in ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']}
     
-    books, is_fallback = recommend_books(user_6d_emotion, mode=current_mode, count=2)
+    books, is_fallback_book = recommend_books(user_6d_emotion, mode=current_mode, count=2)
     
     music_recommender = MusicEmotionRecommender()
     movie_recommender = MovieEmotionRecommender()
-    music_result = music_recommender.recommend_music(user_6d_emotion, load_music_data(), mode=current_mode, top_n=2)
+    music_result = music_recommender.recommend_musics(user_6d_emotion, load_music_data(), mode=current_mode, top_n=2)
     movie_result = movie_recommender.recommend_movies(user_6d_emotion, load_movie_data(), mode=current_mode, top_n=2)
     
     music_list = music_result.get('recommendations', [])
+    is_fallback_music = music_result.get('is_fallback', False)
     movie_list = movie_result.get('recommendations', [])
+    is_fallback_movie = movie_result.get('is_fallback', False)
     
     serialized_books = []
     for b in books:
@@ -238,31 +240,34 @@ def get_main_recommendations(request):
             'arousal': getattr(b, 'arousal', 0.0),
         })
         
-    serialized_music = MusicResponseSerializer(music_list, many=True).data
+    serialized_musics = MusicResponseSerializer(music_list, many=True).data
     serialized_movies = MovieResponseSerializer(movie_list, many=True).data
 
     if diaries.exists():
         latest_diary = diaries[0]
-        daily_rec, created = DailyRecommended.objects.get_or_create(diary=latest_diary)
-        
-        daily_rec.mode = current_mode
+        daily_rec, created = DailyRecommended.objects.get_or_create(
+            diary=latest_diary,
+            mode=current_mode
+        )
         
         book_pks = [b.pk for b in books]
         music_pks = [m.id if hasattr(m, 'id') else m.get('track_id') for m in music_list if m]
         movie_pks = [m.tmdb_id if hasattr(m, 'tmdb_id') else m.get('movie_id') for m in movie_list if m]
 
         daily_rec.books.set(book_pks)
-        daily_rec.music.set(music_pks)
+        daily_rec.musics.set(music_pks)
         daily_rec.movies.set(movie_pks)
         daily_rec.save()
 
     return Response({
         'has_diaries': True,
-        'is_fallback': is_fallback,
+        'is_fallback_book': is_fallback_book,
+        'is_fallback_movie': is_fallback_movie,
+        'is_fallback_music': is_fallback_music,
         'mode': current_mode,
         'emotion_status': avg_emotion,
         'books': serialized_books,
-        'music': serialized_music,
+        'musics': serialized_musics,
         'movies': serialized_movies
     }, status=status.HTTP_200_OK)
 
