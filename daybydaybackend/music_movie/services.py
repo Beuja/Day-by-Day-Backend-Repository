@@ -125,7 +125,7 @@ def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str,
     if created or saved_count == 0 or saved_count < count:
         music_data = load_music_data()
         recommender = MusicEmotionRecommender()
-        res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
+        res = recommender.recommend_musics(user_emotion, music_data, mode=mode, top_n=count)
         
         music_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False) 
