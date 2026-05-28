@@ -119,7 +119,7 @@ main_recommendation_response_schema = openapi.Schema(
             ),
             description="맞춤형 추천 도서 목록 2개 (일기가 전혀 없으면 빈 배열)"
         ),
-        'music': openapi.Schema(
+        'musics': openapi.Schema(
             type=openapi.TYPE_ARRAY,
             items=openapi.Schema(
                 type=openapi.TYPE_OBJECT,
@@ -197,7 +197,7 @@ def get_main_recommendations(request):
             'mode': current_mode,
             'emotion_status': None,
             'books': [],
-            'music': [],
+            'musics': [],
             'movies': []
         }, status=status.HTTP_200_OK)
         
@@ -220,7 +220,7 @@ def get_main_recommendations(request):
             'arousal': getattr(b, 'arousal', 0.0),
         })
         
-    serialized_music = MusicResponseSerializer(music_list, many=True).data
+    serialized_musics = MusicResponseSerializer(music_list, many=True).data
     serialized_movies = MovieResponseSerializer(movie_list, many=True).data
 
     return Response({
@@ -229,7 +229,7 @@ def get_main_recommendations(request):
         'mode': current_mode,
         'emotion_status': avg_emotion,
         'books': serialized_books,
-        'music': serialized_music,
+        'musics': serialized_musics,
         'movies': serialized_movies
     }, status=status.HTTP_200_OK)
 
