@@ -67,7 +67,7 @@ def _calculate_cosine(u_vec, b_vec, u_norm):
     return 1.0 - (dot_product / (u_norm * b_norm))
 
 class MusicEmotionRecommender:
-    def recommend_music(self, user_emotion, music_data, mode='maintain', top_n=3):
+    def recommend_musics(self, user_emotion, music_data, mode='maintain', top_n=3):
         from daybydaybackend.music_movie.models import Music
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
