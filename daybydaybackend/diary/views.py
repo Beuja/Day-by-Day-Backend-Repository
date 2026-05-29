@@ -9,12 +9,11 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .models import Diary, DailyRecommended, UserFeedback
+from .models import Diary, DailyRecommended
 from .serializers import (
     DiarySerializer, AnalyzeEmotionRequestSerializer,
     DiaryCreateRequestSerializer,
-    MainRecommendationResponseSerializer, CalendarResponseSerializer,
-    UserFeedbackRequestSerializer, UserPreferenceProfileResponseSerializer
+    MainRecommendationResponseSerializer, CalendarResponseSerializer
 )
 from . import services
 
@@ -184,13 +183,13 @@ def get_main_recommendations(request):
     from daybydaybackend.diary.services import get_user_recent_average_emotion
     from daybydaybackend.music_movie.serializers import MusicResponseSerializer, MovieResponseSerializer
     
-    current_mode = request.query_params.get('mode', 'maintain')
-    if current_mode not in ['maintain', 'shift', 'amplification']:
-        current_mode = 'maintain'
-        
+    current_mode = request.query_params.get('mode', 'auto')
+    
     avg_emotion, diaries = get_user_recent_average_emotion(request.user)
     
     if not avg_emotion:
+        if current_mode not in ['maintain', 'shift', 'amplification']:
+            current_mode = 'maintain'
         return Response({
             'has_diaries': False,
             'is_fallback': False,
@@ -202,6 +201,11 @@ def get_main_recommendations(request):
         }, status=status.HTTP_200_OK)
         
     latest_diary = diaries[0]
+    
+    # auto 모드 자율 판정 구동
+    if current_mode == 'auto' or current_mode not in ['maintain', 'shift', 'amplification']:
+        from daybydaybackend.diary.services import determine_auto_recommendation_mode
+        current_mode = determine_auto_recommendation_mode(request.user, latest_diary)
     user_6d_emotion = {k: avg_emotion[k] for k in ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']}
     
     books, is_fallback = get_or_create_book_recommendation(latest_diary, user_6d_emotion, current_mode, count=2, user=request.user)
@@ -312,115 +316,31 @@ def get_calendar_view(request):
     }, status=status.HTTP_200_OK)
 
 
-# ===== 콘텐츠 선호도 피드백 등록/수정 API =====
-@swagger_auto_schema(
-    method='post',
-    operation_summary="콘텐츠 선호도 피드백 등록/수정",
-    operation_description="추천받은 책, 음악, 영화에 대해 좋아요(True) 또는 싫어요(False) 피드백을 기록합니다. 이미 피드백이 존재하는 경우 단순 덮어쓰기 방식으로 최신 의견으로 갱신됩니다.",
-    security=[{'Token': []}],
-    request_body=UserFeedbackRequestSerializer,
-    responses={
-        200: '피드백 등록/갱신 성공',
-        400: '유효하지 않은 요청 데이터',
-        404: '피드백 대상 콘텐츠를 찾을 수 없음'
-    }
-)
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def register_feedback(request):
-    serializer = UserFeedbackRequestSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    
-    ctype = serializer.validated_data['content_type']
-    cid = serializer.validated_data['content_id']
-    is_like = serializer.validated_data['is_like']
-    
-    from daybydaybackend.books.models import Book
-    from daybydaybackend.music_movie.models import Music, Movie
-    
-    try:
-        if ctype == 'book':
-            book_obj = Book.objects.get(isbn=cid)
-            defaults = {'is_like': is_like}
-            UserFeedback.objects.update_or_create(user=request.user, book=book_obj, defaults=defaults)
-        elif ctype == 'music':
-            music_obj = Music.objects.get(id=int(cid))
-            defaults = {'is_like': is_like}
-            UserFeedback.objects.update_or_create(user=request.user, music=music_obj, defaults=defaults)
-        elif ctype == 'movie':
-            movie_obj = Movie.objects.get(tmdb_id=int(cid))
-            defaults = {'is_like': is_like}
-            UserFeedback.objects.update_or_create(user=request.user, movie=movie_obj, defaults=defaults)
-    except (Book.DoesNotExist, Music.DoesNotExist, Movie.DoesNotExist, ValueError):
-         return Response({'message': '피드백 대상 콘텐츠가 DB에 존재하지 않거나 식별자가 부정확합니다.'}, status=status.HTTP_404_NOT_FOUND)
-         
-    return Response({'message': f'{ctype} 콘텐츠에 대한 피드백이 성공적으로 갱신되었습니다.'}, status=status.HTTP_200_OK)
-
-
-# ===== 유저 개인화 취향 프로필 및 통계 조회 API =====
+# ===== 대시보드용 최근 5개 평균 감정 분석 API (신설) =====
 @swagger_auto_schema(
     method='get',
-    operation_summary="유저 개인화 취향 프로필 및 통계 조회",
-    operation_description="누적 좋아요/싫어요 개수와 감정 선호 프로필(평균 감정 벡터), 그리고 현재 추천에 적용 중인 개인화 반영 비율(Beta) 단계를 리턴합니다.",
+    operation_summary="유저 최근 5개 평균 감정 분석 조회",
+    operation_description="유저의 최근 최대 5개 일기 감정 데이터를 추출하여 Plutchik 6대 감정 및 Valence, Arousal 수치를 산술 평균하여 반환합니다.",
     security=[{'Token': []}],
     responses={
-        200: openapi.Response('조회 성공', UserPreferenceProfileResponseSerializer),
+        200: openapi.Response('조회 성공', DiaryEmotionSerializer),
         401: '인증되지 않은 사용자'
     }
 )
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user_preference_profile(request):
-    feedbacks = UserFeedback.objects.filter(user=request.user)
-    likes = feedbacks.filter(is_like=True)
-    likes_count = likes.count()
-    dislikes_count = feedbacks.filter(is_like=False).count()
+def get_user_recent_average_emotion_api(request):
+    from daybydaybackend.diary.services import get_user_recent_average_emotion
     
-    if likes_count == 0:
-        beta = 0.0
-        level = "Cold Start (일기 정서 반영 100% - 피드백 누적 필요)"
-    elif likes_count <= 4:
-        beta = 0.15
-        level = "취향 분석 시작 (일기 정서 85% + 누적 선호 15% 반영)"
-    elif likes_count <= 9:
-        beta = 0.30
-        level = "취향 심층 연동 (일기 정서 70% + 누적 선호 30% 반영)"
-    else:
-        beta = 0.40
-        level = "완전 개인화 연동 (일기 정서 60% + 누적 선호 40% 반영 - 취향 고정)"
+    avg_emotion, diaries = get_user_recent_average_emotion(request.user)
+    if not avg_emotion:
+        return Response({
+            'has_diaries': False,
+            'recent_average_emotion': None
+        }, status=status.HTTP_200_OK)
         
-    avg_vector = None
-    if likes_count > 0:
-        joy_sum = sadness_sum = anger_sum = fear_sum = trust_sum = surprise_sum = 0.0
-        vector_count = 0
-        
-        for fb in likes:
-            item = fb.book or fb.music or fb.movie
-            if item:
-                joy_sum += getattr(item, 'joy', 0.0) or 0.0
-                sadness_sum += getattr(item, 'sadness', 0.0) or 0.0
-                anger_sum += getattr(item, 'anger', 0.0) or 0.0
-                fear_sum += getattr(item, 'fear', 0.0) or 0.0
-                trust_sum += getattr(item, 'trust', 0.0) or 0.0
-                surprise_sum += getattr(item, 'surprise', 0.0) or 0.0
-                vector_count += 1
-                
-        if vector_count > 0:
-            avg_vector = {
-                'joy': round(joy_sum / vector_count, 4),
-                'sadness': round(sadness_sum / vector_count, 4),
-                'anger': round(anger_sum / vector_count, 4),
-                'fear': round(fear_sum / vector_count, 4),
-                'trust': round(trust_sum / vector_count, 4),
-                'surprise': round(surprise_sum / vector_count, 4),
-            }
-            
     return Response({
-        'likes_count': likes_count,
-        'dislikes_count': dislikes_count,
-        'personalization_beta': beta,
-        'personalization_level': level,
-        'preferred_emotions': avg_vector
-    }, status=status.HTTP_200_OK)
+        'has_diaries': True,
+        'recent_average_emotion': avg_emotion
+    }, status=status.HTTP_200_OK)

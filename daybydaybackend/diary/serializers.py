@@ -71,25 +71,4 @@ class CalendarResponseSerializer(serializers.Serializer):
         help_text="날짜(YYYY-MM-DD)를 Key로 하는 캘린더 감정 정보 해시맵"
     )
 
-
-class UserFeedbackRequestSerializer(serializers.Serializer):
-    content_type = serializers.ChoiceField(choices=[('book', '도서'), ('music', '음악'), ('movie', '영화')], help_text="피드백 대상 콘텐츠 종류")
-    content_id = serializers.CharField(max_length=50, help_text="콘텐츠 식별자 (도서는 ISBN, 음악은 ID, 영화는 TMDB ID)")
-    is_like = serializers.BooleanField(help_text="True: 좋아요, False: 싫어요")
-
-
-class UserEmotionPreferenceSerializer(serializers.Serializer):
-    joy = serializers.FloatField(help_text="선호 기쁨 수치")
-    sadness = serializers.FloatField(help_text="선호 슬픔 수치")
-    anger = serializers.FloatField(help_text="선호 분노 수치")
-    fear = serializers.FloatField(help_text="선호 두려움 수치")
-    trust = serializers.FloatField(help_text="선호 신뢰 수치")
-    surprise = serializers.FloatField(help_text="선호 놀람 수치")
-
-
-class UserPreferenceProfileResponseSerializer(serializers.Serializer):
-    likes_count = serializers.IntegerField(help_text="누적 좋아요 콘텐츠 개수")
-    dislikes_count = serializers.IntegerField(help_text="누적 싫어요 콘텐츠 개수")
-    personalization_beta = serializers.FloatField(help_text="현재 추천에 적용되는 개인화 반영 비율 (0.00 ~ 0.40)")
-    personalization_level = serializers.CharField(help_text="개인화 취향 반영 단계 설명")
-    preferred_emotions = UserEmotionPreferenceSerializer(help_text="좋아요 피드백을 기반으로 산출된 유저의 정서적 선호 프로필 벡터 (피드백이 없으면 null)", allow_null=True)
+
