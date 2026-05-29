@@ -97,7 +97,6 @@ book_properties = {
 @permission_classes([IsAuthenticated])
 def recommend_books_views(request, diary_id):
     diary = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
-
     recommend_date = diary.created_at.date().strftime("%Y-%m-%d")
 
     if request.method == 'GET':

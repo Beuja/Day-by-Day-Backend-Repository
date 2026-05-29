@@ -94,13 +94,14 @@ def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, 
 
     if created or saved_count == 0 or saved_count < count:
         recommended_books, is_fallback = recommend_books(user_emotion=user_emotion, mode=mode, count=count, user=user)
-        # fallback 아닐 때만 저장
-        if not is_fallback:
-            daily_rec.books.set(recommended_books)
+
+        daily_rec.books.set(recommended_books)
+        daily_rec.is_book_fallback = is_fallback
+        daily_rec.save(update_fields=['is_book_fallback'])
     
     else:
         recommended_books = daily_rec.books.all()[:count]
-        is_fallback = False
+        is_fallback = daily_rec.is_book_fallback
         
     return recommended_books, is_fallback
 
