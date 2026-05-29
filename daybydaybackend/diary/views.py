@@ -290,12 +290,12 @@ def get_main_recommendations(request):
         
     user_6d_emotion = {k: avg_emotion[k] for k in ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']}
     
-    books, is_fallback_book = recommend_books(user_6d_emotion, mode=current_mode, count=2)
+    books, is_fallback_book = recommend_books(user_6d_emotion, mode=current_mode, count=2, user=request.user)
     
     music_recommender = MusicEmotionRecommender()
     movie_recommender = MovieEmotionRecommender()
-    music_result = music_recommender.recommend_musics(user_6d_emotion, load_music_data(), mode=current_mode, top_n=2)
-    movie_result = movie_recommender.recommend_movies(user_6d_emotion, load_movie_data(), mode=current_mode, top_n=2)
+    music_result = music_recommender.recommend_musics(user_6d_emotion, load_music_data(), mode=current_mode, top_n=2, user=request.user)
+    movie_result = movie_recommender.recommend_movies(user_6d_emotion, load_movie_data(), mode=current_mode, top_n=2, user=request.user)
     
     music_list = music_result.get('recommendations', [])
     is_fallback_music = music_result.get('is_fallback', False)

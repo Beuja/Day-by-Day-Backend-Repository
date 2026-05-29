@@ -118,14 +118,14 @@ def _attach_scores(instances, diary_obj, mode, is_movie=False):
         
     return instances
 
-def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
+def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str, count: int, user=None):
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj, mode=mode)
     saved_count = daily_rec.musics.count()
 
     if created or saved_count == 0 or saved_count < count:
         music_data = load_music_data()
         recommender = MusicEmotionRecommender()
-        res = recommender.recommend_musics(user_emotion, music_data, mode=mode, top_n=count)
+        res = recommender.recommend_musics(user_emotion, music_data, mode=mode, top_n=count, user=user)
         
         music_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False) 
@@ -141,7 +141,7 @@ def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str,
         
     return music_instances, is_fallback
 
-def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
+def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str, count: int, user=None):
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj, mode=mode)
     saved_count = daily_rec.movies.count()
 
@@ -151,7 +151,7 @@ def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str,
             if isinstance(movie.get("genre"), list):
                 movie["genre"] = ", ".join(movie["genre"])
         recommender = MovieEmotionRecommender()
-        res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
+        res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count, user=user)
 
         movie_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False)

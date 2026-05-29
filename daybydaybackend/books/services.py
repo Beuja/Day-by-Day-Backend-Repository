@@ -8,7 +8,18 @@ from django.db.models import Q
 from daybydaybackend.diary.models import DailyRecommended
 
 # 6가지 기본 감정 기반 도서 추천 서비스
-def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
+def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3, user=None):
+    # 최근 5회의 추천 세션에서 책들의 카테고리 수집하여 벌점 대상 지정
+    penalty_categories = set()
+    if user and user.is_authenticated:
+        recent_recs = DailyRecommended.objects.filter(
+            diary__user=user
+        ).order_by('-diary__created_at')[:5]
+        for rec in recent_recs:
+            for b in rec.books.all():
+                if getattr(b, 'category', None):
+                    penalty_categories.add(b.category)
+
     # 계산을 위해 리스트 형태로 변경
     ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
     u_vec = np.array([user_emotion.get(key, 0.0) for key in ordered_keys])
@@ -54,6 +65,10 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
 
         final_score = (alpha * norm_euclidean) + ((1.0 - alpha) * cosine_dist)
         
+        # [다양성 패치] 과거에 추천받았던 카테고리가 겹치면 패널티 가중치를 주어 순위를 뒤로 밀어냄
+        if getattr(book, 'category', None) in penalty_categories:
+            final_score += 0.3
+        
         # 임계값 내에 있는 콘텐츠만 filtered_and_scored에 추가
         if pure_distance <= radius_limit:
             filtered_and_scored.append((final_score, book)) 
@@ -69,12 +84,12 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
     return [item[1] for item in fallback_list[:count]], True
 
 
-def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
+def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int, user=None):
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj, mode=mode)
     saved_count = daily_rec.books.count()
 
     if created or saved_count == 0 or saved_count < count:
-        recommended_books, is_fallback = recommend_books(user_emotion=user_emotion, mode=mode, count=count)
+        recommended_books, is_fallback = recommend_books(user_emotion=user_emotion, mode=mode, count=count, user=user)
         # fallback 아닐 때만 저장
         if not is_fallback:
             daily_rec.books.set(recommended_books)

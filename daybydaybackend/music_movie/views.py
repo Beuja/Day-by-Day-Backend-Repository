@@ -85,7 +85,7 @@ def recommend_music_view(request, diary_id):
             'surprise': getattr(raw_emotion, 'surprise', 0.0),
         }
         
-        music_instances, is_fallback = services.get_or_create_music_recommendation(diary_obj, user_6d_emotion, mode, count)
+        music_instances, is_fallback = services.get_or_create_music_recommendation(diary_obj, user_6d_emotion, mode, count, user=request.user)
         res_serializer = serializers.MusicResponseSerializer(music_instances, many=True)
         res_data = res_serializer.data
         for item in res_data:
@@ -140,7 +140,7 @@ def recommend_movie_view(request, diary_id):
             'surprise': getattr(raw_emotion, 'surprise', 0.0),
         }
         
-        movie_instances, is_fallback = services.get_or_create_movie_recommendation(diary_obj, user_6d_emotion, mode, count)
+        movie_instances, is_fallback = services.get_or_create_movie_recommendation(diary_obj, user_6d_emotion, mode, count, user=request.user)
         res_serializer = serializers.MovieResponseSerializer(movie_instances, many=True)
         res_data = res_serializer.data
         for item in res_data:

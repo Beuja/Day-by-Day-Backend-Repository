@@ -67,7 +67,18 @@ def _calculate_cosine(u_vec, b_vec, u_norm):
     return 1.0 - (dot_product / (u_norm * b_norm))
 
 class MovieEmotionRecommender:
-    def recommend_movies(self, user_emotion, movie_data, mode='maintain', top_n=3):
+    def recommend_movies(self, user_emotion, movie_data, mode='maintain', top_n=3, user=None):
+        recent_genres = set()
+        if user and user.is_authenticated:
+            from daybydaybackend.diary.models import DailyRecommended
+            recent_recs = DailyRecommended.objects.filter(
+                diary__user=user
+            ).order_by('-diary__created_at')[:5]
+            for rec in recent_recs:
+                for mv in rec.movies.all():
+                    if getattr(mv, 'genre', None):
+                        recent_genres.add(mv.genre)
+
         from daybydaybackend.music_movie.models import Movie
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
@@ -102,6 +113,11 @@ class MovieEmotionRecommender:
             
             # 💡 감정 점수 반영률 90%, 대중성 10%
             final_score = (emotion_score * 0.90) + ((1.0 - popularity_score) * 0.10)
+            
+            # [다양성 패치] 최근 추천받았던 장르와 중복 시 패널티 가중치 가산
+            if movie.get('genre') in recent_genres:
+                final_score += 0.25
+
             movie_info = {'movie_id': movie.get('movie_id'), 'score': round(final_score, 4)}
 
             if pure_distance <= radius_limit:

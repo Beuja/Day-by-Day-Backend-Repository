@@ -125,7 +125,7 @@ def recommend_books_views(request, diary_id):
         'surprise': getattr(raw_emotion, 'surprise', 0.0),
     }
 
-    books, is_fallback = get_or_create_book_recommendation(diary, user_6d_emotion, mode, count)
+    books, is_fallback = get_or_create_book_recommendation(diary, user_6d_emotion, mode, count, user=request.user)
     serializer = BookSerializer(books, many=True)
     data = serializer.data
     for item in data:
