@@ -133,14 +133,15 @@ def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str,
         music_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False) 
         
-        # 💡 [버그 1 수정] fallback 여부와 상관없이 무조건 저장! (빈 배열 방지)
-        daily_rec.musics.set(music_instances)
+        daily_rec.musics.set(movie_instances)
+        daily_rec.is_music_fallback = is_fallback
+        daily_rec.save(update_fields=['is_music_fallback'])
             
     else:
         music_instances = list(daily_rec.musics.all()[:count])
-        # 💡 [버그 2 수정] 이미 저장된 데이터를 POST 요청으로 불러올 때 score 부여!
+        # 이미 저장된 데이터를 POST 요청으로 불러올 때 score 부여
         _attach_scores(music_instances, diary_obj, mode, is_movie=False)
-        is_fallback = False
+        is_fallback = daily_rec.is_music_fallback
         
     return music_instances, is_fallback
 
@@ -159,14 +160,15 @@ def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str,
         movie_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False)
 
-        # 💡 [버그 1 수정] fallback 여부와 상관없이 무조건 저장! (빈 배열 방지)
         daily_rec.movies.set(movie_instances)
+        daily_rec.is_movie_fallback = is_fallback
+        daily_rec.save(update_fields=['is_movie_fallback'])
 
     else:
         movie_instances = list(daily_rec.movies.all()[:count])
-        # 💡 [버그 2 수정] 이미 저장된 데이터를 POST 요청으로 불러올 때 score 부여!
+        # 이미 저장된 데이터를 POST 요청으로 불러올 때 score 부여
         _attach_scores(movie_instances, diary_obj, mode, is_movie=True)
-        is_fallback = False
+        is_fallback = daily_rec.is_movie_fallback
     
     return movie_instances, is_fallback
 

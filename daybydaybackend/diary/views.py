@@ -3,6 +3,8 @@ import re
 import datetime
 from django.db import transaction
 from django.utils import timezone
+from django.utils.dateparse import parse_date
+from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
 from rest_framework.authentication import TokenAuthentication
@@ -19,7 +21,8 @@ from .serializers import (
     DiarySerializer, AnalyzeEmotionRequestSerializer,
     DiaryCreateRequestSerializer,
     MainRecommendationResponseSerializer, CalendarResponseSerializer,
-    DiaryEmotionSerializer, DiaryEmpathyResponseSerializer
+    DiaryEmotionSerializer, DiaryEmpathyResponseSerializer,
+    DailyRecommendedSerializer
 )
 from . import services
 
@@ -102,7 +105,7 @@ def analyze_diary_emotion(request):
         return Response({'message': '해당 일기를 찾을 수 없거나 접근 권한이 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
 
     # 비동기가 아닌 동기적으로 작동하여 모바일 기기 등 프론트엔드 연동 지원
-    emotion = services.analyze_and_save_emotion(diary)
+    emotion = services.process_diary_emotion(diary_id=diary_id, user=request.user)
     response_serializer = DiarySerializer(diary)
     return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -578,3 +581,63 @@ def get_diary_list(request):
     diaries = Diary.objects.filter(user=request.user).select_related('emotion')
     serializer = DiarySerializer(diaries, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# 날짜 기준 일기 검색 및 추천 콘텐츠 목록 조회 API
+date_path_parameter = openapi.Parameter(
+    name='date',
+    in_=openapi.IN_PATH,
+    description='조회할 날짜 (YYYY-MM-DD 형식)',
+    type=openapi.TYPE_STRING,
+    required=True,
+)
+
+@swagger_auto_schema(
+    method='get',
+    operation_summary="날짜 기준 일기 검색 및 추천 콘텐츠 목록 조회",
+    operation_description="특정 날짜에 작성된 일기 상세 정보와 감정 데이터, 그리고 연결된 추천 콘텐츠(음악, 영화, 도서) 목록을 조회합니다.",
+    security=[{'Token': []}],
+    manual_parameters=[date_path_parameter],
+    responses={
+        200: openapi.Response('조회 성공', DiarySerializer),
+        400: '잘못된 날짜 형식',
+        404: '일기를 찾을 수 없거나 접근 권한 없음',
+        401: '인증되지 않은 사용자'
+    }
+)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def search_diary_by_date(request, date):
+    # 1. 날짜 문자열 파싱 검증
+    target_date = parse_date(date)
+    if not target_date:
+        return Response(
+            {"error": "잘못된 날짜 형식입니다. YYYY-MM-DD 형식을 사용하세요."}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # 2. 일기 및 연관 데이터 한 번에 조회 (쿼리 최적화)
+    # user와 날짜가 일치하는 Diary를 찾으면서, 연관된 감정과 추천 목록(하위 콘텐츠 포함)을 모두 로드합니다.
+    queryset = Diary.objects.select_related('emotion').prefetch_related(
+        'recommendation__musics',
+        'recommendation__movies',
+        'recommendation__books'
+    )
+    
+    # 데이터가 없거나 내 일기가 아니면 404를 반환
+    diary = get_object_or_404(
+        queryset, 
+        user=request.user, 
+        created_at__date=target_date
+    )
+
+    # 3. 직렬화 및 데이터 수동 병합
+    response_data = DiarySerializer(diary).data
+    
+    recommendations = diary.recommendation.all()
+
+    response_data['recommendation'] = DailyRecommendedSerializer(recommendations, many=True).data
+
+    # 3. 결합된 딕셔너리를 통째로 반환
+    return Response(response_data, status=status.HTTP_200_OK)

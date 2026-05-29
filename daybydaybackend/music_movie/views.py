@@ -13,6 +13,7 @@ from daybydaybackend.diary.models import Diary, DailyRecommended
 from . import serializers
 from . import services
 from .serializers import MusicDailyRecommendedSerializer, MovieDailyRecommendedSerializer
+from daybydaybackend.books.services import get_user_weighted_emotion
 
 music_recommendation_response_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
@@ -56,11 +57,11 @@ movie_recommendation_response_schema = openapi.Schema(
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def recommend_music_view(request, diary_id):
-    diary_obj = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
-    recommend_date = diary_obj.created_at.date().strftime("%Y-%m-%d")
+    diary = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
+    recommend_date = diary.created_at.date().strftime("%Y-%m-%d")
     
     if request.method == 'GET':
-        data = services.get_saved_music_metadata(diary_obj)
+        data = services.get_saved_music_metadata(diary)
         serializer = MusicDailyRecommendedSerializer(data, many=True)
         res_data = serializer.data
         for item in res_data:
@@ -77,25 +78,33 @@ def recommend_music_view(request, diary_id):
         
         if mode == 'auto':
             from daybydaybackend.diary.services import determine_auto_recommendation_mode
-            mode = determine_auto_recommendation_mode(request.user, diary_obj)
+            mode = determine_auto_recommendation_mode(request.user, diary)
         
-        raw_emotion = getattr(diary_obj, 'emotion', None)
-        user_6d_emotion = {
-            'joy': getattr(raw_emotion, 'joy', 0.0),
-            'sadness': getattr(raw_emotion, 'sadness', 0.0),
-            'anger': getattr(raw_emotion, 'anger', 0.0),
-            'fear': getattr(raw_emotion, 'fear', 0.0),
-            'trust': getattr(raw_emotion, 'trust', 0.0),
-            'surprise': getattr(raw_emotion, 'surprise', 0.0),
-        }
+        weighted_emotion = get_user_weighted_emotion(request.user, diary.created_at)
+
+        if weighted_emotion:
+            user_6d_emotion = {
+                'joy': weighted_emotion.get('joy', 0.0),
+                'sadness': weighted_emotion.get('sadness', 0.0),
+                'anger': weighted_emotion.get('anger', 0.0),
+                'fear': weighted_emotion.get('fear', 0.0),
+                'trust': weighted_emotion.get('trust', 0.0),
+                'surprise': weighted_emotion.get('surprise', 0.0),
+            }
+        else:
+            # 감정 데이터가 없을 경우를 0으로 처리
+            user_6d_emotion = {
+                'joy': 0.0, 'sadness': 0.0, 'anger': 0.0, 
+                'fear': 0.0, 'trust': 0.0, 'surprise': 0.0
+            }
         
-        music_instances, is_fallback = services.get_or_create_music_recommendation(diary_obj, user_6d_emotion, mode, count, user=request.user)
+        music_instances, is_fallback = services.get_or_create_music_recommendation(diary, user_6d_emotion, mode, count, user=request.user)
         res_serializer = serializers.MusicResponseSerializer(music_instances, many=True)
         res_data = res_serializer.data
         for item in res_data:
             item['diary_id'] = diary_id
             item['recommend_date'] = recommend_date
-        return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": res_data}, status=status.HTTP_200_OK)
+        return Response({"mode": mode, "weighted_emotion": weighted_emotion, "is_fallback": is_fallback, "recommendations": res_data}, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(
@@ -115,11 +124,11 @@ def recommend_music_view(request, diary_id):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def recommend_movie_view(request, diary_id):
-    diary_obj = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
-    recommend_date = diary_obj.created_at.date().strftime("%Y-%m-%d")
+    diary = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
+    recommend_date = diary.created_at.date().strftime("%Y-%m-%d")
 
     if request.method == 'GET':
-        data = services.get_saved_movie_metadata(diary_obj)
+        data = services.get_saved_movie_metadata(diary)
         serializer = MovieDailyRecommendedSerializer(data, many=True)
         res_data = serializer.data
         for item in res_data:
@@ -136,22 +145,30 @@ def recommend_movie_view(request, diary_id):
         
         if mode == 'auto':
             from daybydaybackend.diary.services import determine_auto_recommendation_mode
-            mode = determine_auto_recommendation_mode(request.user, diary_obj)
+            mode = determine_auto_recommendation_mode(request.user, diary)
         
-        raw_emotion = getattr(diary_obj, 'emotion', None)
-        user_6d_emotion = {
-            'joy': getattr(raw_emotion, 'joy', 0.0),
-            'sadness': getattr(raw_emotion, 'sadness', 0.0),
-            'anger': getattr(raw_emotion, 'anger', 0.0),
-            'fear': getattr(raw_emotion, 'fear', 0.0),
-            'trust': getattr(raw_emotion, 'trust', 0.0),
-            'surprise': getattr(raw_emotion, 'surprise', 0.0),
-        }
+        weighted_emotion = get_user_weighted_emotion(request.user, diary.created_at)
+
+        if weighted_emotion:
+            user_6d_emotion = {
+                'joy': weighted_emotion.get('joy', 0.0),
+                'sadness': weighted_emotion.get('sadness', 0.0),
+                'anger': weighted_emotion.get('anger', 0.0),
+                'fear': weighted_emotion.get('fear', 0.0),
+                'trust': weighted_emotion.get('trust', 0.0),
+                'surprise': weighted_emotion.get('surprise', 0.0),
+            }
+        else:
+            # 감정 데이터가 없을 경우를 0으로 처리
+            user_6d_emotion = {
+                'joy': 0.0, 'sadness': 0.0, 'anger': 0.0, 
+                'fear': 0.0, 'trust': 0.0, 'surprise': 0.0
+            }
         
-        movie_instances, is_fallback = services.get_or_create_movie_recommendation(diary_obj, user_6d_emotion, mode, count, user=request.user)
+        movie_instances, is_fallback = services.get_or_create_movie_recommendation(diary, user_6d_emotion, mode, count, user=request.user)
         res_serializer = serializers.MovieResponseSerializer(movie_instances, many=True)
         res_data = res_serializer.data
         for item in res_data:
             item['diary_id'] = diary_id
             item['recommend_date'] = recommend_date
-        return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": res_data}, status=status.HTTP_200_OK)
+        return Response({"mode": mode, "weighted_emotion": weighted_emotion, "is_fallback": is_fallback, "recommendations": res_data}, status=status.HTTP_200_OK)
