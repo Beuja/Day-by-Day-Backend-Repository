@@ -7,12 +7,11 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import transaction
 
-from daybydaybackend.diary.models import Diary, DiaryEmotion, DailyRecommended
-from daybydaybackend.books.models import Book
-from daybydaybackend.music_movie.models import Music, Movie
+# 콘텐츠 모델 및 DailyRecommended 제거, 일기와 감정 모델만 남김
+from daybydaybackend.diary.models import Diary, DiaryEmotion
 
 class Command(BaseCommand):
-    help = "지난 기간 동안의 테스트용 풍성한 감정 분석 일기 및 추천 연동 데이터를 일괄 적재합니다."
+    help = "지난 기간 동안의 테스트용 일기 및 감정 데이터를 일괄 적재합니다."
 
     def add_arguments(self, parser):
         parser.add_argument('--username', type=str, default='testuser', help='더미 데이터를 적재할 대상 유저명')
@@ -29,9 +28,9 @@ class Command(BaseCommand):
             user.save()
             self.stdout.write(self.style.SUCCESS(f"✔️ 임시 테스트 유저 생성 완료: {username}"))
 
-        # 중복 방지를 위해 기존 일기를 청소 (Cascade 옵션에 의해 감정과 추천 정보도 자동 청소됨)
+        # 중복 방지를 위해 기존 일기를 청소 (Cascade 옵션에 의해 감정도 자동 청소됨)
         Diary.objects.filter(user=user).delete()
-        self.stdout.write(self.style.WARNING(f"🧹 기존 {username} 유저의 일기 및 추천 연동 데이터 전체 삭제 완료."))
+        self.stdout.write(self.style.WARNING(f"🧹 기존 {username} 유저의 일기 및 감정 데이터 전체 삭제 완료."))
 
         # 1. diary_data.json 파일 경로 확인 및 로딩
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -97,27 +96,25 @@ class Command(BaseCommand):
         now = timezone.now()
         success_count = 0
 
-        # 데이터베이스 전체에서 valence 기준으로 미리 콘텐츠 캐싱 (속도 및 정합성 보장)
-        positive_books = list(Book.objects.filter(valence__gt=0)[:30])
-        negative_books = list(Book.objects.filter(valence__lte=0)[:30])
-        positive_musics = list(Music.objects.filter(valence__gt=0)[:30])
-        negative_musics = list(Music.objects.filter(valence__lte=0)[:30])
-        positive_movies = list(Movie.objects.filter(valence__gt=0)[:30])
-        negative_movies = list(Movie.objects.filter(valence__lte=0)[:30])
+        self.stdout.write("⚙️ 일기 데이터 생성 프로세스 기동...")
 
-        # 만약 카테고리별 데이터가 충분히 로드되지 않은 상태라면 폴백으로 전체 리스트 사용
-        all_books = list(Book.objects.all()[:30])
-        all_musics = list(Music.objects.all()[:30])
-        all_movies = list(Movie.objects.all()[:30])
+        # 1. '오늘(0일 전)'은 반드시 포함하도록 set 초기화
+        past_days = {0}
+        
+        # 2. 전체 기간(days)의 약 절반 정도만 무작위로 날짜를 뽑아냄
+        num_diaries_to_create = max(1, days // 2)
+        if days > 1:
+            # 1일부터 days-1일 사이에서 랜덤 추출
+            random_days = random.sample(range(1, days), num_diaries_to_create - 1)
+            past_days.update(random_days)
+            
+        # 3. 과거 날짜부터 순차적으로 DB에 들어가도록 내림차순 정렬
+        sorted_past_days = sorted(list(past_days), reverse=True)
 
-        self.stdout.write("⚙️ 일기 및 1:1 매칭 추천 데이터 생성 프로세스 기동...")
-
-        # 과거 일자 역순 루프 기동
         with transaction.atomic():
-            for i in range(days - 1, -1, -1):
+            for i in sorted_past_days:
                 past_date = now - datetime.timedelta(days=i)
                 
-                # 30일치 데이터의 경우 중복 없이 순차적으로 템플릿 매핑, 초과 시 모듈러 연산 적용
                 temp = templates[success_count % len(templates)]
                 
                 # 1. 일기 레코드 생성
@@ -144,36 +141,9 @@ class Command(BaseCommand):
                     primary_emotion=temp["primary_emotion"]
                 )
                 
-                # 3. 긍/부정(Valence)에 정확히 들어맞는 추천 콘텐츠(도서, 음악, 영화) 매핑
-                val = temp["valence"]
-                
-                if val > 0:
-                    matched_b = positive_books if positive_books else all_books
-                    matched_mu = positive_musics if positive_musics else all_musics
-                    matched_mo = positive_movies if positive_movies else all_movies
-                else:
-                    matched_b = negative_books if negative_books else all_books
-                    matched_mu = negative_musics if negative_musics else all_musics
-                    matched_mo = negative_movies if negative_movies else all_movies
-                
-                # 각 카테고리별 1~2개 무작위 샘플링
-                sel_books = random.sample(matched_b, min(len(matched_b), random.randint(1, 2))) if matched_b else []
-                sel_musics = random.sample(matched_mu, min(len(matched_mu), random.randint(1, 2))) if matched_mu else []
-                sel_movies = random.sample(matched_mo, min(len(matched_mo), random.randint(1, 2))) if matched_mo else []
-                
-                # DailyRecommended 생성 및 연결 (mode: 'maintain'로 고정 설정)
-                rec = DailyRecommended.objects.create(diary=diary, mode='maintain')
-                if sel_books:
-                    rec.books.add(*sel_books)
-                if sel_musics:
-                    rec.musics.add(*sel_musics)
-                if sel_movies:
-                    rec.movies.add(*sel_movies)
-                
                 success_count += 1
 
         self.stdout.write(self.style.SUCCESS(
-            f"🎉 성공: '{username}' 유저에게 지난 {success_count}일간의 "
-            f"유니크한 일기, 감정 점수 및 1:1 정밀 추천 데이터셋을 완전무결하게 적재 완료하였습니다!"
+            f"🎉 성공: '{username}' 유저에게 {days}일 동안 불규칙한 간격으로 작성된 "
+            f"총 {success_count}개의 일기 및 감정 데이터셋을 적재 완료하였습니다!"
         ))
-

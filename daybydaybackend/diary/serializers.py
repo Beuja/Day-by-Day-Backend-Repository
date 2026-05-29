@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Diary, DiaryEmotion
-
+from .models import Diary, DiaryEmotion, DailyRecommended
+from daybydaybackend.books.serializers import BookSerializer
+from daybydaybackend.music_movie.serializers import MusicResponseSerializer, MovieResponseSerializer
 
 class DiaryEmotionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -76,3 +77,13 @@ class DiaryEmpathyResponseSerializer(serializers.Serializer):
     has_diaries = serializers.BooleanField(help_text="일기 데이터가 존재하여 공감 멘트 생성을 가능한지 여부")
     primary_emotion = serializers.CharField(help_text="유저의 최근 대표 감정 명칭 (슬픔, 기쁨 등)", allow_null=True)
     empathy_message = serializers.CharField(help_text="일기 내용에 감정 매칭 공감 및 추천 유도가 결합된 최종 한글 공감 문장")
+
+
+class DailyRecommendedSerializer(serializers.ModelSerializer):
+    books = BookSerializer(many=True, read_only=True)
+    musics = MusicResponseSerializer(many=True, read_only=True)
+    movies = MovieResponseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = DailyRecommended
+        fields = ['id', 'mode', 'is_book_fallback', 'books', 'is_music_fallback', 'musics', 'is_movie_fallback', 'movies']
