@@ -67,6 +67,9 @@ def _calculate_cosine(u_vec, b_vec, u_norm):
     return 1.0 - (dot_product / (u_norm * b_norm))
 
 class MusicEmotionRecommender:
+    def recommend_music(self, user_emotion, music_data, mode='maintain', top_n=3, user=None):
+        return self.recommend_musics(user_emotion, music_data, mode=mode, top_n=top_n, user=user)
+
     def recommend_musics(self, user_emotion, music_data, mode='maintain', top_n=3, user=None):
         recent_tags = set()
         if user and user.is_authenticated:

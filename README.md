@@ -9,7 +9,10 @@
 
 ## 팀 구성
 
-- (추후 추가)
+- 이현욱
+- 설소연
+- 정종욱
+- 구민주
 
 ## 기술 스택
 
@@ -26,7 +29,7 @@
 1. 추천 엔진
 
 - 6D 감정벡터로 도서/음악/영화 추천
-- 추천 전략(mode): `maintain`, `shift`, `amplification`
+- 추천 전략(mode): `maintain`, `shift`, `amplification`, `auto`
 
 1. 저장 및 복원
 
