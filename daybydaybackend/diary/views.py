@@ -37,6 +37,29 @@ from . import services
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser])
 def create_diary(request):
+    from django.utils import timezone
+    import datetime
+    
+    # USE_TZ=False 환경에서는 timezone.now()가 이미 naive local datetime입니다.
+    now_local = timezone.now()
+    today_date = now_local.date()
+    
+    # naive datetime 시작/끝 시간대 설정 (SQLite USE_TZ=False 완벽 대응)
+    today_start = datetime.datetime.combine(today_date, datetime.time.min)
+    today_end = datetime.datetime.combine(today_date, datetime.time.max)
+    
+    # 오늘 이미 작성된 일기가 있는지 확인
+    existing_diary = Diary.objects.filter(
+        user=request.user,
+        created_at__range=(today_start, today_end)
+    ).exists()
+    
+    if existing_diary:
+        return Response({
+            "is_diary": False,
+            "message": "오늘은 이미 일기를 작성하셨습니다."
+        }, status=status.HTTP_400_BAD_REQUEST)
+
     serializer = DiaryCreateRequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     
@@ -48,7 +71,9 @@ def create_diary(request):
     )
 
     response_serializer = DiarySerializer(diary)
-    return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+    data = response_serializer.data
+    data['is_diary'] = True
+    return Response(data, status=status.HTTP_201_CREATED)
 
 
 # ===== 일기 감정 분석 API =====
@@ -229,6 +254,10 @@ def get_main_recommendations(request):
     movie_list = movie_result.get('recommendations', [])
     is_fallback_movie = movie_result.get('is_fallback', False)
     
+    latest_diary = diaries[0]
+    diary_id = latest_diary.id
+    recommend_date = latest_diary.created_at.date().strftime("%Y-%m-%d")
+
     serialized_books = []
     for b in books:
         serialized_books.append({
@@ -239,10 +268,19 @@ def get_main_recommendations(request):
             'description': getattr(b, 'description', '')[:100] + '...' if getattr(b, 'description', '') and len(getattr(b, 'description', '')) > 100 else (getattr(b, 'description', '') or ""),
             'valence': getattr(b, 'valence', 0.0),
             'arousal': getattr(b, 'arousal', 0.0),
+            'diary_id': diary_id,
+            'recommend_date': recommend_date,
         })
         
     serialized_musics = MusicResponseSerializer(music_list, many=True).data
+    for item in serialized_musics:
+        item['diary_id'] = diary_id
+        item['recommend_date'] = recommend_date
+
     serialized_movies = MovieResponseSerializer(movie_list, many=True).data
+    for item in serialized_movies:
+        item['diary_id'] = diary_id
+        item['recommend_date'] = recommend_date
 
     if diaries.exists():
         latest_diary = diaries[0]
