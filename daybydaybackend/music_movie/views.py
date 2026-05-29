@@ -57,7 +57,7 @@ movie_recommendation_response_schema = openapi.Schema(
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def recommend_music_view(request, diary_id):
-    diary = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
+    diary = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id)
     recommend_date = diary.created_at.date().strftime("%Y-%m-%d")
     
     if request.method == 'GET':
@@ -98,7 +98,7 @@ def recommend_music_view(request, diary_id):
                 'fear': 0.0, 'trust': 0.0, 'surprise': 0.0
             }
         
-        music_instances, is_fallback = services.get_or_create_music_recommendation(diary, user_6d_emotion, mode, count, user=request.user)
+        music_instances, is_fallback = services.get_or_create_music_recommendation(diary, user_6d_emotion, mode, count )
         res_serializer = serializers.MusicResponseSerializer(music_instances, many=True)
         res_data = res_serializer.data
         for item in res_data:
@@ -124,7 +124,7 @@ def recommend_music_view(request, diary_id):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def recommend_movie_view(request, diary_id):
-    diary = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
+    diary = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id)
     recommend_date = diary.created_at.date().strftime("%Y-%m-%d")
 
     if request.method == 'GET':
@@ -165,7 +165,7 @@ def recommend_movie_view(request, diary_id):
                 'fear': 0.0, 'trust': 0.0, 'surprise': 0.0
             }
         
-        movie_instances, is_fallback = services.get_or_create_movie_recommendation(diary, user_6d_emotion, mode, count, user=request.user)
+        movie_instances, is_fallback = services.get_or_create_movie_recommendation(diary, user_6d_emotion, mode, count)
         res_serializer = serializers.MovieResponseSerializer(movie_instances, many=True)
         res_data = res_serializer.data
         for item in res_data:
