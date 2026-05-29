@@ -3,11 +3,14 @@
 # import math
 import numpy as np
 from numpy.linalg import norm
+from django.utils import timezone
+from datetime import timedelta
+
 from .models import Book
 from django.db.models import Q
-from daybydaybackend.diary.models import DailyRecommended
+from daybydaybackend.diary.models import Diary, DailyRecommended
 
-def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3, user=None):
+def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, user=None):
     # 최근 5회의 추천 세션에서 책들의 카테고리 수집하여 벌점 대상 지정
     penalty_categories = set()
     if user and user.is_authenticated:
@@ -18,8 +21,10 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3, 
             for b in rec.books.all():
                 if getattr(b, 'category', None):
                     penalty_categories.add(b.category)
+
     # 계산을 위해 리스트 형태로 변경
     ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
+
     u_vec = np.array([user_emotion.get(key, 0.0) for key in ordered_keys])
     
     # 타겟 벡터 설정
@@ -31,8 +36,6 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3, 
         & ~Q(joy=0.0) & ~Q(sadness=0.0) & ~Q(anger=0.0) & ~Q(fear=0.0) & ~Q(trust=0.0) & ~Q(surprise=0.0),
         link__isnull=False, joy__isnull=False
     )
-
-
 
     t_norm = norm(target_vec)
     if t_norm == 0:
@@ -140,3 +143,52 @@ def _get_target_emotion(u_vec: np.ndarray, mode: str) -> np.ndarray:
         
     # maintain 모드일 경우 그대로
     return target_vec
+
+def get_user_weighted_emotion(user, target_datetime=None):
+    # 최근 일주일 간 감정 벡터를 가중치를 적용해 하나의 감정 벡터로 리턴  
+    target_date = target_datetime.date()
+    seven_days_ago = target_datetime - timedelta(days=7)
+
+    # 7일 이내 데이터만 필터링
+    queryset = Diary.objects.filter(
+        user=user,
+        created_at__lte=target_datetime,
+        created_at__gte=seven_days_ago
+    ).select_related('emotion')
+
+    diaries = queryset.order_by('-created_at')
+    
+    # 감정 데이터가 유효한 일기만 필터링
+    valid_diaries = [d for d in diaries if hasattr(d, 'emotion') and d.emotion is not None]
+    if not valid_diaries:
+        return None
+    
+    # test하고 변경
+    WEIGHTS = [0.7, 0.2, 0.05, 0.02, 0.01, 0.01, 0.01]
+
+    fields = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
+
+    weighted_sum = {field: 0.0 for field in fields}
+    total_weight = 0.0
+
+    for d in valid_diaries:
+        days_diff = (target_date - d.created_at.date()).days
+        
+        # 작성 당일 ~ 6일 전 데이터만 가중치 적용
+        if 0 <= days_diff < len(WEIGHTS):
+            weight = WEIGHTS[days_diff]
+            total_weight += weight
+            
+            for field in fields:
+                weighted_sum[field] += getattr(d.emotion, field) * weight
+
+    # 유효한 가중치가 없는 경우 
+    if total_weight == 0:
+        return None
+
+    weighted_emotion = {}
+    for field in fields:
+        # 실제로 더해진 가중치의 총합으로 나눔
+        weighted_emotion[field] = round(weighted_sum[field] / total_weight, 4)
+        
+    return weighted_emotion

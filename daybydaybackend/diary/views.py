@@ -102,7 +102,7 @@ def analyze_diary_emotion(request):
         return Response({'message': '해당 일기를 찾을 수 없거나 접근 권한이 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
 
     # 비동기가 아닌 동기적으로 작동하여 모바일 기기 등 프론트엔드 연동 지원
-    emotion = services.analyze_and_save_emotion(diary)
+    emotion = services.process_diary_emotion(diary_id=diary_id, user=request.user)
     response_serializer = DiarySerializer(diary)
     return Response(response_serializer.data, status=status.HTTP_200_OK)
 

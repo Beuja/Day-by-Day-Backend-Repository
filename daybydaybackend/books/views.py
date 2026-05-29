@@ -11,7 +11,7 @@ from drf_yasg import openapi
 from django.shortcuts import get_object_or_404
 
 from .models import Book
-from .services import get_or_create_book_recommendation, get_saved_book_metadata
+from .services import get_or_create_book_recommendation, get_saved_book_metadata, get_user_weighted_emotion
 from .serializers import BookSerializer, ContentRecommendationRequestSerializer, DailyRecommendedSerializer
 
 from daybydaybackend.diary.models import Diary
@@ -119,15 +119,23 @@ def recommend_books_views(request, diary_id):
         from daybydaybackend.diary.services import determine_auto_recommendation_mode
         mode = determine_auto_recommendation_mode(request.user, diary)
 
-    raw_emotion = getattr(diary, 'emotion', None)
-    user_6d_emotion = {
-        'joy': getattr(raw_emotion, 'joy', 0.0),
-        'sadness': getattr(raw_emotion, 'sadness', 0.0),
-        'anger': getattr(raw_emotion, 'anger', 0.0),
-        'fear': getattr(raw_emotion, 'fear', 0.0),
-        'trust': getattr(raw_emotion, 'trust', 0.0),
-        'surprise': getattr(raw_emotion, 'surprise', 0.0),
-    }
+    weighted_emotion = get_user_weighted_emotion(request.user, diary.created_at)
+
+    if weighted_emotion:
+        user_6d_emotion = {
+            'joy': weighted_emotion.get('joy', 0.0),
+            'sadness': weighted_emotion.get('sadness', 0.0),
+            'anger': weighted_emotion.get('anger', 0.0),
+            'fear': weighted_emotion.get('fear', 0.0),
+            'trust': weighted_emotion.get('trust', 0.0),
+            'surprise': weighted_emotion.get('surprise', 0.0),
+        }
+    else:
+        # 감정 데이터가 없을 경우를 0으로 처리
+        user_6d_emotion = {
+            'joy': 0.0, 'sadness': 0.0, 'anger': 0.0, 
+            'fear': 0.0, 'trust': 0.0, 'surprise': 0.0
+        }
 
     books, is_fallback = get_or_create_book_recommendation(diary, user_6d_emotion, mode, count, user=request.user)
     serializer = BookSerializer(books, many=True)
@@ -135,4 +143,6 @@ def recommend_books_views(request, diary_id):
     for item in data:
         item['diary_id'] = diary_id
         item['recommend_date'] = recommend_date
-    return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": data}, status=status.HTTP_200_OK)
+    
+    # weighted_emotion 추후 삭제
+    return Response({"mode": mode, "weighted_emotion": weighted_emotion, "is_fallback": is_fallback, "recommendations": data}, status=status.HTTP_200_OK)
