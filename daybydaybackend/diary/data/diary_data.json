@@ -1,0 +1,194 @@
+[
+  {
+    "content": "오늘 오랜만에 날씨가 화창해서 친구들과 공원에서 피크닉을 즐겼다. 맛있는 도시락과 끊이지 않는 수다 속에서 더없이 기쁘고 소중한 기운을 느낀 멋진 날이었다.",
+    "weather": "SUNNY",
+    "joy": 0.85, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.5, "surprise": 0.2,
+    "valence": 0.8, "arousal": 0.4, "primary_emotion": "기쁨"
+  },
+  {
+    "content": "하늘에서 슬픈 눈물이 흐르듯 비가 하루 종일 처량하게 내렸다. 마음 한구석이 텅 빈 것처럼 울적해지고 쓸쓸한 바람 소리마저 가슴을 시리게 파고드는 우울한 하루였다.",
+    "weather": "RAINY",
+    "joy": 0.0, "sadness": 0.9, "anger": 0.1, "fear": 0.2, "trust": 0.1, "surprise": 0.0,
+    "valence": -0.7, "arousal": -0.4, "primary_emotion": "슬픔"
+  },
+  {
+    "content": "오래 준비해온 발표가 억울한 오해와 상대방의 무성의한 태도로 무산되었다. 속에서 끓어오르는 답답함과 화가 가라앉지 않아 머리가 핑 돌 만큼 분노가 치밀어 오른 날이다.",
+    "weather": "CLOUDY",
+    "joy": 0.0, "sadness": 0.2, "anger": 0.95, "fear": 0.1, "trust": 0.0, "surprise": 0.1,
+    "valence": -0.8, "arousal": 0.6, "primary_emotion": "분노"
+  },
+  {
+    "content": "중요한 시험이나 면접을 앞두고 막막한 불안감이 밀려왔다. 혹시라도 실수할까 봐 걱정되고 밤이 깊어갈수록 어두운 방에서 숨이 턱턱 막히는 것 같은 초조하고 두려운 감정뿐이었다.",
+    "weather": "WINDY",
+    "joy": 0.0, "sadness": 0.3, "anger": 0.0, "fear": 0.85, "trust": 0.2, "surprise": 0.1,
+    "valence": -0.6, "arousal": 0.5, "primary_emotion": "두려움"
+  },
+  {
+    "content": "가장 믿고 의지하는 친한 동료들과 늦게까지 커피를 마시며 진솔한 속마음을 공유했다. 든든하게 나를 지탱해주는 굳건한 신뢰와 믿음 속에서 깊은 안도감이 차오른 평온한 날이다.",
+    "weather": "SUNNY",
+    "joy": 0.4, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.9, "surprise": 0.0,
+    "valence": 0.6, "arousal": -0.2, "primary_emotion": "신뢰"
+  },
+  {
+    "content": "전혀 생각지도 못했던 깜짝 서프라이즈 선물과 꽃다발을 받았다! 눈이 동그래질 만큼 깜짝 놀랐지만 마음이 짜릿해질 정도로 톡 쏘는 기분 좋은 충격에 휩싸인 특별한 날이다.",
+    "weather": "THUNDER",
+    "joy": 0.6, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.4, "surprise": 0.85,
+    "valence": 0.5, "arousal": 0.6, "primary_emotion": "놀람"
+  },
+  {
+    "content": "특별히 기쁘거나 슬픈 일 없이 집에서 조용히 밀린 다큐멘터리를 시청하고 따뜻한 유자차 한 잔을 마셨다. 물처럼 고요하고 잔잔하게 흘러간 잔잔한 휴식의 날이었다.",
+    "weather": "CLOUDY",
+    "joy": 0.1, "sadness": 0.1, "anger": 0.0, "fear": 0.0, "trust": 0.2, "surprise": 0.0,
+    "valence": 0.1, "arousal": -0.3, "primary_emotion": "알수없음"
+  },
+  {
+    "content": "아침 일찍 조깅을 하다가 우연히 길가에 핀 예쁜 야생화를 발견했다. 작고 사소한 것에서 느끼는 잔잔한 기쁨이 오늘 하루 전체를 따뜻하게 물들여 주어 기분이 날아갈 것 같다.",
+    "weather": "SUNNY",
+    "joy": 0.9, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.4, "surprise": 0.3,
+    "valence": 0.85, "arousal": 0.3, "primary_emotion": "기쁨"
+  },
+  {
+    "content": "믿었던 오랜 친구로부터 사소한 일로 차가운 불통의 벽을 마주했다. 서로 오해가 쌓여가는 과정을 지켜보며 가슴이 무겁고 쓸쓸한 슬픔이 파도처럼 밀려와 온종일 우울했다.",
+    "weather": "CLOUDY",
+    "joy": 0.0, "sadness": 0.8, "anger": 0.3, "fear": 0.1, "trust": 0.2, "surprise": 0.0,
+    "valence": -0.6, "arousal": -0.2, "primary_emotion": "슬픔"
+  },
+  {
+    "content": "공들여 작성한 기획서에 대해 상사가 대충 훑어보고는 아주 냉소적이고 무례한 비난을 쏟아냈다. 정당한 피드백이 아닌 감정 쓰레기통 취급을 받아 억울하고 끓어오르는 분노에 손이 떨렸다.",
+    "weather": "WINDY",
+    "joy": 0.0, "sadness": 0.3, "anger": 0.9, "fear": 0.1, "trust": 0.0, "surprise": 0.2,
+    "valence": -0.85, "arousal": 0.7, "primary_emotion": "분노"
+  },
+  {
+    "content": "건강검진 결과를 기다리며 알 수 없는 불안감에 휩싸였다. 의사의 심각한 표정이 떠올라 최악의 상황을 상상하게 되었고, 심장이 쿵쾅거리며 어찌할 바를 모르는 공포를 느꼈다.",
+    "weather": "RAINY",
+    "joy": 0.0, "sadness": 0.4, "anger": 0.0, "fear": 0.9, "trust": 0.1, "surprise": 0.1,
+    "valence": -0.7, "arousal": 0.6, "primary_emotion": "두려움"
+  },
+  {
+    "content": "가족들과 둘러앉아 따뜻한 저녁 식사를 나누며 소박한 일상을 이야기했다. 언제나 변함없이 내 편이 되어주고 나를 온전히 지지해주는 가족의 든든한 사랑과 신뢰에 행복한 마음이다.",
+    "weather": "SUNNY",
+    "joy": 0.5, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.95, "surprise": 0.0,
+    "valence": 0.7, "arousal": -0.3, "primary_emotion": "신뢰"
+  },
+  {
+    "content": "어제 신청했던 이벤트에 완전히 뜻밖에도 1등 당첨이라는 대박 소식을 들었다! 심장이 멎을 듯 놀랐고 한동안 현실 감각이 없을 정도로 너무 신나고 어안이 벙벙한 하루였다.",
+    "weather": "SUNNY",
+    "joy": 0.8, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.3, "surprise": 0.9,
+    "valence": 0.75, "arousal": 0.7, "primary_emotion": "놀람"
+  },
+  {
+    "content": "특별한 이벤트 없이 지나간 평범한 목요일. 도서관에서 잔잔한 음악을 들으며 밀린 책을 읽고 나만의 서재를 정리했다. 자극적이지 않고 삼삼한 평온함이 온 방에 가득했다.",
+    "weather": "CLOUDY",
+    "joy": 0.2, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.3, "surprise": 0.0,
+    "valence": 0.2, "arousal": -0.4, "primary_emotion": "알수없음"
+  },
+  {
+    "content": "오랫동안 고생하며 준비했던 프로젝트가 마침내 성공적으로 마무리되었다! 팀원들과 부둥켜안고 환호를 질렀고 노력한 결실이 눈앞에 나타나 말로 다 표현하지 못할 만큼 기뻤다.",
+    "weather": "SUNNY",
+    "joy": 0.95, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.6, "surprise": 0.3,
+    "valence": 0.9, "arousal": 0.5, "primary_emotion": "기쁨"
+  },
+  {
+    "content": "사랑하는 소중한 반려동물이 갑자기 많이 아파 병원에 입원시켰다. 텅 빈 집 안을 바라보고 있으니 눈물이 하염없이 흘렀고 아무 일도 손에 잡히지 않는 슬픈 밤을 지새웠다.",
+    "weather": "RAINY",
+    "joy": 0.0, "sadness": 0.95, "anger": 0.0, "fear": 0.3, "trust": 0.1, "surprise": 0.0,
+    "valence": -0.8, "arousal": -0.3, "primary_emotion": "슬픔"
+  },
+  {
+    "content": "주차장에서 무개념 차주가 내 차를 긁어놓고 사과는커녕 오히려 적반하장으로 큰소리를 치며 목소리를 높였다. 세상에 저런 무례한 인간이 다 있나 싶어 분노로 온몸이 화끈거렸다.",
+    "weather": "CLOUDY",
+    "joy": 0.0, "sadness": 0.2, "anger": 0.98, "fear": 0.0, "trust": 0.0, "surprise": 0.1,
+    "valence": -0.9, "arousal": 0.8, "primary_emotion": "분노"
+  },
+  {
+    "content": "밤늦게 혼자 골목길을 걸어오는데 뒤에서 누군가 발걸음을 맞춰 쫓아오는 듯한 공포를 느꼈다. 온몸의 털이 곤두서는 것 같았고 필사적으로 빠른 걸음으로 집에 돌아와 문을 잠갔다.",
+    "weather": "WINDY",
+    "joy": 0.0, "sadness": 0.2, "anger": 0.0, "fear": 0.95, "trust": 0.0, "surprise": 0.2,
+    "valence": -0.75, "arousal": 0.7, "primary_emotion": "두려움"
+  },
+  {
+    "content": "오랜 세월을 함께하며 나의 모든 치부와 아픔까지 보듬어준 베스트 프렌드와 술 한 잔을 나눴다. 굳이 말하지 않아도 다 안다는 듯 어깨를 툭 쳐주는 너의 평온한 신뢰가 고맙다.",
+    "weather": "SUNNY",
+    "joy": 0.4, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.98, "surprise": 0.0,
+    "valence": 0.65, "arousal": -0.3, "primary_emotion": "신뢰"
+  },
+  {
+    "content": "아침에 대문을 열었는데 밤사이에 마당 가득 새하얀 함박눈이 온통 소복하게 쌓여 은세계를 이루고 있었다! 동화 속에 들어온 듯 깜짝 놀라면서도 눈이 정화되는 아름다운 풍경에 신비로웠다.",
+    "weather": "SNOWY",
+    "joy": 0.7, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.4, "surprise": 0.8,
+    "valence": 0.6, "arousal": 0.4, "primary_emotion": "놀람"
+  },
+  {
+    "content": "비가 부슬부슬 내리는 창밖을 보며 따끈하고 쌉싸름한 드립 커피를 한 잔 내렸다. 특별한 생각 없이 빗소리를 백그라운드 음악 삼아 평온하게 멍을 때린 고즈넉한 휴식을 즐겼다.",
+    "weather": "RAINY",
+    "joy": 0.1, "sadness": 0.1, "anger": 0.0, "fear": 0.0, "trust": 0.2, "surprise": 0.0,
+    "valence": 0.1, "arousal": -0.4, "primary_emotion": "알수없음"
+  },
+  {
+    "content": "길고 고단했던 하루를 마치고 집에 돌아왔는데 가족들이 깜짝 촛불을 켜고 내 생일을 축하해 주었다. 눈물 나도록 행복하고 기뻤던, 잊을 수 없는 사랑 가득한 최고의 밤이었다.",
+    "weather": "SUNNY",
+    "joy": 0.98, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.6, "surprise": 0.6,
+    "valence": 0.95, "arousal": 0.4, "primary_emotion": "기쁨"
+  },
+  {
+    "content": "가장 소중하게 간직해오던 옛날 일기장과 사진첩이 물에 젖어 얼룩덜룩 다 망가져 버렸다. 돌아올 수 없는 옛 소중한 추억의 파편들이 지워진 것 같아 깊은 허망함과 슬픔에 잠겼다.",
+    "weather": "RAINY",
+    "joy": 0.0, "sadness": 0.85, "anger": 0.1, "fear": 0.1, "trust": 0.1, "surprise": 0.0,
+    "valence": -0.65, "arousal": -0.3, "primary_emotion": "슬픔"
+  },
+  {
+    "content": "인터넷 쇼핑몰에서 주문한 고가의 물건이 벽돌로 둔갑해 배송되는 사기를 당했다. 판매자는 이미 계정을 폭파하고 도망친 상태라, 억울함과 극심한 분노로 가슴이 폭발할 것처럼 쿵쾅거렸다.",
+    "weather": "THUNDER",
+    "joy": 0.0, "sadness": 0.4, "anger": 0.97, "fear": 0.2, "trust": 0.0, "surprise": 0.3,
+    "valence": -0.88, "arousal": 0.75, "primary_emotion": "분노"
+  },
+  {
+    "content": "조금씩 준비해오던 새로운 사이드 프로젝트 발표일이 임박하자 내가 잘할 수 있을지 엄청난 두려움이 밀려왔다. 가슴이 답답하고 실패에 대한 압박감에 짓눌려 잠을 설쳤다.",
+    "weather": "CLOUDY",
+    "joy": 0.0, "sadness": 0.3, "anger": 0.0, "fear": 0.88, "trust": 0.1, "surprise": 0.0,
+    "valence": -0.55, "arousal": 0.4, "primary_emotion": "두려움"
+  },
+  {
+    "content": "새로 시작한 모임에서 첫 느낌이 아주 좋은 따뜻한 사람들을 만났다. 서로의 관심사가 너무 잘 맞고 존중해주는 매너 넘치는 태도 덕분에 깊은 신뢰와 편안한 연대감을 느꼈다.",
+    "weather": "SUNNY",
+    "joy": 0.5, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.9, "surprise": 0.1,
+    "valence": 0.68, "arousal": -0.1, "primary_emotion": "신뢰"
+  },
+  {
+    "content": "친한 선배 결혼식에 참석하기 위해 식장에 들어섰는데, 갑자기 정전이 되며 암전이 되었다! 깜짝 놀라 아수라장이 될 뻔했지만, 다행히 금방 불이 켜지며 멋진 앙상블이 흘러나와 놀라웠다.",
+    "weather": "CLOUDY",
+    "joy": 0.4, "sadness": 0.0, "anger": 0.0, "fear": 0.2, "trust": 0.3, "surprise": 0.92,
+    "valence": 0.45, "arousal": 0.65, "primary_emotion": "놀람"
+  },
+  {
+    "content": "오전 내내 밀린 방 청소를 깨끗하게 끝마치고, 활짝 열어둔 창문 틈으로 들어오는 선선한 바람을 쐬었다. 복잡하던 머리가 맑아지며 아주 차분하고 평화로운 주말 오후를 보냈다.",
+    "weather": "WINDY",
+    "joy": 0.3, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.4, "surprise": 0.0,
+    "valence": 0.3, "arousal": -0.45, "primary_emotion": "알수없음"
+  },
+  {
+    "content": "아끼던 후배가 힘든 수험 생활을 드디어 끝내고 아주 높은 우수한 성적으로 원하는 대학에 최종 합격했다는 감사 편지를 보내왔다. 내 일보다 더 뿌듯하고 기뻐서 온종일 춤추듯 가벼웠다.",
+    "weather": "SUNNY",
+    "joy": 0.92, "sadness": 0.0, "anger": 0.0, "fear": 0.0, "trust": 0.5, "surprise": 0.2,
+    "valence": 0.88, "arousal": 0.35, "primary_emotion": "기쁨"
+  },
+  {
+    "content": "오랫동안 정들었던 정겨운 옛 골목길 주택가가 전면 철거되어 폐허가 된 모습을 우연히 보았다. 내 어린 시절의 추억들이 모두 흙먼지 속으로 사라져버린 듯 먹먹하고 슬픈 노스탤지어에 잠겼다.",
+    "weather": "CLOUDY",
+    "joy": 0.0, "sadness": 0.88, "anger": 0.0, "fear": 0.1, "trust": 0.1, "surprise": 0.0,
+    "valence": -0.62, "arousal": -0.25, "primary_emotion": "슬픔"
+  },
+  {
+    "content": "공들여 줄을 서서 산 한정판 굿즈를 다른 사람이 새치기하여 가로채 가버렸다. 직원의 묵인 아래 일어난 일이라 따졌지만 흐지부지 무시당해 얼굴이 붉어질 만큼 지독한 분노를 느꼈다.",
+    "weather": "CLOUDY",
+    "joy": 0.0, "sadness": 0.2, "anger": 0.96, "fear": 0.0, "trust": 0.0, "surprise": 0.1,
+    "valence": -0.85, "arousal": 0.72, "primary_emotion": "분노"
+  },
+  {
+    "content": "최근 겪고 있는 진로와 이직에 대한 막연한 장래가 불투명해져 두려운 기분이다. 깜깜한 터널을 걷고 있는 것만 같아 불안한 마음에 깊은 한숨이 자꾸 흘러나오는 지치고 무서운 밤이다.",
+    "weather": "WINDY",
+    "joy": 0.0, "sadness": 0.4, "anger": 0.0, "fear": 0.86, "trust": 0.1, "surprise": 0.0,
+    "valence": -0.58, "arousal": 0.35, "primary_emotion": "두려움"
+  }
+]

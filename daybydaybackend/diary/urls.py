@@ -4,6 +4,9 @@ from . import views
 app_name = 'diary'
 
 urlpatterns = [
+    # 일기 목록 조회 API (전체 최신순)
+    path('', views.get_diary_list, name='get_diary_list'),
+
     # 일기를 작성해서 DB에 저장하는 API
     path('create/', views.create_diary, name='create_diary'),
 
@@ -12,4 +15,13 @@ urlpatterns = [
 
     # 캘린더 전용 월별 감정 조회 API (Option A 해시맵 방식)
     path('calendar/', views.get_calendar_view, name='get_calendar_view'),
+
+    # 대시보드용 최근 5개 평균 감정 분석 API
+    path('recent-average/', views.get_user_recent_average_emotion_api, name='get_user_recent_average_emotion'),
+
+    # 실시간 공감 멘트 반환 API (Plan C)
+    path('empathy/', views.get_diary_empathy_message, name='get_diary_empathy_message'),
+
+    # 단일 일기 상세 조회 API
+    path('<int:diary_id>/', views.get_diary_detail, name='get_diary_detail'),
 ]
