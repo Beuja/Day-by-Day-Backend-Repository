@@ -218,14 +218,62 @@ def get_main_recommendations(request):
     emotions = [d.emotion for d in diaries if hasattr(d, 'emotion') and d.emotion is not None]
     
     if not emotions:
+        from daybydaybackend.books.models import Book
+        from daybydaybackend.music_movie.serializers import MusicResponseSerializer, MovieResponseSerializer
+        import random
+        
+        # 1. 도서 랜덤 2개 추출 및 직렬화
+        random_books = []
+        all_books = list(Book.objects.all()[:100])
+        if all_books:
+            random_books = random.sample(all_books, min(len(all_books), 2))
+            
+        serialized_books = []
+        for b in random_books:
+            serialized_books.append({
+                'isbn': getattr(b, 'isbn', ''),
+                'title': getattr(b, 'title', ''),
+                'author': getattr(b, 'author', ''),
+                'category': getattr(b, 'category', ''),
+                'description': getattr(b, 'description', '')[:100] + '...' if getattr(b, 'description', '') and len(getattr(b, 'description', '')) > 100 else (getattr(b, 'description', '') or ""),
+                'valence': getattr(b, 'valence', 0.0),
+                'arousal': getattr(b, 'arousal', 0.0),
+                'diary_id': None,
+                'recommend_date': None,
+            })
+            
+        # 2. 음악 랜덤 2개 추출 및 직렬화
+        random_musics = []
+        all_music_data = load_music_data()
+        if all_music_data:
+            random_musics = random.sample(all_music_data, min(len(all_music_data), 2))
+            
+        serialized_musics = MusicResponseSerializer(random_musics, many=True).data
+        for item in serialized_musics:
+            item['diary_id'] = None
+            item['recommend_date'] = None
+            
+        # 3. 영화 랜덤 2개 추출 및 직렬화
+        random_movies = []
+        all_movie_data = load_movie_data()
+        if all_movie_data:
+            random_movies = random.sample(all_movie_data, min(len(all_movie_data), 2))
+            
+        serialized_movies = MovieResponseSerializer(random_movies, many=True).data
+        for item in serialized_movies:
+            item['diary_id'] = None
+            item['recommend_date'] = None
+            
         return Response({
             'has_diaries': False,
-            'is_fallback': False,
+            'is_fallback_book': True,
+            'is_fallback_movie': True,
+            'is_fallback_music': True,
             'mode': current_mode,
             'emotion_status': None,
-            'books': [],
-            'musics': [],
-            'movies': []
+            'books': serialized_books,
+            'musics': serialized_musics,
+            'movies': serialized_movies
         }, status=status.HTTP_200_OK)
         
     count = len(emotions)
