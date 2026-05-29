@@ -16,6 +16,9 @@ urlpatterns = [
     # 캘린더 전용 월별 감정 조회 API (Option A 해시맵 방식)
     path('calendar/', views.get_calendar_view, name='get_calendar_view'),
 
+    # 대시보드용 최근 5개 평균 감정 분석 API
+    path('recent-average/', views.get_user_recent_average_emotion_api, name='get_user_recent_average_emotion'),
+
     # 실시간 공감 멘트 반환 API (Plan C)
     path('empathy/', views.get_diary_empathy_message, name='get_diary_empathy_message'),
 

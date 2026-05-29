@@ -60,4 +60,4 @@ class DailyRecommended(models.Model):
         unique_together = ('diary', 'mode')
 
     def __str__(self):
-        return f"Recommendation for Diary {self.diary.id} ({self.mode})"
+        return f"Recommendation for Diary {self.diary.id} ({self.mode})"

@@ -78,11 +78,9 @@ class MusicEmotionRecommender:
                 for m in rec.musics.all():
                     for tag in getattr(m, 'tags', []):
                         recent_tags.add(str(tag).lower().strip())
-
         from daybydaybackend.music_movie.models import Music
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
-        
         target_vec = _get_target_emotion_vector(u_vec, mode)
         target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
         w_vec = _get_direction_weights(u_vec, mode)

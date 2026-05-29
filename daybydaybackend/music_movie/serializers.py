@@ -7,10 +7,11 @@ class ContentRecommendationRequestSerializer(serializers.Serializer):
             ('maintain', 'Maintain (감정 유지)'),
             ('shift', 'Shift (감정 전환)'),
             ('amplification', 'Amplification (감정 극대화)'),
+            ('auto', 'Auto (감정 분석 기반 자동 결정)'),
         ],
-        default='maintain',
+        default='auto',
         required=False,
-        help_text="감정 추천 전략 모드: maintain (현재 감정 유지), shift (반대 감정으로 전환), amplification (현재 감정 극대화)"
+        help_text="감정 추천 전략 모드: maintain (현재 감정 유지), shift (반대 감정으로 전환), amplification (현재 감정 극대화), auto (자동 결정)"
     )
     count = serializers.IntegerField(default=3, min_value=1, max_value=20, required=False)
 
