@@ -508,4 +508,49 @@ def get_diary_empathy_message(request):
         'has_diaries': True,
         'primary_emotion': primary_emotion,
         'empathy_message': full_message
-    }, status=status.HTTP_200_OK)
+    }, status=status.HTTP_200_OK)
+
+
+# ===== 단일 일기 상세 조회 API =====
+@swagger_auto_schema(
+    method='get',
+    operation_summary="단일 일기 상세 조회",
+    operation_description="지정된 일기 ID를 받아와 본문, 날씨, 작성 시간, 이미지, 그리고 세부 감정 분석 결과를 조회하여 반환합니다. 보안을 위해 타인의 일기는 조회할 수 없습니다.",
+    security=[{'Token': []}],
+    responses={
+        200: openapi.Response('조회 성공', DiarySerializer),
+        404: '일기를 찾을 수 없거나 접근 권한 없음',
+        401: '인증되지 않은 사용자'
+    }
+)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_diary_detail(request, diary_id):
+    try:
+        diary = Diary.objects.select_related('emotion').get(id=diary_id, user=request.user)
+    except Diary.DoesNotExist:
+        return Response({'message': '해당 일기를 찾을 수 없거나 접근 권한이 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+        
+    serializer = DiarySerializer(diary)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# ===== 유저 일기 목록 조회 API =====
+@swagger_auto_schema(
+    method='get',
+    operation_summary="유저 일기 목록 조회",
+    operation_description="현재 로그인한 사용자가 작성한 모든 일기 리스트를 최신 작성 순서대로 정렬하여 반환합니다.",
+    security=[{'Token': []}],
+    responses={
+        200: openapi.Response('목록 조회 성공', DiarySerializer(many=True)),
+        401: '인증되지 않은 사용자'
+    }
+)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_diary_list(request):
+    diaries = Diary.objects.filter(user=request.user).select_related('emotion')
+    serializer = DiarySerializer(diaries, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
