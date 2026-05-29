@@ -65,7 +65,6 @@ def _calculate_cosine(u_vec, b_vec, u_norm):
     b_norm = math.sqrt(sum(b ** 2 for b in b_vec)) or 1e-9
     dot_product = sum(u * b for u, b in zip(u_vec, b_vec))
     return 1.0 - (dot_product / (u_norm * b_norm))
-
 class MovieEmotionRecommender:
     def recommend_movies(self, user_emotion, movie_data, mode='maintain', top_n=3, user=None):
         recent_genres = set()
@@ -84,6 +83,7 @@ class MovieEmotionRecommender:
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
         
         target_vec = _get_target_emotion_vector(u_vec, mode)
+
         target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
         w_vec = _get_direction_weights(u_vec, mode)
         

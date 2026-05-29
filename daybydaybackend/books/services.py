@@ -7,7 +7,6 @@ from .models import Book
 from django.db.models import Q
 from daybydaybackend.diary.models import DailyRecommended
 
-# 6가지 기본 감정 기반 도서 추천 서비스
 def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3, user=None):
     # 최근 5회의 추천 세션에서 책들의 카테고리 수집하여 벌점 대상 지정
     penalty_categories = set()
@@ -19,16 +18,12 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3, 
             for b in rec.books.all():
                 if getattr(b, 'category', None):
                     penalty_categories.add(b.category)
-
     # 계산을 위해 리스트 형태로 변경
     ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
     u_vec = np.array([user_emotion.get(key, 0.0) for key in ordered_keys])
     
     # 타겟 벡터 설정
     target_vec = _get_target_emotion(u_vec, mode)
-    t_norm = norm(target_vec)
-    if t_norm == 0:
-        t_norm = 1e-9
 
     # 태그 0,0,0,0,0,0,0,0 인 책은 추천에서 제외 (리뷰 부족)
     all_books = Book.objects.filter(
@@ -36,6 +31,12 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3, 
         & ~Q(joy=0.0) & ~Q(sadness=0.0) & ~Q(anger=0.0) & ~Q(fear=0.0) & ~Q(trust=0.0) & ~Q(surprise=0.0),
         link__isnull=False, joy__isnull=False
     )
+
+
+
+    t_norm = norm(target_vec)
+    if t_norm == 0:
+        t_norm = 1e-9
 
     filtered_and_scored = []
     fallback_list = []

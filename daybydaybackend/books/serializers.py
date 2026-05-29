@@ -15,7 +15,7 @@ class DailyRecommendedSerializer(serializers.ModelSerializer):
         fields = ['mode', 'books']
         
 class ContentRecommendationRequestSerializer(serializers.Serializer):
-    mode = serializers.ChoiceField(choices=['maintain', 'shift', 'amplification'], default='maintain')
+    mode = serializers.ChoiceField(choices=['maintain', 'shift', 'amplification', 'auto'], default='auto')
     count = serializers.IntegerField(default=3, min_value=1)
 
     class Meta:

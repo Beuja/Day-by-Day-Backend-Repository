@@ -1,4 +1,9 @@
+import calendar
+import re
+import datetime
 from django.db import transaction
+from django.utils import timezone
+
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -14,7 +19,7 @@ from .serializers import (
     DiarySerializer, AnalyzeEmotionRequestSerializer,
     DiaryCreateRequestSerializer,
     MainRecommendationResponseSerializer, CalendarResponseSerializer,
-    DiaryEmpathyResponseSerializer
+    DiaryEmotionSerializer, DiaryEmpathyResponseSerializer
 )
 from . import services
 
@@ -23,12 +28,12 @@ from . import services
 @swagger_auto_schema(
     method='post',
     operation_summary="일기 작성",
-    operation_description="사용자가 일기를 작성하여 DB에 저장합니다.",
+    operation_description="사용자가 일기를 작성하여 DB에 저장합니다. 하루에 한 번만 작성 가능하도록 차단망이 동작합니다.",
     security=[{'Token': []}],
     request_body=DiaryCreateRequestSerializer,
     responses={
         201: openapi.Response('일기 작성 성공', DiarySerializer),
-        400: '잘못된 요청',
+        400: '오늘 이미 일기를 작성했거나 잘못된 요청',
         401: '인증되지 않은 사용자'
     }
 )
@@ -37,18 +42,13 @@ from . import services
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser])
 def create_diary(request):
-    from django.utils import timezone
-    import datetime
-    
-    # USE_TZ=False 환경에서는 timezone.now()가 이미 naive local datetime입니다.
+    # KST / naive datetime 기반 중복 작성 체크 (SQLite USE_TZ=False 완벽 대응)
     now_local = timezone.now()
     today_date = now_local.date()
     
-    # naive datetime 시작/끝 시간대 설정 (SQLite USE_TZ=False 완벽 대응)
     today_start = datetime.datetime.combine(today_date, datetime.time.min)
     today_end = datetime.datetime.combine(today_date, datetime.time.max)
     
-    # 오늘 이미 작성된 일기가 있는지 확인
     existing_diary = Diary.objects.filter(
         user=request.user,
         created_at__range=(today_start, today_end)
@@ -56,7 +56,7 @@ def create_diary(request):
     
     if existing_diary:
         return Response({
-            "is_diary": True,
+            "is_diary": False,
             "message": "오늘은 이미 일기를 작성하셨습니다."
         }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -91,97 +91,35 @@ def create_diary(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-@parser_classes([JSONParser, MultiPartParser, FormParser])
-@transaction.atomic
 def analyze_diary_emotion(request):
     serializer = AnalyzeEmotionRequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     diary_id = serializer.validated_data['diary_id']
-        
+
     try:
-        diary = services.process_diary_emotion(diary_id=diary_id, user=request.user)
+        diary = Diary.objects.get(id=diary_id, user=request.user)
     except Diary.DoesNotExist:
-        return Response({'message': '해당 일기를 찾을 수 없거나 권한이 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = DiarySerializer(diary)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'message': '해당 일기를 찾을 수 없거나 접근 권한이 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+
+    # 비동기가 아닌 동기적으로 작동하여 모바일 기기 등 프론트엔드 연동 지원
+    emotion = services.analyze_and_save_emotion(diary)
+    response_serializer = DiarySerializer(diary)
+    return Response(response_serializer.data, status=status.HTTP_200_OK)
 
 
-# Swagger에 노출할 메인 추천 응답 스키마 상세 정의
+# Swagger용 응답 스키마 스펙 정의
 main_recommendation_response_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        'has_diaries': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="해당 유저의 최근 일기 작성 데이터가 존재하여 추천이 가능한지 여부"),
-        'is_fallback': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="도서 추천이 사용량 부족 등으로 인해 대체(Fallback) 추천되었는지 여부"),
-        'mode': openapi.Schema(type=openapi.TYPE_STRING, description="적용된 추천 전략 모드 (maintain, shift, amplification)"),
-        'emotion_status': openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'joy': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'sadness': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'anger': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'fear': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'trust': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'surprise': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'valence': openapi.Schema(type=openapi.TYPE_NUMBER),
-                'arousal': openapi.Schema(type=openapi.TYPE_NUMBER),
-            },
-            description="최근 5개 일기의 Plutchik 6대 감정 평균 수치 (일기가 전혀 없으면 null)",
-            allow_null=True
-        ),
-        'books': openapi.Schema(
-            type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'isbn': openapi.Schema(type=openapi.TYPE_STRING, description="도서 ISBN 번호"),
-                    'title': openapi.Schema(type=openapi.TYPE_STRING, description="도서 제목"),
-                    'author': openapi.Schema(type=openapi.TYPE_STRING, description="저자 이름"),
-                    'cover_url': openapi.Schema(type=openapi.TYPE_STRING, description="도서 표지 자켓 이미지 URL"),
-                    'category': openapi.Schema(type=openapi.TYPE_STRING, description="도서 카테고리/장르"),
-                    'description': openapi.Schema(type=openapi.TYPE_STRING, description="도서 소개 미리보기 텍스트"),
-                }
-            ),
-            description="맞춤형 추천 도서 목록 2개 (일기가 전혀 없으면 빈 배열)"
-        ),
-        'musics': openapi.Schema(
-            type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'track_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="음악 트랙 ID"),
-                    'title': openapi.Schema(type=openapi.TYPE_STRING, description="음악 제목"),
-                    'artist': openapi.Schema(type=openapi.TYPE_STRING, description="아티스트명"),
-                    'image_url': openapi.Schema(type=openapi.TYPE_STRING, description="앨범 커버 이미지 URL"),
-                    'tags': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_STRING),
-                        description="음악 태그 리스트"
-                    ),
-                    'score': openapi.Schema(type=openapi.TYPE_NUMBER, description="추천 매칭 점수 (낮을수록 매칭도 우수)"),
-                }
-            ),
-            description="맞춤형 추천 음악 목록 2개 (일기가 전혀 없으면 빈 배열)"
-        ),
-        'movies': openapi.Schema(
-            type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'movie_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="영화 ID"),
-                    'title': openapi.Schema(type=openapi.TYPE_STRING, description="영화 제목"),
-                    'director': openapi.Schema(type=openapi.TYPE_STRING, description="감독명"),
-                    'image_url': openapi.Schema(type=openapi.TYPE_STRING, description="영화 포스터 이미지 URL"),
-                    'tags': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_STRING),
-                        description="영화 태그 리스트"
-                    ),
-                    'score': openapi.Schema(type=openapi.TYPE_NUMBER, description="추천 매칭 점수 (낮을수록 매칭도 우수)"),
-                }
-            ),
-            description="맞춤형 추천 영화 목록 2개 (일기가 전혀 없으면 빈 배열)"
-        ),
+        'has_diaries': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="최근 일기 존재 여부"),
+        'is_fallback_book': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="도서 롤백 여부"),
+        'is_fallback_music': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="음악 롤백 여부"),
+        'is_fallback_movie': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="영화 롤백 여부"),
+        'mode': openapi.Schema(type=openapi.TYPE_STRING, description="적용된 추천 모드"),
+        'emotion_status': openapi.Schema(type=openapi.TYPE_OBJECT, description="최근 평균 감정 상태 요약"),
+        'books': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_OBJECT), description="추천 도서 2개"),
+        'musics': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_OBJECT), description="추천 음악 2개"),
+        'movies': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_OBJECT), description="추천 영화 2개"),
     }
 )
 
@@ -190,10 +128,10 @@ main_recommendation_response_schema = openapi.Schema(
 @swagger_auto_schema(
     method='get',
     operation_summary="메인 화면 통합 개인화 추천",
-    operation_description="최근 작성한 5개 일기의 감정을 종합 분석하여 책, 음악, 영화를 분야별로 2개씩 추출해 통합 반환합니다. 작성된 일기가 없는 신규 유저 시나리오(has_diaries=False, 빈 리스트 반환)도 상세히 표시됩니다.",
+    operation_description="최근 작성한 5개 일기의 감정을 종합 분석하여 책, 음악, 영화를 분야별로 2개씩 추출해 통합 반환합니다.",
     security=[{'Token': []}],
     manual_parameters=[
-        openapi.Parameter('mode', openapi.IN_QUERY, description="추천 모드 (maintain, shift, amplification)", type=openapi.TYPE_STRING, required=False)
+        openapi.Parameter('mode', openapi.IN_QUERY, description="추천 모드 (maintain, shift, amplification, auto)", type=openapi.TYPE_STRING, required=False)
     ],
     responses={
         200: openapi.Response('추천 성공 (감정 분석 결과 및 추천 목록)', main_recommendation_response_schema),
@@ -210,16 +148,13 @@ def get_main_recommendations(request):
     from daybydaybackend.music_movie.services import load_music_data, load_movie_data
     from daybydaybackend.music_movie.serializers import MusicResponseSerializer, MovieResponseSerializer
     
-    current_mode = request.query_params.get('mode', 'maintain')
-    if current_mode not in ['maintain', 'shift', 'amplification']:
-        current_mode = 'maintain'
-        
+    current_mode = request.query_params.get('mode', 'auto')
+    
     diaries = Diary.objects.filter(user=request.user).select_related('emotion')[:5]
     emotions = [d.emotion for d in diaries if hasattr(d, 'emotion') and d.emotion is not None]
     
     if not emotions:
         from daybydaybackend.books.models import Book
-        from daybydaybackend.music_movie.serializers import MusicResponseSerializer, MovieResponseSerializer
         import random
         
         # 1. 도서 랜덤 2개 추출 및 직렬화
@@ -264,6 +199,9 @@ def get_main_recommendations(request):
             item['diary_id'] = None
             item['recommend_date'] = None
             
+        if current_mode not in ['maintain', 'shift', 'amplification']:
+            current_mode = 'maintain'
+            
         return Response({
             'has_diaries': False,
             'is_fallback_book': True,
@@ -275,6 +213,13 @@ def get_main_recommendations(request):
             'musics': serialized_musics,
             'movies': serialized_movies
         }, status=status.HTTP_200_OK)
+        
+    latest_diary = diaries[0]
+    
+    # auto 모드 자율 판정 구동
+    if current_mode == 'auto' or current_mode not in ['maintain', 'shift', 'amplification']:
+        from daybydaybackend.diary.services import determine_auto_recommendation_mode
+        current_mode = determine_auto_recommendation_mode(request.user, latest_diary)
         
     count = len(emotions)
     avg_emotion = {
@@ -294,7 +239,7 @@ def get_main_recommendations(request):
     
     music_recommender = MusicEmotionRecommender()
     movie_recommender = MovieEmotionRecommender()
-    music_result = music_recommender.recommend_musics(user_6d_emotion, load_music_data(), mode=current_mode, top_n=2, user=request.user)
+    music_result = music_recommender.recommend_music(user_6d_emotion, load_music_data(), mode=current_mode, top_n=2, user=request.user)
     movie_result = movie_recommender.recommend_movies(user_6d_emotion, load_movie_data(), mode=current_mode, top_n=2, user=request.user)
     
     music_list = music_result.get('recommendations', [])
@@ -302,10 +247,9 @@ def get_main_recommendations(request):
     movie_list = movie_result.get('recommendations', [])
     is_fallback_movie = movie_result.get('is_fallback', False)
     
-    latest_diary = diaries[0]
     diary_id = latest_diary.id
     recommend_date = latest_diary.created_at.date().strftime("%Y-%m-%d")
-
+    
     serialized_books = []
     for b in books:
         serialized_books.append({
@@ -331,7 +275,6 @@ def get_main_recommendations(request):
         item['recommend_date'] = recommend_date
 
     if diaries.exists():
-        latest_diary = diaries[0]
         daily_rec, created = DailyRecommended.objects.get_or_create(
             diary=latest_diary,
             mode=current_mode
@@ -359,7 +302,7 @@ def get_main_recommendations(request):
     }, status=status.HTTP_200_OK)
 
 
-# ===== 월별 캘린더 감정 조회 API (복구됨!) =====
+# ===== 월별 캘린더 감정 조회 API (해시맵 방식) =====
 @swagger_auto_schema(
     method='get',
     operation_summary="월별 캘린더 감정 조회 (해시맵 방식)",
@@ -414,11 +357,14 @@ def get_calendar_view(request):
                 'trust': getattr(emotion, 'trust', 0.0),
                 'surprise': getattr(emotion, 'surprise', 0.0),
             }
-            if any(val > 0.0 for val in emotion_values.values()):
-                emotion_key = max(emotion_values, key=emotion_values.get)
+            max_key = max(emotion_values, key=emotion_values.get)
+            if emotion_values[max_key] > 0.0:
+                emotion_key = max_key
+            else:
+                emotion_key = "neutral"
                 
-        clean_content = re.sub(r'\s+', ' ', diary.content).strip()
-        preview = clean_content[:20] + '...' if len(clean_content) > 20 else clean_content
+        preview = diary.content[:20] + "..." if len(diary.content) > 20 else diary.content
+        preview = preview.replace("\r\n", " ").replace("\n", " ")
         
         calendar_data[date_str] = {
             "diary_id": diary.id,
@@ -436,11 +382,41 @@ def get_calendar_view(request):
     }, status=status.HTTP_200_OK)
 
 
+# ===== 대시보드용 최근 5개 평균 감정 분석 API (신설) =====
+@swagger_auto_schema(
+    method='get',
+    operation_summary="유저 최근 5개 평균 감정 분석 조회",
+    operation_description="유저의 최근 최대 5개 일기 감정 데이터를 추출하여 Plutchik 6대 감정 및 Valence, Arousal 수치를 산술 평균하여 반환합니다.",
+    security=[{'Token': []}],
+    responses={
+        200: openapi.Response('조회 성공', DiaryEmotionSerializer),
+        401: '인증되지 않은 사용자'
+    }
+)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_recent_average_emotion_api(request):
+    from daybydaybackend.diary.services import get_user_recent_average_emotion
+    
+    avg_emotion, diaries = get_user_recent_average_emotion(request.user)
+    if not avg_emotion:
+        return Response({
+            'has_diaries': False,
+            'recent_average_emotion': None
+        }, status=status.HTTP_200_OK)
+        
+    return Response({
+        'has_diaries': True,
+        'recent_average_emotion': avg_emotion
+    }, status=status.HTTP_200_OK)
+
+
 # ===== 최근 일기 기반 실시간 공감 멘트 조회 API (Plan C) =====
 @swagger_auto_schema(
     method='get',
     operation_summary="최근 일기 기반 실시간 공감 멘트 조회",
-    operation_description="최근 작성한 최대 5개의 일기 감정을 종합 분석하여 가장 지배적인 대표 감정을 파악하고, 그에 맞는 따뜻하고 다정한 공감 문장과 콘텐츠 추천 유도 멘트를 결합하여 반환합니다. 작성된 일기가 없는 신규 유저에게는 격려와 기본 웰컴 안전 문구를 반환합니다.",
+    operation_description="최근 작성한 최대 5개의 일기 감정을 종합 분석하여 가장 지배적인 대표 감정을 파악하고, 그에 맞는 따뜻하고 다정한 공감 문장을 반환합니다.",
     security=[{'Token': []}],
     responses={
         200: openapi.Response('공감 멘트 반환 성공', DiaryEmpathyResponseSerializer),
@@ -601,4 +577,4 @@ def get_diary_detail(request, diary_id):
 def get_diary_list(request):
     diaries = Diary.objects.filter(user=request.user).select_related('emotion')
     serializer = DiarySerializer(diaries, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.data, status=status.HTTP_200_OK)
