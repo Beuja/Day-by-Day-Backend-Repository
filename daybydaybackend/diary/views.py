@@ -59,7 +59,7 @@ def create_diary(request):
     
     if existing_diary:
         return Response({
-            "is_diary": False,
+            "is_diary": True,
             "message": "오늘은 이미 일기를 작성하셨습니다."
         }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -94,6 +94,8 @@ def create_diary(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
+@parser_classes([JSONParser, MultiPartParser, FormParser])
+@transaction.atomic
 def analyze_diary_emotion(request):
     serializer = AnalyzeEmotionRequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)

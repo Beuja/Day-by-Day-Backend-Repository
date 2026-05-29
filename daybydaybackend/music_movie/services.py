@@ -133,7 +133,7 @@ def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str,
         music_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False) 
         
-        daily_rec.musics.set(movie_instances)
+        daily_rec.musics.set(music_instances)
         daily_rec.is_music_fallback = is_fallback
         daily_rec.save(update_fields=['is_music_fallback'])
             
