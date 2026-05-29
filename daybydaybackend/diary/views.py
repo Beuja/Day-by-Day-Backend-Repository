@@ -56,7 +56,7 @@ def create_diary(request):
     
     if existing_diary:
         return Response({
-            "is_diary": False,
+            "is_diary": True,
             "message": "오늘은 이미 일기를 작성하셨습니다."
         }, status=status.HTTP_400_BAD_REQUEST)
 
