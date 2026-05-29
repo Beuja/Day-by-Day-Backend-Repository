@@ -86,4 +86,4 @@ class DailyRecommendedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DailyRecommended
-        fields = ['id', 'mode', 'books', 'musics', 'movies']
+        fields = ['id', 'mode', 'is_book_fallback', 'books', 'is_music_fallback', 'musics', 'is_movie_fallback', 'movies']
