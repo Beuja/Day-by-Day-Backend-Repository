@@ -98,10 +98,16 @@ book_properties = {
 def recommend_books_views(request, diary_id):
     diary = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
 
+    recommend_date = diary.created_at.date().strftime("%Y-%m-%d")
+
     if request.method == 'GET':
         books = get_saved_book_metadata(diary)
         serializer = DailyRecommendedSerializer(books, many=True)
-        return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
+        data = serializer.data
+        for item in data:
+            item['diary_id'] = diary_id
+            item['recommend_date'] = recommend_date
+        return Response({"recommendations": data}, status=status.HTTP_200_OK)
 
     req_serializer = ContentRecommendationRequestSerializer(data=request.data)
     req_serializer.is_valid(raise_exception=True)
@@ -125,4 +131,8 @@ def recommend_books_views(request, diary_id):
 
     books, is_fallback = get_or_create_book_recommendation(diary, user_6d_emotion, mode, count, user=request.user)
     serializer = BookSerializer(books, many=True)
-    return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": serializer.data}, status=status.HTTP_200_OK)
+    data = serializer.data
+    for item in data:
+        item['diary_id'] = diary_id
+        item['recommend_date'] = recommend_date
+    return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": data}, status=status.HTTP_200_OK)

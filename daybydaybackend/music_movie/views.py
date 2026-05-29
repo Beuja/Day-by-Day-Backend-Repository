@@ -57,11 +57,16 @@ movie_recommendation_response_schema = openapi.Schema(
 @permission_classes([IsAuthenticated])
 def recommend_music_view(request, diary_id):
     diary_obj = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
+    recommend_date = diary_obj.created_at.date().strftime("%Y-%m-%d")
     
     if request.method == 'GET':
         data = services.get_saved_music_metadata(diary_obj)
         serializer = MusicDailyRecommendedSerializer(data, many=True)
-        return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
+        res_data = serializer.data
+        for item in res_data:
+            item['diary_id'] = diary_id
+            item['recommend_date'] = recommend_date
+        return Response({"recommendations": res_data}, status=status.HTTP_200_OK)
         
     if request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
@@ -86,7 +91,11 @@ def recommend_music_view(request, diary_id):
         
         music_instances, is_fallback = services.get_or_create_music_recommendation(diary_obj, user_6d_emotion, mode, count, user=request.user)
         res_serializer = serializers.MusicResponseSerializer(music_instances, many=True)
-        return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": res_serializer.data}, status=status.HTTP_200_OK)
+        res_data = res_serializer.data
+        for item in res_data:
+            item['diary_id'] = diary_id
+            item['recommend_date'] = recommend_date
+        return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": res_data}, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(
@@ -107,11 +116,16 @@ def recommend_music_view(request, diary_id):
 @permission_classes([IsAuthenticated])
 def recommend_movie_view(request, diary_id):
     diary_obj = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
+    recommend_date = diary_obj.created_at.date().strftime("%Y-%m-%d")
 
     if request.method == 'GET':
         data = services.get_saved_movie_metadata(diary_obj)
         serializer = MovieDailyRecommendedSerializer(data, many=True)
-        return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
+        res_data = serializer.data
+        for item in res_data:
+            item['diary_id'] = diary_id
+            item['recommend_date'] = recommend_date
+        return Response({"recommendations": res_data}, status=status.HTTP_200_OK)
         
     if request.method == 'POST':
         req_serializer = serializers.ContentRecommendationRequestSerializer(data=request.data)
@@ -136,4 +150,8 @@ def recommend_movie_view(request, diary_id):
         
         movie_instances, is_fallback = services.get_or_create_movie_recommendation(diary_obj, user_6d_emotion, mode, count, user=request.user)
         res_serializer = serializers.MovieResponseSerializer(movie_instances, many=True)
-        return Response({"mode": mode,"is_fallback": is_fallback, "recommendations": res_serializer.data}, status=status.HTTP_200_OK)
+        res_data = res_serializer.data
+        for item in res_data:
+            item['diary_id'] = diary_id
+            item['recommend_date'] = recommend_date
+        return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": res_data}, status=status.HTTP_200_OK)

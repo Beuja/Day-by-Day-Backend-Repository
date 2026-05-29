@@ -71,4 +71,8 @@ class CalendarResponseSerializer(serializers.Serializer):
         help_text="날짜(YYYY-MM-DD)를 Key로 하는 캘린더 감정 정보 해시맵"
     )
 
-
+
+class DiaryEmpathyResponseSerializer(serializers.Serializer):
+    has_diaries = serializers.BooleanField(help_text="일기 데이터가 존재하여 공감 멘트 생성을 가능한지 여부")
+    primary_emotion = serializers.CharField(help_text="유저의 최근 대표 감정 명칭 (슬픔, 기쁨 등)", allow_null=True)
+    empathy_message = serializers.CharField(help_text="일기 내용에 감정 매칭 공감 및 추천 유도가 결합된 최종 한글 공감 문장")
