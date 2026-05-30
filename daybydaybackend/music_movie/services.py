@@ -57,7 +57,6 @@ def convert_emotion_to_6d_vector(emotion_vector: dict) -> dict:
         'trust': round(max(0.0, min(1.0, trust)), 2), 'surprise': round(max(0.0, min(1.0, surprise)), 2),
     }
 
-# 💡 [핵심 해결] 실시간으로 점수를 재계산하여 인스턴스에 붙여주는 도우미 함수
 def _attach_scores(instances, diary_obj, mode, is_movie=False):
     if not instances:
         return instances
@@ -75,9 +74,6 @@ def _attach_scores(instances, diary_obj, mode, is_movie=False):
         from .recommend_music_movie.recommend_music import _get_target_emotion_vector, _get_direction_weights, _calculate_euclidean, _calculate_cosine, build_6d_emotion_vector
     
     target_vec = _get_target_emotion_vector(u_vec, mode)
-
-
-
     target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
     w_vec = _get_direction_weights(u_vec, mode)
 
@@ -121,31 +117,28 @@ def _attach_scores(instances, diary_obj, mode, is_movie=False):
         
     return instances
 
-def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str, count: int, user=None):
+def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj, mode=mode)
     saved_count = daily_rec.musics.count()
 
     if created or saved_count == 0 or saved_count < count:
         music_data = load_music_data()
         recommender = MusicEmotionRecommender()
-        res = recommender.recommend_musics(user_emotion, music_data, mode=mode, top_n=count, user=user)
+        res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
         
         music_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False) 
         
         daily_rec.musics.set(music_instances)
-        daily_rec.is_music_fallback = is_fallback
-        daily_rec.save(update_fields=['is_music_fallback'])
             
     else:
         music_instances = list(daily_rec.musics.all()[:count])
-        # 이미 저장된 데이터를 POST 요청으로 불러올 때 score 부여
         _attach_scores(music_instances, diary_obj, mode, is_movie=False)
-        is_fallback = daily_rec.is_music_fallback
+        is_fallback = False
         
     return music_instances, is_fallback
 
-def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str, count: int, user=None):
+def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj, mode=mode)
     saved_count = daily_rec.movies.count()
 
@@ -155,33 +148,63 @@ def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str,
             if isinstance(movie.get("genre"), list):
                 movie["genre"] = ", ".join(movie["genre"])
         recommender = MovieEmotionRecommender()
-        res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count, user=user)
+        res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
 
         movie_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False)
 
         daily_rec.movies.set(movie_instances)
-        daily_rec.is_movie_fallback = is_fallback
-        daily_rec.save(update_fields=['is_movie_fallback'])
 
     else:
         movie_instances = list(daily_rec.movies.all()[:count])
-        # 이미 저장된 데이터를 POST 요청으로 불러올 때 score 부여
         _attach_scores(movie_instances, diary_obj, mode, is_movie=True)
-        is_fallback = daily_rec.is_movie_fallback
+        is_fallback = False
     
     return movie_instances, is_fallback
 
 def get_saved_music_metadata(diary_obj):
     daily_recs = DailyRecommended.objects.filter(diary=diary_obj).prefetch_related('musics')
+    result = []
     for rec in daily_recs:
-        # 💡 GET(조회) 할 때도 score를 0이 아니라 실제 점수로 계산하여 덧붙입니다.
-        _attach_scores(rec.musics.all(), diary_obj, rec.mode, is_movie=False)
-    return daily_recs
+        scored_musics = _attach_scores(rec.musics.all(), diary_obj, rec.mode, is_movie=False)
+        formatted_musics = []
+        for m in scored_musics:
+            # URL 생성
+            artist = getattr(m, 'artist', '')
+            title = getattr(m, 'title', '')
+            external_url = f"https://www.last.fm/search?q={artist}+{title}".replace(" ", "+") if artist and title else "https://www.last.fm/"
+            
+            formatted_musics.append({
+                'track_id': m.id,
+                'title': title,
+                'artist': artist if artist else '아티스트 미상',
+                'image_url': getattr(m, 'image_url', ''),
+                'tags': m.tags if isinstance(m.tags, list) else [],
+                'score': getattr(m, 'score', 0.0),
+                'external_url': external_url # 💡 반환 데이터에 URL 포함
+            })
+        result.append({'mode': rec.mode, 'musics': formatted_musics})
+    return result
 
 def get_saved_movie_metadata(diary_obj):
     daily_recs = DailyRecommended.objects.filter(diary=diary_obj).prefetch_related('movies')
+    result = []
     for rec in daily_recs:
-        # 💡 GET(조회) 할 때도 score를 0이 아니라 실제 점수로 계산하여 덧붙입니다.
-        _attach_scores(rec.movies.all(), diary_obj, rec.mode, is_movie=True)
-    return daily_recs
+        scored_movies = _attach_scores(rec.movies.all(), diary_obj, rec.mode, is_movie=True)
+        formatted_movies = []
+        for m in scored_movies:
+            # URL 생성
+            movie_id = getattr(m, 'tmdb_id', None)
+            external_url = f"https://www.themoviedb.org/movie/{movie_id}" if movie_id else "https://www.themoviedb.org/"
+            
+            formatted_movies.append({
+                'movie_id': movie_id,
+                'title': getattr(m, 'title', ''),
+                'director': getattr(m, 'director', '감독 정보 없음'),
+                'image_url': getattr(m, 'poster_path', ''),
+                'tags': [m.genre] if getattr(m, 'genre', None) else [],
+                'score': getattr(m, 'score', 0.0),
+                'external_url': external_url # 💡 반환 데이터에 URL 포함
+            })
+        result.append({'mode': rec.mode, 'movies': formatted_movies})
+    return result

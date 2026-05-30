@@ -1,3 +1,4 @@
+import urllib.parse
 from rest_framework import serializers
 from daybydaybackend.diary.models import DailyRecommended
 
@@ -22,9 +23,9 @@ class MusicResponseSerializer(serializers.Serializer):
     image_url = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
     score = serializers.SerializerMethodField()
+    link_url = serializers.SerializerMethodField()
 
     def get_track_id(self, obj):
-        # 💡 [500 에러 해결] 객체면 id를, 딕셔너리이면 track_id를 유연하게 뽑아냅니다.
         if hasattr(obj, 'id'): return obj.id
         return obj.get('track_id') if isinstance(obj, dict) else None
 
@@ -44,6 +45,21 @@ class MusicResponseSerializer(serializers.Serializer):
         if hasattr(obj, 'score'): return obj.score
         return obj.get('score', 0.0) if isinstance(obj, dict) else 0.0
 
+    def get_link_url(self, obj):
+        title = getattr(obj, 'title', '') if not isinstance(obj, dict) else obj.get('title', '')
+        artist = self.get_artist(obj)
+        
+        # 💡 유튜브 검색 대신 Last.fm 공식 페이지로 변경
+        if artist and artist != "아티스트 미상":
+            # Last.fm 공식 곡 페이지 URL (예: /music/The+Weeknd/_/The+Hills)
+            artist_encoded = urllib.parse.quote_plus(artist)
+            title_encoded = urllib.parse.quote_plus(title)
+            return f"https://www.last.fm/music/{artist_encoded}/_/{title_encoded}"
+        else:
+            # 아티스트 정보가 없을 경우 Last.fm 통합 검색 페이지로 이동
+            query = urllib.parse.quote_plus(title.strip())
+            return f"https://www.last.fm/search?q={query}"
+
 
 class MovieResponseSerializer(serializers.Serializer):
     movie_id = serializers.SerializerMethodField()
@@ -52,13 +68,13 @@ class MovieResponseSerializer(serializers.Serializer):
     image_url = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
     score = serializers.SerializerMethodField()
+    link_url = serializers.SerializerMethodField()
 
     def get_movie_id(self, obj):
         if hasattr(obj, 'tmdb_id'): return obj.tmdb_id
         return obj.get('movie_id') if isinstance(obj, dict) else None
 
     def get_director(self, obj):
-        # 💡 [공백 해결] DB에 값이 아예 없거나, ""(빈 문자열)인 경우를 모두 잡아냅니다.
         val = getattr(obj, 'director', '') if not isinstance(obj, dict) else obj.get('director', '')
         return val if val else '감독 정보 없음'
 
@@ -73,6 +89,12 @@ class MovieResponseSerializer(serializers.Serializer):
     def get_score(self, obj):
         if hasattr(obj, 'score'): return obj.score
         return obj.get('score', 0.0) if isinstance(obj, dict) else 0.0
+
+    def get_link_url(self, obj):
+        m_id = self.get_movie_id(obj)
+        if m_id:
+            return f"https://www.themoviedb.org/movie/{m_id}"
+        return ""
 
 
 class MusicDailyRecommendedSerializer(serializers.ModelSerializer):
