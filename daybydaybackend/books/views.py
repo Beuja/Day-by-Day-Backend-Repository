@@ -11,7 +11,7 @@ from drf_yasg import openapi
 from django.shortcuts import get_object_or_404
 
 from .models import Book
-from .services import get_or_create_book_recommendation, get_saved_book_metadata
+from .services import get_or_create_book_recommendation, get_saved_book_metadata, get_user_weighted_emotion
 from .serializers import BookSerializer, ContentRecommendationRequestSerializer, DailyRecommendedSerializer
 
 from daybydaybackend.diary.models import Diary
@@ -72,13 +72,13 @@ book_properties = {
 @swagger_auto_schema(
     method='post',
     operation_summary="감정 기반 도서 추천",
-    operation_description='일기 감정 데이터를 기반으로 맞춤형 도서를 추천합니다. 요청 바디의 mode 파라미터를 통해 세 가지 추천 전략 중 하나를 사용할 수 있습니다.\n\n- maintain: 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 도서를 추천합니다 (기본값).\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 밝은 감정으로 전환(Shift)할 수 있는 도서를 추천합니다.\n- amplification: 현재의 신나고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 도서를 추천합니다.',
+    operation_description='일기 감정 데이터를 기반으로 맞춤형 도서를 추천합니다. 요청 바디의 mode 파라미터를 통해 추천 전략을 사용할 수 있습니다.\n\n- auto: 최근 5일간의 감정 누적 이력(평균 및 분산)을 분석하여 기분 유지(maintain), 전환(shift), 극대화(amplification) 중 가장 알맞은 전략을 백엔드에서 자율 결정합니다 (기본값).\n- maintain: 현재 사용자의 감정 상태를 차분하게 유지할 수 있는 도서를 추천합니다.\n- shift: 우울하거나 분노할 때 반대되는 긍정적이고 밝은 감정으로 전환(Shift)할 수 있는 도서를 추천합니다.\n- amplification: 현재의 신나고 즐거운 감정을 극대화(Amplification)하고 고취시킬 수 있는 도서를 추천합니다.',
     request_body=ContentRecommendationRequestSerializer,
     responses={
         200: openapi.Response('도서 추천 완료', openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'mode': openapi.Schema(type=openapi.TYPE_STRING, description="적용된 도서 추천 전략 모드 (maintain, shift, amplification)"),
+                'mode': openapi.Schema(type=openapi.TYPE_STRING, description="최종 결정 및 적용된 도서 추천 전략 모드 (maintain, shift, amplification)"),
                 'recommendations': openapi.Schema(
                     type=openapi.TYPE_ARRAY,
                     items=openapi.Schema(
@@ -97,28 +97,51 @@ book_properties = {
 @permission_classes([IsAuthenticated])
 def recommend_books_views(request, diary_id):
     diary = get_object_or_404(Diary.objects.select_related('emotion'), id=diary_id, user=request.user)
+    recommend_date = diary.created_at.date().strftime("%Y-%m-%d")
 
     if request.method == 'GET':
         books = get_saved_book_metadata(diary)
         serializer = DailyRecommendedSerializer(books, many=True)
-        return Response({"recommendations": serializer.data}, status=status.HTTP_200_OK)
+        data = serializer.data
+        for item in data:
+            item['diary_id'] = diary_id
+            item['recommend_date'] = recommend_date
+        return Response({"recommendations": data}, status=status.HTTP_200_OK)
 
     req_serializer = ContentRecommendationRequestSerializer(data=request.data)
     req_serializer.is_valid(raise_exception=True)
 
-    mode = req_serializer.validated_data.get('mode', 'maintain')
+    mode = req_serializer.validated_data.get('mode', 'auto')
     count = req_serializer.validated_data.get('count', 3)
 
-    raw_emotion = getattr(diary, 'emotion', None)
-    user_6d_emotion = {
-        'joy': getattr(raw_emotion, 'joy', 0.0),
-        'sadness': getattr(raw_emotion, 'sadness', 0.0),
-        'anger': getattr(raw_emotion, 'anger', 0.0),
-        'fear': getattr(raw_emotion, 'fear', 0.0),
-        'trust': getattr(raw_emotion, 'trust', 0.0),
-        'surprise': getattr(raw_emotion, 'surprise', 0.0),
-    }
+    if mode == 'auto':
+        from daybydaybackend.diary.services import determine_auto_recommendation_mode
+        mode = determine_auto_recommendation_mode(request.user, diary)
 
-    books, is_fallback = get_or_create_book_recommendation(diary, user_6d_emotion, mode, count)
+    weighted_emotion = get_user_weighted_emotion(request.user, diary.created_at)
+
+    if weighted_emotion:
+        user_6d_emotion = {
+            'joy': weighted_emotion.get('joy', 0.0),
+            'sadness': weighted_emotion.get('sadness', 0.0),
+            'anger': weighted_emotion.get('anger', 0.0),
+            'fear': weighted_emotion.get('fear', 0.0),
+            'trust': weighted_emotion.get('trust', 0.0),
+            'surprise': weighted_emotion.get('surprise', 0.0),
+        }
+    else:
+        # 감정 데이터가 없을 경우를 0으로 처리
+        user_6d_emotion = {
+            'joy': 0.0, 'sadness': 0.0, 'anger': 0.0, 
+            'fear': 0.0, 'trust': 0.0, 'surprise': 0.0
+        }
+
+    books, is_fallback = get_or_create_book_recommendation(diary, user_6d_emotion, mode, count, user=request.user)
     serializer = BookSerializer(books, many=True)
-    return Response({"mode": mode, "is_fallback": is_fallback, "recommendations": serializer.data}, status=status.HTTP_200_OK)
+    data = serializer.data
+    for item in data:
+        item['diary_id'] = diary_id
+        item['recommend_date'] = recommend_date
+    
+    # weighted_emotion 추후 삭제
+    return Response({"mode": mode, "weighted_emotion": weighted_emotion, "is_fallback": is_fallback, "recommendations": data}, status=status.HTTP_200_OK)

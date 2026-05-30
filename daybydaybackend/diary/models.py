@@ -55,7 +55,10 @@ class DailyRecommended(models.Model):
     musics = models.ManyToManyField('music_movie.Music', blank=True, related_name='daily_recommendations')
     movies = models.ManyToManyField('music_movie.Movie', blank=True, related_name='daily_recommendations')
     books = models.ManyToManyField('books.Book', blank=True, related_name='daily_recommendations')
-    
+    is_book_fallback = models.BooleanField(default=False)
+    is_music_fallback = models.BooleanField(default=False)
+    is_movie_fallback = models.BooleanField(default=False)
+
     class Meta:
         unique_together = ('diary', 'mode')
 

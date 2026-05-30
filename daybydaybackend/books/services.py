@@ -3,21 +3,32 @@
 # import math
 import numpy as np
 from numpy.linalg import norm
+from django.utils import timezone
+from datetime import timedelta
+
 from .models import Book
 from django.db.models import Q
-from daybydaybackend.diary.models import DailyRecommended
+from daybydaybackend.diary.models import Diary, DailyRecommended
 
-# 6가지 기본 감정 기반 도서 추천 서비스
-def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
+def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, user=None):
+    # 최근 5회의 추천 세션에서 책들의 카테고리 수집하여 벌점 대상 지정
+    penalty_categories = set()
+    if user and user.is_authenticated:
+        recent_recs = DailyRecommended.objects.filter(
+            diary__user=user
+        ).order_by('-diary__created_at')[:5]
+        for rec in recent_recs:
+            for b in rec.books.all():
+                if getattr(b, 'category', None):
+                    penalty_categories.add(b.category)
+
     # 계산을 위해 리스트 형태로 변경
     ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
+
     u_vec = np.array([user_emotion.get(key, 0.0) for key in ordered_keys])
     
     # 타겟 벡터 설정
     target_vec = _get_target_emotion(u_vec, mode)
-    t_norm = norm(target_vec)
-    if t_norm == 0:
-        t_norm = 1e-9
 
     # 태그 0,0,0,0,0,0,0,0 인 책은 추천에서 제외 (리뷰 부족)
     all_books = Book.objects.filter(
@@ -25,6 +36,10 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
         & ~Q(joy=0.0) & ~Q(sadness=0.0) & ~Q(anger=0.0) & ~Q(fear=0.0) & ~Q(trust=0.0) & ~Q(surprise=0.0),
         link__isnull=False, joy__isnull=False
     )
+
+    t_norm = norm(target_vec)
+    if t_norm == 0:
+        t_norm = 1e-9
 
     filtered_and_scored = []
     fallback_list = []
@@ -54,6 +69,10 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
 
         final_score = (alpha * norm_euclidean) + ((1.0 - alpha) * cosine_dist)
         
+        # [다양성 패치] 과거에 추천받았던 카테고리가 겹치면 패널티 가중치를 주어 순위를 뒤로 밀어냄
+        if getattr(book, 'category', None) in penalty_categories:
+            final_score += 0.3
+        
         # 임계값 내에 있는 콘텐츠만 filtered_and_scored에 추가
         if pure_distance <= radius_limit:
             filtered_and_scored.append((final_score, book)) 
@@ -69,19 +88,20 @@ def recommend_books(user_emotion: dict, mode: str = 'maintain', count: int = 3):
     return [item[1] for item in fallback_list[:count]], True
 
 
-def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int):
+def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int, user=None):
     daily_rec, created = DailyRecommended.objects.get_or_create(diary=diary_obj, mode=mode)
     saved_count = daily_rec.books.count()
 
     if created or saved_count == 0 or saved_count < count:
-        recommended_books, is_fallback = recommend_books(user_emotion=user_emotion, mode=mode, count=count)
-        # fallback 아닐 때만 저장
-        if not is_fallback:
-            daily_rec.books.set(recommended_books)
+        recommended_books, is_fallback = recommend_books(user_emotion=user_emotion, mode=mode, count=count, user=user)
+
+        daily_rec.books.set(recommended_books)
+        daily_rec.is_book_fallback = is_fallback
+        daily_rec.save(update_fields=['is_book_fallback'])
     
     else:
         recommended_books = daily_rec.books.all()[:count]
-        is_fallback = False
+        is_fallback = daily_rec.is_book_fallback
         
     return recommended_books, is_fallback
 
@@ -124,3 +144,52 @@ def _get_target_emotion(u_vec: np.ndarray, mode: str) -> np.ndarray:
         
     # maintain 모드일 경우 그대로
     return target_vec
+
+def get_user_weighted_emotion(user, target_datetime=None):
+    # 최근 일주일 간 감정 벡터를 가중치를 적용해 하나의 감정 벡터로 리턴  
+    target_date = target_datetime.date()
+    seven_days_ago = target_datetime - timedelta(days=7)
+
+    # 7일 이내 데이터만 필터링
+    queryset = Diary.objects.filter(
+        user=user,
+        created_at__lte=target_datetime,
+        created_at__gte=seven_days_ago
+    ).select_related('emotion')
+
+    diaries = queryset.order_by('-created_at')
+    
+    # 감정 데이터가 유효한 일기만 필터링
+    valid_diaries = [d for d in diaries if hasattr(d, 'emotion') and d.emotion is not None]
+    if not valid_diaries:
+        return None
+    
+    # test하고 변경
+    WEIGHTS = [0.7, 0.2, 0.05, 0.02, 0.01, 0.01, 0.01]
+
+    fields = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
+
+    weighted_sum = {field: 0.0 for field in fields}
+    total_weight = 0.0
+
+    for d in valid_diaries:
+        days_diff = (target_date - d.created_at.date()).days
+        
+        # 작성 당일 ~ 6일 전 데이터만 가중치 적용
+        if 0 <= days_diff < len(WEIGHTS):
+            weight = WEIGHTS[days_diff]
+            total_weight += weight
+            
+            for field in fields:
+                weighted_sum[field] += getattr(d.emotion, field) * weight
+
+    # 유효한 가중치가 없는 경우 
+    if total_weight == 0:
+        return None
+
+    weighted_emotion = {}
+    for field in fields:
+        # 실제로 더해진 가중치의 총합으로 나눔
+        weighted_emotion[field] = round(weighted_sum[field] / total_weight, 4)
+        
+    return weighted_emotion

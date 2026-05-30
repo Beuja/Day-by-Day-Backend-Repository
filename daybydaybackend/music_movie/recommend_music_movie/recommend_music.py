@@ -67,11 +67,23 @@ def _calculate_cosine(u_vec, b_vec, u_norm):
     return 1.0 - (dot_product / (u_norm * b_norm))
 
 class MusicEmotionRecommender:
-    def recommend_music(self, user_emotion, music_data, mode='maintain', top_n=3):
+    def recommend_music(self, user_emotion, music_data, mode='maintain', top_n=3, user=None):
+        return self.recommend_musics(user_emotion, music_data, mode=mode, top_n=top_n, user=user)
+
+    def recommend_musics(self, user_emotion, music_data, mode='maintain', top_n=3, user=None):
+        recent_tags = set()
+        if user and user.is_authenticated:
+            from daybydaybackend.diary.models import DailyRecommended
+            recent_recs = DailyRecommended.objects.filter(
+                diary__user=user
+            ).order_by('-diary__created_at')[:5]
+            for rec in recent_recs:
+                for m in rec.musics.all():
+                    for tag in getattr(m, 'tags', []):
+                        recent_tags.add(str(tag).lower().strip())
         from daybydaybackend.music_movie.models import Music
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
-        
         target_vec = _get_target_emotion_vector(u_vec, mode)
         target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
         w_vec = _get_direction_weights(u_vec, mode)
@@ -101,6 +113,18 @@ class MusicEmotionRecommender:
             popularity_score = min(1.0, popularity / 50000000.0)
             # 💡 감정 점수 반영률 90%, 대중성 10% 로 조정 (동점 방지)
             final_score = (emotion_score * 0.9) + ((1.0 - popularity_score) * 0.1)
+            
+            # [다양성 패치] 최근 추천받았던 태그들과 중복되는 감정 태그가 있다면 패널티 가산
+            track_tags = track.get('tags', [])
+            if isinstance(track_tags, str):
+                track_tags = track_tags.replace("'", '"')
+                try: track_tags = json.loads(track_tags)
+                except: track_tags = [track_tags]
+            
+            overlap = sum(1 for t in track_tags if str(t).lower().strip() in recent_tags)
+            if overlap > 0:
+                final_score += 0.2
+
             track_info = {'track_id': track.get('track_id'), 'score': round(final_score, 4)}
                 
             if pure_distance <= radius_limit:
