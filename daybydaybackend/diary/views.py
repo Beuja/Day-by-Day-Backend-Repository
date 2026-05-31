@@ -255,6 +255,14 @@ def get_main_recommendations(request):
     diary_id = latest_diary.id
     recommend_date = latest_diary.created_at.date().strftime("%Y-%m-%d")
     
+    # 💡 [피드백 패치] 사용자가 좋아요/싫어요를 한 내역을 직렬화 시 포함시켜 프론트의 UI 렌더링(하트 활성)을 지원합니다.
+    from daybydaybackend.diary.models import UserFeedback
+    user_feedbacks = {}
+    if request.user and request.user.is_authenticated:
+        feedbacks = UserFeedback.objects.filter(user=request.user)
+        for f in feedbacks:
+            user_feedbacks[f"{f.content_type.model}_{f.object_id}"] = f.feedback_type
+
     serialized_books = []
     for b in books:
         serialized_books.append({
@@ -267,17 +275,20 @@ def get_main_recommendations(request):
             'arousal': getattr(b, 'arousal', 0.0),
             'diary_id': diary_id,
             'recommend_date': recommend_date,
+            'user_feedback': user_feedbacks.get(f"book_{getattr(b, 'isbn', '')}", None),
         })
         
     serialized_musics = MusicResponseSerializer(music_list, many=True).data
     for item in serialized_musics:
         item['diary_id'] = diary_id
         item['recommend_date'] = recommend_date
+        item['user_feedback'] = user_feedbacks.get(f"music_{item.get('id')}", None)
 
     serialized_movies = MovieResponseSerializer(movie_list, many=True).data
     for item in serialized_movies:
         item['diary_id'] = diary_id
         item['recommend_date'] = recommend_date
+        item['user_feedback'] = user_feedbacks.get(f"movie_{item.get('tmdb_id')}", None)
 
     if diaries.exists():
         daily_rec, created = DailyRecommended.objects.get_or_create(
@@ -643,3 +654,92 @@ def search_diary_by_date(request, date):
 
     # 3. 결합된 딕셔너리를 통째로 반환
     return Response(response_data, status=status.HTTP_200_OK)
+
+
+# ===== 사용자 피드백 제출 API (좋아요/싫어요) =====
+@swagger_auto_schema(
+    method='post',
+    operation_summary="콘텐츠 좋아요/싫어요 피드백 제출",
+    operation_description="도서, 음악, 영화 콘텐츠에 대해 좋아요(LIKE), 싫어요(DISLIKE), 또는 피드백 해제(NONE)를 제출합니다.",
+    security=[{'Token': []}],
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['content_type', 'item_id', 'feedback_type'],
+        properties={
+            'content_type': openapi.Schema(type=openapi.TYPE_STRING, description="콘텐츠 타입: 'book', 'music', 'movie'", enum=['book', 'music', 'movie']),
+            'item_id': openapi.Schema(type=openapi.TYPE_STRING, description="콘텐츠 고유 ID (도서는 ISBN 문자열, 음악/영화는 정수형 ID)"),
+            'feedback_type': openapi.Schema(type=openapi.TYPE_STRING, description="피드백 유형: 'LIKE', 'DISLIKE', 'NONE'", enum=['LIKE', 'DISLIKE', 'NONE']),
+        }
+    ),
+    responses={
+        200: openapi.Response('피드백 등록/수정/삭제 성공'),
+        400: '잘못된 요청 파라미터',
+        404: '해당 콘텐츠를 찾을 수 없음',
+        401: '인증되지 않은 사용자'
+    }
+)
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def submit_user_feedback(request):
+    from daybydaybackend.diary.models import UserFeedback
+    from django.contrib.contenttypes.models import ContentType
+    from daybydaybackend.books.models import Book
+    from daybydaybackend.music_movie.models import Music, Movie
+
+    c_type = request.data.get('content_type')
+    item_id = request.data.get('item_id')
+    f_type = request.data.get('feedback_type')
+
+    if not c_type or not item_id or not f_type:
+        return Response({'message': 'content_type, item_id, feedback_type은 필수 필드입니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if f_type not in ['LIKE', 'DISLIKE', 'NONE']:
+        return Response({'message': "feedback_type은 'LIKE', 'DISLIKE', 'NONE' 중 하나여야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 1. 콘텐츠 모델 및 실제 존재 여부 검증
+    if c_type == 'book':
+        model_class = Book
+        try:
+            content_obj = Book.objects.get(isbn=item_id)
+        except Book.DoesNotExist:
+            return Response({'message': '해당 도서를 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+    elif c_type == 'music':
+        model_class = Music
+        try:
+            content_obj = Music.objects.get(id=int(item_id))
+        except (ValueError, Music.DoesNotExist):
+            return Response({'message': '해당 음악을 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+    elif c_type == 'movie':
+        model_class = Movie
+        try:
+            content_obj = Movie.objects.get(tmdb_id=int(item_id))
+        except (ValueError, Movie.DoesNotExist):
+            return Response({'message': '해당 영화를 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response({'message': "content_type은 'book', 'music', 'movie' 중 하나여야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    django_content_type = ContentType.objects.get_for_model(model_class)
+
+    # 2. 피드백 등록 / 수정 / 삭제 처리
+    if f_type == 'NONE':
+        # 피드백 해제: 기존 피드백이 있으면 제거
+        deleted_count, _ = UserFeedback.objects.filter(
+            user=request.user,
+            content_type=django_content_type,
+            object_id=str(item_id)
+        ).delete()
+        if deleted_count > 0:
+            return Response({'message': '피드백이 삭제되었습니다.', 'feedback_type': 'NONE'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': '삭제할 피드백이 없습니다.', 'feedback_type': 'NONE'}, status=status.HTTP_200_OK)
+    else:
+        # 등록 또는 수정 (update_or_create)
+        feedback, created = UserFeedback.objects.update_or_create(
+            user=request.user,
+            content_type=django_content_type,
+            object_id=str(item_id),
+            defaults={'feedback_type': f_type}
+        )
+        msg = '피드백이 등록되었습니다.' if created else '피드백이 수정되었습니다.'
+        return Response({'message': msg, 'feedback_type': f_type}, status=status.HTTP_200_OK)
