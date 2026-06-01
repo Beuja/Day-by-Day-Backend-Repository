@@ -118,23 +118,96 @@ class MovieEmotionRecommender:
             if movie.get('genre') in recent_genres:
                 final_score += 0.25
 
-            movie_info = {'movie_id': movie.get('movie_id'), 'score': round(final_score, 4)}
+            movie_info = {
+                'movie_id': movie.get('movie_id'), 
+                'score': round(final_score, 4),
+                'pure_distance': pure_distance,
+                'genre': movie.get('genre')
+            }
 
             if pure_distance <= radius_limit:
                 filtered_and_scored.append(movie_info)
             
             fallback_list.append((movie_info, pure_distance))
 
+        # [1단계] 객관적인 감정 치료 우선으로 안전 후보군 선별
+        pool_size = max(top_n * 3, 10)
+
         if len(filtered_and_scored) >= top_n:
             filtered_and_scored.sort(key=lambda x: x['score'])
-            selected_movies = filtered_and_scored[:top_n]
+            safe_pool = filtered_and_scored[:pool_size]
             is_fallback = False
         else:
             fallback_list.sort(key=lambda x: x[0]['score'])
-            selected_movies = [item[0] for item in fallback_list[:top_n]]
+            safe_pool = [item[0] for item in fallback_list[:pool_size]]
             is_fallback = True
         
-    
+        # =========================================================================
+        # [안전장치 및 2단계] 치료 임계치 검증 & 안전 후보군 내 취향 재정렬
+        # =========================================================================
+        if user and user.is_authenticated and len(safe_pool) > 0:
+            from daybydaybackend.diary.models import UserFeedback
+            from django.contrib.contenttypes.models import ContentType
+            from django.utils import timezone
+            from datetime import timedelta
+
+            liked_movie_genres = set()
+            disliked_movie_genres = set()
+
+            movie_type = ContentType.objects.get_for_model(Movie)
+
+            # 좋아요 영화의 장르 수집
+            liked_ids = UserFeedback.objects.filter(
+                user=user, feedback_type='LIKE', content_type=movie_type
+            ).values_list('object_id', flat=True)
+            if liked_ids:
+                for m in Movie.objects.filter(tmdb_id__in=liked_ids):
+                    if getattr(m, 'genre', None):
+                        for g in m.genre.split(','):
+                            liked_movie_genres.add(g.strip().lower())
+
+            # 최근 3일 싫어요 영화의 장르 수집
+            three_days_ago = timezone.now() - timedelta(days=3)
+            disliked_ids = UserFeedback.objects.filter(
+                user=user, feedback_type='DISLIKE', content_type=movie_type,
+                created_at__gte=three_days_ago
+            ).values_list('object_id', flat=True)
+            if disliked_ids:
+                for m in Movie.objects.filter(tmdb_id__in=disliked_ids):
+                    if getattr(m, 'genre', None):
+                        for g in m.genre.split(','):
+                            disliked_movie_genres.add(g.strip().lower())
+
+            # 치료 마지노선 임계값 = radius_limit * 0.5
+            therapeutic_threshold = radius_limit * 0.5
+            has_effective_preferred_movie = False
+
+            for item in safe_pool:
+                genres = item.get('genre', '')
+                pure_dist = item.get('pure_distance', 9.9)
+                if genres:
+                    genre_list = [g.strip().lower() for g in genres.split(',')]
+                    if any(g in liked_movie_genres for g in genre_list):
+                        if pure_dist <= therapeutic_threshold:
+                            has_effective_preferred_movie = True
+                            break
+
+            # 순위 재정렬 함수 정의
+            def get_preference_rank(item):
+                genres = item.get('genre', '')
+                rank_modifier = 0
+                if genres:
+                    genre_list = [g.strip().lower() for g in genres.split(',')]
+                    if any(g in liked_movie_genres for g in genre_list) and has_effective_preferred_movie:
+                        rank_modifier -= 10
+                    if any(g in disliked_movie_genres for g in genre_list):
+                        rank_modifier += 10
+                return rank_modifier
+
+            # Python의 stable sort 특성을 이용해 순서 교정
+            safe_pool.sort(key=get_preference_rank)
+
+        selected_movies = safe_pool[:top_n]
         movie_ids = [m['movie_id'] for m in selected_movies]
         movie_map = {m.tmdb_id: m for m in Movie.objects.filter(tmdb_id__in=movie_ids)}
         

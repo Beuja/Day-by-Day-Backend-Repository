@@ -25,6 +25,9 @@ urlpatterns = [
     # 단일 일기 상세 조회 API
     path('<int:diary_id>/', views.get_diary_detail, name='get_diary_detail'),
 
+    # 콘텐츠 좋아요/싫어요 피드백 제출 API
+    path('feedback/', views.submit_user_feedback, name='submit_user_feedback'),
+
     # 날짜 기준 일기 검색 API
     path('<str:date>/', views.search_diary_by_date, name='search_diary_by_date')
 ]

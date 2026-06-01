@@ -8,7 +8,8 @@ from datetime import timedelta
 
 from .models import Book
 from django.db.models import Q
-from daybydaybackend.diary.models import Diary, DailyRecommended
+from daybydaybackend.diary.models import Diary, DailyRecommended, UserFeedback
+from django.contrib.contenttypes.models import ContentType
 
 def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, user=None):
     # 최근 5회의 추천 세션에서 책들의 카테고리 수집하여 벌점 대상 지정
@@ -73,19 +74,82 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
         if getattr(book, 'category', None) in penalty_categories:
             final_score += 0.3
         
-        # 임계값 내에 있는 콘텐츠만 filtered_and_scored에 추가
+        # 임계값 내에 있는 콘텐츠만 filtered_and_scored에 추가 (순수 거리를 튜플에 포함시킴)
         if pure_distance <= radius_limit:
-            filtered_and_scored.append((final_score, book)) 
+            filtered_and_scored.append((final_score, book, pure_distance)) 
 
         fallback_list.append((final_score, book, pure_distance))
 
+    # [1단계] 객관적인 감정 치료 우선으로 안전 후보군(Top 10) 선별
+    pool_size = max(count * 3, 10)
+    
     if len(filtered_and_scored) >= count:
         filtered_and_scored.sort(key=lambda x: x[0])
-        return [item[1] for item in filtered_and_scored[:count]], False
+        safe_pool = filtered_and_scored[:pool_size]
+        is_fallback = False
+    else:
+        # 추천 콘텐츠 수 < count 일 때 fallback 리스트에서 순수 거리순 추출
+        fallback_list.sort(key=lambda x: x[2])
+        safe_pool = fallback_list[:pool_size]
+        is_fallback = True
 
-    # 추천 콘텐츠 수 < count 일 떄
-    fallback_list.sort(key=lambda x: x[2])
-    return [item[1] for item in fallback_list[:count]], True
+    # =========================================================================
+    # [안전장치 및 2단계] 치료 임계치 검증 & 안전 후보군 내 취향 재정렬
+    # =========================================================================
+    if user and user.is_authenticated and len(safe_pool) > 0:
+        liked_categories = set()
+        recently_disliked_categories = set()
+        
+        # 1. 유저의 선호 장르(좋아요) 및 기피 장르(최근 3일 싫어요) 카테고리 수집
+        book_type = ContentType.objects.get_for_model(Book)
+        
+        liked_isbns = UserFeedback.objects.filter(
+            user=user, feedback_type='LIKE', content_type=book_type
+        ).values_list('object_id', flat=True)
+        if liked_isbns:
+            liked_categories = set(Book.objects.filter(isbn__in=liked_isbns).values_list('category', flat=True))
+            
+        three_days_ago = timezone.now() - timedelta(days=3)
+        disliked_isbns = UserFeedback.objects.filter(
+            user=user, feedback_type='DISLIKE', content_type=book_type,
+            created_at__gte=three_days_ago
+        ).values_list('object_id', flat=True)
+        if disliked_isbns:
+            recently_disliked_categories = set(Book.objects.filter(isbn__in=disliked_isbns).values_list('category', flat=True))
+
+        # 2. [치료 임계치 검증] 유저 선호 장르 중 '진짜 치유력'이 있는 작품이 존재하는가?
+        # - 치료 마지노선 임계값은 radius_limit의 50% 지점 (예: shift 모드는 0.6)
+        therapeutic_threshold = radius_limit * 0.5
+        has_effective_preferred_book = False
+        
+        for item in safe_pool:
+            book = item[1]
+            pure_distance = item[2]
+            category = getattr(book, 'category', None)
+            if category and category in liked_categories:
+                if pure_distance <= therapeutic_threshold:
+                    has_effective_preferred_book = True
+                    break
+
+        # 3. 순위 재정렬 수행
+        # - 선호 장르가 있고 최소 치료 임계값을 통과한 경우에만 우선순위 상승 적용 (Bypass 방지)
+        # - 기피 장르는 언제나 순위를 뒤로 밀어냄 (3일 임시 패널티)
+        def get_preference_rank(item):
+            book = item[1]
+            rank_modifier = 0
+            category = getattr(book, 'category', None)
+            if category:
+                if category in liked_categories and has_effective_preferred_book:
+                    rank_modifier -= 10  # 선호 장르는 앞으로 당김
+                if category in recently_disliked_categories:
+                    rank_modifier += 10  # 최근 기피 장르는 뒤로 밂
+            return rank_modifier
+
+        # Python의 stable sort 특성을 이용하여 감정 거리 순위를 최대한 보존하면서 취향 반영
+        safe_pool.sort(key=get_preference_rank)
+
+    # 최종 노출할 개수(count) 만큼만 반환
+    return [item[1] for item in safe_pool[:count]], is_fallback
 
 
 def get_or_create_book_recommendation(diary_obj, user_emotion: dict, mode: str, count: int, user=None):
