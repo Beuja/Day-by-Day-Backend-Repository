@@ -26,11 +26,19 @@ def build_6d_emotion_vector(tags):
 def _get_target_emotion_vector(u_vec, mode):
     target_vec = list(u_vec)
     if mode == 'shift':
-        target_vec[0] = u_vec[1]; target_vec[1] = u_vec[0] 
-        target_vec[2] = u_vec[4]; target_vec[4] = u_vec[2] 
-        target_vec[3] = u_vec[5]; target_vec[5] = u_vec[3] 
-        if sum(target_vec) < 0.1:
-            target_vec[0] = 0.8; target_vec[4] = 0.5
+        # 💡 안전장치: 기쁨/신뢰가 높을 때 긍정 고정 (기계적 반전 금지)
+        if u_vec[0] > 0.5 or u_vec[4] > 0.5:
+            target_vec[0] = max(u_vec[0], 0.75)
+            target_vec[4] = max(u_vec[4], 0.70)
+            target_vec[1] = 0.0
+            target_vec[2] = 0.0
+            target_vec[3] = 0.0
+        else:
+            target_vec[0] = 0.85
+            target_vec[4] = 0.75
+            target_vec[1] = 0.0
+            target_vec[2] = 0.0
+            target_vec[3] = 0.10
     elif mode == 'amplification':
         max_val = max(target_vec)
         if max_val > 0.01:
@@ -52,7 +60,7 @@ def _get_direction_weights(u_vec, mode):
     elif mode == 'amplification':
         max_emotion_idx = u_vec.index(max(u_vec)) if max(u_vec) > 0.01 else 0
         weights = [0.1] * 6
-        weights[max_emotion_idx] = 3.0 # 💡 감정 증폭 가중치 
+        weights[max_emotion_idx] = 3.0
     return weights
 
 def _calculate_euclidean(u_vec, b_vec, w_vec):
@@ -65,11 +73,22 @@ def _calculate_cosine(u_vec, b_vec, u_norm):
     b_norm = math.sqrt(sum(b ** 2 for b in b_vec)) or 1e-9
     dot_product = sum(u * b for u, b in zip(u_vec, b_vec))
     return 1.0 - (dot_product / (u_norm * b_norm))
+
 class MovieEmotionRecommender:
     def recommend_movies(self, user_emotion, movie_data, mode='maintain', top_n=3, user=None):
         recent_genres = set()
+        
+        liked_movie_genres = set()
+        disliked_movie_genres = set()
+        disliked_ids = []
+
         if user and user.is_authenticated:
-            from daybydaybackend.diary.models import DailyRecommended
+            from daybydaybackend.diary.models import DailyRecommended, UserFeedback
+            from daybydaybackend.music_movie.models import Movie
+            from django.contrib.contenttypes.models import ContentType
+            from django.utils import timezone
+            from datetime import timedelta
+            
             recent_recs = DailyRecommended.objects.filter(
                 diary__user=user
             ).order_by('-diary__created_at')[:5]
@@ -78,12 +97,38 @@ class MovieEmotionRecommender:
                     if getattr(mv, 'genre', None):
                         recent_genres.add(mv.genre)
 
-        from daybydaybackend.music_movie.models import Movie
+            movie_type = ContentType.objects.get_for_model(Movie)
+
+            # 좋아요 영화 장르 수집
+            liked_ids = UserFeedback.objects.filter(
+                user=user, feedback_type='LIKE', content_type=movie_type
+            ).values_list('object_id', flat=True)
+            if liked_ids:
+                for m in Movie.objects.filter(tmdb_id__in=liked_ids):
+                    if getattr(m, 'genre', None):
+                        for g in m.genre.split(','):
+                            liked_movie_genres.add(g.strip().lower())
+
+            # 싫어요 누른 특정 영화 ID 및 최근 3일 기피 장르 수집
+            disliked_ids = list(UserFeedback.objects.filter(
+                user=user, feedback_type='DISLIKE', content_type=movie_type
+            ).values_list('object_id', flat=True))
+
+            three_days_ago = timezone.now() - timedelta(days=3)
+            recent_disliked_ids = UserFeedback.objects.filter(
+                user=user, feedback_type='DISLIKE', content_type=movie_type,
+                created_at__gte=three_days_ago
+            ).values_list('object_id', flat=True)
+            if recent_disliked_ids:
+                for m in Movie.objects.filter(tmdb_id__in=recent_disliked_ids):
+                    if getattr(m, 'genre', None):
+                        for g in m.genre.split(','):
+                            disliked_movie_genres.add(g.strip().lower())
+
         ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
         u_vec = [float(user_emotion.get(key, 0.0)) for key in ordered_keys]
         
         target_vec = _get_target_emotion_vector(u_vec, mode)
-
         target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
         w_vec = _get_direction_weights(u_vec, mode)
         
@@ -92,7 +137,12 @@ class MovieEmotionRecommender:
         filtered_and_scored = []
         fallback_list = []
 
+        # [1단계] 순수 감정 후보군 추출
         for movie in movie_data:
+            movie_id = str(movie.get('movie_id') or movie.get('tmdb_id'))
+            
+            # 🔥 (수정됨) 완전 배제(continue) 삭제! 일단 모든 영화의 점수를 정상 계산합니다.
+            
             b_vec = [float(movie.get(k, 0.0) or 0.0) for k in ordered_keys]
             if sum(b_vec) < 0.01:
                 raw_tags = movie.get('tags', [])
@@ -110,16 +160,13 @@ class MovieEmotionRecommender:
                 
             popularity = float(movie.get('popularity', 0.0) or 0.0)
             popularity_score = min(1.0, popularity / 500.0)
-            
-            # 💡 감정 점수 반영률 90%, 대중성 10%
             final_score = (emotion_score * 0.90) + ((1.0 - popularity_score) * 0.10)
             
-            # [다양성 패치] 최근 추천받았던 장르와 중복 시 패널티 가중치 가산
             if movie.get('genre') in recent_genres:
                 final_score += 0.25
 
             movie_info = {
-                'movie_id': movie.get('movie_id'), 
+                'movie_id': int(movie_id) if movie_id.isdigit() else movie_id, 
                 'score': round(final_score, 4),
                 'pure_distance': pure_distance,
                 'genre': movie.get('genre')
@@ -127,10 +174,8 @@ class MovieEmotionRecommender:
 
             if pure_distance <= radius_limit:
                 filtered_and_scored.append(movie_info)
-            
             fallback_list.append((movie_info, pure_distance))
 
-        # [1단계] 객관적인 감정 치료 우선으로 안전 후보군 선별
         pool_size = max(top_n * 3, 10)
 
         if len(filtered_and_scored) >= top_n:
@@ -143,42 +188,9 @@ class MovieEmotionRecommender:
             is_fallback = True
         
         # =========================================================================
-        # [안전장치 및 2단계] 치료 임계치 검증 & 안전 후보군 내 취향 재정렬
+        # [안전장치 및 2단계] 치료 임계치 검증 & 취향 정렬
         # =========================================================================
         if user and user.is_authenticated and len(safe_pool) > 0:
-            from daybydaybackend.diary.models import UserFeedback
-            from django.contrib.contenttypes.models import ContentType
-            from django.utils import timezone
-            from datetime import timedelta
-
-            liked_movie_genres = set()
-            disliked_movie_genres = set()
-
-            movie_type = ContentType.objects.get_for_model(Movie)
-
-            # 좋아요 영화의 장르 수집
-            liked_ids = UserFeedback.objects.filter(
-                user=user, feedback_type='LIKE', content_type=movie_type
-            ).values_list('object_id', flat=True)
-            if liked_ids:
-                for m in Movie.objects.filter(tmdb_id__in=liked_ids):
-                    if getattr(m, 'genre', None):
-                        for g in m.genre.split(','):
-                            liked_movie_genres.add(g.strip().lower())
-
-            # 최근 3일 싫어요 영화의 장르 수집
-            three_days_ago = timezone.now() - timedelta(days=3)
-            disliked_ids = UserFeedback.objects.filter(
-                user=user, feedback_type='DISLIKE', content_type=movie_type,
-                created_at__gte=three_days_ago
-            ).values_list('object_id', flat=True)
-            if disliked_ids:
-                for m in Movie.objects.filter(tmdb_id__in=disliked_ids):
-                    if getattr(m, 'genre', None):
-                        for g in m.genre.split(','):
-                            disliked_movie_genres.add(g.strip().lower())
-
-            # 치료 마지노선 임계값 = radius_limit * 0.5
             therapeutic_threshold = radius_limit * 0.5
             has_effective_preferred_movie = False
 
@@ -192,23 +204,32 @@ class MovieEmotionRecommender:
                             has_effective_preferred_movie = True
                             break
 
-            # 순위 재정렬 함수 정의
+            # 💡 [books 방식 통일] 완전 배제 대신 정렬 시 강력한 패널티 부여!
             def get_preference_rank(item):
                 genres = item.get('genre', '')
                 rank_modifier = 0
+                
                 if genres:
                     genre_list = [g.strip().lower() for g in genres.split(',')]
+                    # 선호 장르 보너스 (-10점)
                     if any(g in liked_movie_genres for g in genre_list) and has_effective_preferred_movie:
                         rank_modifier -= 10
+                    # 싫어하는 기피 장르 패널티 (+10점)
                     if any(g in disliked_movie_genres for g in genre_list):
                         rank_modifier += 10
+                
+                # 💡 유저가 싫어요 버튼을 누른 바로 그 작품 자체에 대한 패널티 (+15점)
+                # 완전 삭제하지 않고, 리스트의 가장 하위로 밀어냅니다.
+                if str(item.get('movie_id')) in map(str, disliked_ids):
+                    rank_modifier += 15
+
                 return rank_modifier
 
-            # Python의 stable sort 특성을 이용해 순서 교정
             safe_pool.sort(key=get_preference_rank)
 
         selected_movies = safe_pool[:top_n]
         movie_ids = [m['movie_id'] for m in selected_movies]
+        from daybydaybackend.music_movie.models import Movie
         movie_map = {m.tmdb_id: m for m in Movie.objects.filter(tmdb_id__in=movie_ids)}
         
         recommended_movies = []
@@ -223,4 +244,3 @@ class MovieEmotionRecommender:
             "recommendations": recommended_movies, 
             "is_fallback": is_fallback
         }
-       
