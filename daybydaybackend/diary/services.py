@@ -219,6 +219,49 @@ def determine_auto_recommendation_mode(user, current_diary) -> str:
     # 6. 기본 상태
     return 'maintain'
 
+def update_user_emotion_variance(user, current_diary):
+    """
+    오늘 일기와 어제 일기의 감정 차이를 계산하여 
+    유저 프로필의 정서 분산도를 지수이동평균(EMA)으로 업데이트
+    """
+    from datetime import timedelta
+    from .models import Diary 
+    
+    user_profile = getattr(user, 'userprofile', None)
+    if not user_profile:
+        return  
 
+    # 직전 작성 일기 조회
+    yesterday_date = current_diary.created_at - timedelta(days=1)
+    yesterday_diary = Diary.objects.filter(
+        user=user, 
+        created_at=yesterday_date
+    ).select_related('emotion').first()
+    
+    if not yesterday_diary or not hasattr(yesterday_diary, 'emotion') or yesterday_diary.emotion is None:
+        return
+        
+    current_emotion = getattr(current_diary, 'emotion', None)
+    if not current_emotion:
+        return
+
+    fields = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
+    
+    # 두 날짜 간의 감정 차이 제곱합의 평균
+    diff_squared_sum = 0.0
+    for field in fields:
+        curr_val = getattr(current_emotion, field, 0.0) or 0.0
+        yest_val = getattr(yesterday_diary.emotion, field, 0.0) or 0.0
+        diff_squared_sum += (curr_val - yest_val) ** 2
+        
+    today_variance = diff_squared_sum / len(fields)
+
+    # 지수 이동 평균(EMA)을 적용하여 DB 업데이트
+    alpha = 0.2
+    old_variance = user_profile.emotion_variance
+    
+    # 누적 업데이트 공식
+    user_profile.emotion_variance = (1.0 - alpha) * old_variance + alpha * today_variance
+    user_profile.save()
 
 

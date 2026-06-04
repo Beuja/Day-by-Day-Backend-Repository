@@ -228,11 +228,15 @@ def get_user_weighted_emotion(user, target_datetime=None):
     if not valid_diaries:
         return None
     
-    # test하고 변경
-    WEIGHTS = [0.7, 0.2, 0.05, 0.02, 0.01, 0.01, 0.01]
+    # 상수에서 유저 variance 반영한 가중치로 변경
+    # WEIGHTS = [0.7, 0.2, 0.05, 0.02, 0.01, 0.01, 0.01]
+    user_profile = getattr(user, 'userprofile', None)
+    variance = getattr(user_profile, 'emotion_variance', 0.05) if user_profile else 0.05
+
+    decay_rate = 0.5 + (variance * 1.5)
+    decay_rate = min(max(decay_rate, 0.4), 0.85)
 
     fields = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
-
     weighted_sum = {field: 0.0 for field in fields}
     total_weight = 0.0
 
@@ -240,12 +244,13 @@ def get_user_weighted_emotion(user, target_datetime=None):
         days_diff = (target_date - d.created_at.date()).days
         
         # 작성 당일 ~ 6일 전 데이터만 가중치 적용
-        if 0 <= days_diff < len(WEIGHTS):
-            weight = WEIGHTS[days_diff]
+        if 0 <= days_diff < 7:
+            weight = (1.0 - decay_rate) ** days_diff
             total_weight += weight
             
             for field in fields:
-                weighted_sum[field] += getattr(d.emotion, field) * weight
+                emotion_value = getattr(d.emotion, field, 0.0) or 0.0
+                weighted_sum[field] += emotion_value * weight
 
     # 유효한 가중치가 없는 경우 
     if total_weight == 0:
