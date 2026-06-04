@@ -124,17 +124,23 @@ def get_or_create_music_recommendation(diary_obj, user_emotion: dict, mode: str,
     if created or saved_count == 0 or saved_count < count:
         music_data = load_music_data()
         recommender = MusicEmotionRecommender()
-        res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count)
+        
+        # 💡 user 객체 전달 
+        res = recommender.recommend_music(user_emotion, music_data, mode=mode, top_n=count, user=diary_obj.user)
         
         music_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False) 
         
         daily_rec.musics.set(music_instances)
+        
+        # 💡 Fallback 상태 저장
+        daily_rec.is_music_fallback = is_fallback
+        daily_rec.save(update_fields=['is_music_fallback'])
             
     else:
         music_instances = list(daily_rec.musics.all()[:count])
         _attach_scores(music_instances, diary_obj, mode, is_movie=False)
-        is_fallback = False
+        is_fallback = daily_rec.is_music_fallback 
         
     return music_instances, is_fallback
 
@@ -148,17 +154,23 @@ def get_or_create_movie_recommendation(diary_obj, user_emotion: dict, mode: str,
             if isinstance(movie.get("genre"), list):
                 movie["genre"] = ", ".join(movie["genre"])
         recommender = MovieEmotionRecommender()
-        res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count)
+        
+        # 💡 user 객체 전달 
+        res = recommender.recommend_movies(user_emotion, movie_data, mode=mode, top_n=count, user=diary_obj.user)
 
         movie_instances = res.get('recommendations', [])
         is_fallback = res.get('is_fallback', False)
 
         daily_rec.movies.set(movie_instances)
+        
+        # 💡 Fallback 상태 저장
+        daily_rec.is_movie_fallback = is_fallback
+        daily_rec.save(update_fields=['is_movie_fallback'])
 
     else:
         movie_instances = list(daily_rec.movies.all()[:count])
         _attach_scores(movie_instances, diary_obj, mode, is_movie=True)
-        is_fallback = False
+        is_fallback = daily_rec.is_movie_fallback
     
     return movie_instances, is_fallback
 
@@ -169,7 +181,6 @@ def get_saved_music_metadata(diary_obj):
         scored_musics = _attach_scores(rec.musics.all(), diary_obj, rec.mode, is_movie=False)
         formatted_musics = []
         for m in scored_musics:
-            # URL 생성
             artist = getattr(m, 'artist', '')
             title = getattr(m, 'title', '')
             external_url = f"https://www.last.fm/search?q={artist}+{title}".replace(" ", "+") if artist and title else "https://www.last.fm/"
@@ -181,7 +192,7 @@ def get_saved_music_metadata(diary_obj):
                 'image_url': getattr(m, 'image_url', ''),
                 'tags': m.tags if isinstance(m.tags, list) else [],
                 'score': getattr(m, 'score', 0.0),
-                'external_url': external_url # 💡 반환 데이터에 URL 포함
+                'external_url': external_url
             })
         result.append({'mode': rec.mode, 'musics': formatted_musics})
     return result
@@ -193,7 +204,6 @@ def get_saved_movie_metadata(diary_obj):
         scored_movies = _attach_scores(rec.movies.all(), diary_obj, rec.mode, is_movie=True)
         formatted_movies = []
         for m in scored_movies:
-            # URL 생성
             movie_id = getattr(m, 'tmdb_id', None)
             external_url = f"https://www.themoviedb.org/movie/{movie_id}" if movie_id else "https://www.themoviedb.org/"
             
@@ -204,7 +214,7 @@ def get_saved_movie_metadata(diary_obj):
                 'image_url': getattr(m, 'poster_path', ''),
                 'tags': [m.genre] if getattr(m, 'genre', None) else [],
                 'score': getattr(m, 'score', 0.0),
-                'external_url': external_url # 💡 반환 데이터에 URL 포함
+                'external_url': external_url
             })
         result.append({'mode': rec.mode, 'movies': formatted_movies})
     return result

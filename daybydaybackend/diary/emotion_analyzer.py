@@ -12,6 +12,7 @@ from google import genai
 
 try:
     from kiwipiepy import Kiwi
+
 except ImportError:  # pragma: no cover - 런타임 환경에 따라 의존성이 없을 수 있음
     Kiwi = None
 
