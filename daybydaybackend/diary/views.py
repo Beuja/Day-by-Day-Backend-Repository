@@ -743,3 +743,82 @@ def submit_user_feedback(request):
         )
         msg = '피드백이 등록되었습니다.' if created else '피드백이 수정되었습니다.'
         return Response({'message': msg, 'feedback_type': f_type}, status=status.HTTP_200_OK)
+
+@swagger_auto_schema(
+    method='post',
+    operation_summary="유저 정서 분산도 수동 업데이트 및 검증",
+    operation_description=(
+        "현재 사용자의 가장 최신 일기와 그 전날 일기의 감정 데이터를 비교하여 "
+        "정서 분산도(Variance)를 계산하고, 지수이동평균(EMA) 공식을 통해 프로필에 업데이트합니다."
+    ),
+    security=[{'Token': []}],
+    responses={
+        200: openapi.Response(
+            description="업데이트 완료 및 상세 연산 결과 반환",
+            examples={
+                "application/json": {
+                    "message": "정서 분산도 업데이트가 성공적으로 완료되었습니다.",
+                    "target_diary_date": "2026-06-04",
+                    "old_variance": 0.0500,
+                    "today_calculated_variance": 0.1245,
+                    "new_updated_variance": 0.0649
+                }
+            }
+        ),
+        400: "비교 분석할 어제 일기 혹은 오늘 일기의 감정 데이터가 존재하지 않음",
+        401: "인증되지 않은 사용자"
+    }
+)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def debug_update_variance_view(request):
+    user = request.user
+    
+    # 1. 사용자의 가장 최신 일기(오늘 자 일기 역할)를 가져옴
+    current_diary = Diary.objects.filter(user=user).order_by('-created_at').first()
+    
+    if not current_diary:
+        return Response(
+            {"error": "작성된 일기가 존재하지 않아 테스트를 진행할 수 없습니다."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+        
+    # 서비스 함수 실행 전 기존 분산도 값 저장 (검증 확인용)
+    user_profile = getattr(user, 'userprofile', None)
+    if not user_profile:
+        return Response(
+            {"error": "유저 프로필 객체를 찾을 수 없습니다."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    old_variance = user_profile.emotion_variance
+
+    # 2. 미리 분리해 둔 분산도 업데이트 로직 실행
+    # (내부에서 어제 일기가 없거나 감정 데이터가 없으면 return 처리됨)
+    services.update_user_emotion_variance(user, current_diary)
+    
+    # 3. 함수 실행 후 새로고침된 유저 프로필 값 획득
+    user_profile.refresh_from_db()
+    new_variance = user_profile.emotion_variance
+
+    # 4. 값이 변하지 않았다면 어제 일기가 없거나 감정 추출이 안 된 상태
+    if old_variance == new_variance:
+        return Response(
+            {
+                "error": "분산도가 업데이트되지 않았습니다. 기준 일기의 '전날(어제)'에 작성된 일기가 있거나 양쪽 일기 모두에 감정 데이터(emotion)가 저장되어 있는지 확인해 주세요.",
+                "current_diary_date": current_diary.created_at
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # 5. 역산 알고리즘을 통한 가상 today_variance 값 도출 (출력 확인용 스펙)
+    # New = (0.8 * Old) + (0.2 * Today)  ->  Today = (New - 0.8 * Old) / 0.2
+    alpha = 0.2
+    today_variance = (new_variance - (1.0 - alpha) * old_variance) / alpha
+
+    return Response({
+        "message": "정서 분산도 업데이트가 성공적으로 완료되었습니다.",
+        "target_diary_date": current_diary.created_at,
+        "old_variance": round(old_variance, 4),
+        "today_calculated_variance": round(today_variance, 4),
+        "new_updated_variance": round(new_variance, 4)
+    }, status=status.HTTP_200_OK)
