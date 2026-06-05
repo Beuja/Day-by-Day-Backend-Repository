@@ -171,7 +171,7 @@ class MovieEmotionRecommender:
 
             if pure_distance <= radius_limit:
                 filtered_and_scored.append(movie_info)
-            fallback_list.append((movie_info, pure_distance))
+            fallback_list.append(movie_info)
 
         pool_size = max(top_n * 3, 10)
 
@@ -180,8 +180,8 @@ class MovieEmotionRecommender:
             safe_pool = filtered_and_scored[:pool_size]
             is_fallback = False
         else:
-            fallback_list.sort(key=lambda x: x[0]['score'])
-            safe_pool = [item[0] for item in fallback_list[:pool_size]]
+            fallback_list.sort(key=lambda x: x['score'])
+            safe_pool = fallback_list[:pool_size]
             is_fallback = True
         
         # =========================================================================
