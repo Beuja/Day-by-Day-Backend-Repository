@@ -17,7 +17,7 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
     if user and user.is_authenticated:
         recent_recs = DailyRecommended.objects.filter(
             diary__user=user
-        ).order_by('-diary__created_at')[:5]
+        ).prefetch_related('books').order_by('-diary__created_at')[:5]  
         for rec in recent_recs:
             for b in rec.books.all():
                 if getattr(b, 'category', None):
@@ -33,9 +33,8 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
 
     # 태그 0,0,0,0,0,0,0,0 인 책은 추천에서 제외 (리뷰 부족)
     all_books = Book.objects.filter(
-        ~Q(valence=0.0) & ~Q(arousal=0.0) 
-        & ~Q(joy=0.0) & ~Q(sadness=0.0) & ~Q(anger=0.0) & ~Q(fear=0.0) & ~Q(trust=0.0) & ~Q(surprise=0.0),
-        link__isnull=False, joy__isnull=False
+        Q(joy__gt=0.0) | Q(sadness__gt=0.0) | Q(anger__gt=0.0) | Q(fear__gt=0.0) | Q(trust__gt=0.0) | Q(surprise__gt=0.0),
+        link__isnull=False
     )
 
     t_norm = norm(target_vec)
@@ -56,7 +55,12 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
         radius_limit = 0.7
 
     # 코사인 유사도&유클리드 거리 결합 가중치 (1에 가까울 수록 유클리드 거리 중시)
-    alpha = 0.5
+    if mode == 'maintain':
+        alpha = 0.90
+    elif mode == 'amplification':
+        alpha = 0.80
+    else:
+        alpha = 0.30
 
     for book in all_books:
         b_vec = np.array([
@@ -72,7 +76,7 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
         
         # [다양성 패치] 과거에 추천받았던 카테고리가 겹치면 패널티 가중치를 주어 순위를 뒤로 밀어냄
         if getattr(book, 'category', None) in penalty_categories:
-            final_score += 0.3
+            final_score += 0.05
         
         # 임계값 내에 있는 콘텐츠만 filtered_and_scored에 추가 (순수 거리를 튜플에 포함시킴)
         if pure_distance <= radius_limit:
@@ -136,14 +140,15 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
         # - 기피 장르는 언제나 순위를 뒤로 밀어냄 (3일 임시 패널티)
         def get_preference_rank(item):
             book = item[1]
+            final_score = item[0]
             rank_modifier = 0
             category = getattr(book, 'category', None)
             if category:
-                if category in liked_categories and has_effective_preferred_book:
+                if category in liked_categories and item[2] <= therapeutic_threshold:
                     rank_modifier -= 10  # 선호 장르는 앞으로 당김
                 if category in recently_disliked_categories:
                     rank_modifier += 10  # 최근 기피 장르는 뒤로 밂
-            return rank_modifier
+            return (rank_modifier, final_score)
 
         # Python의 stable sort 특성을 이용하여 감정 거리 순위를 최대한 보존하면서 취향 반영
         safe_pool.sort(key=get_preference_rank)

@@ -6,4 +6,4 @@ class AccountsConfig(AppConfig):
     name = 'daybydaybackend.accounts'
 
     def ready(self):
-        import account.signals
+        import daybydaybackend.accounts.signals

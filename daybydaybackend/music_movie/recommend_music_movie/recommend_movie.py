@@ -1,6 +1,7 @@
 import os
 import json
 import math
+import numpy as np
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH = os.path.join(BASE_DIR, 'emotion_tags.json')
@@ -23,31 +24,23 @@ def build_6d_emotion_vector(tags):
         return [0.0] * 6
     return [round(total_vector[key] / matched_count, 4) for key in ordered_keys]
 
-def _get_target_emotion_vector(u_vec, mode):
-    target_vec = list(u_vec)
+def _get_target_emotion_vector(u_vec: np.ndarray, mode: str) -> np.ndarray:
+    # 추천 모드에 따라 추천의 기준이 될 목표 감정 벡터를 생성
+    target_vec = u_vec.copy()
+    
     if mode == 'shift':
-        # 💡 안전장치: 기쁨/신뢰가 높을 때 긍정 고정 (기계적 반전 금지)
-        if u_vec[0] > 0.5 or u_vec[4] > 0.5:
-            target_vec[0] = max(u_vec[0], 0.75)
-            target_vec[4] = max(u_vec[4], 0.70)
-            target_vec[1] = 0.0
-            target_vec[2] = 0.0
-            target_vec[3] = 0.0
-        else:
-            target_vec[0] = 0.85
-            target_vec[4] = 0.75
-            target_vec[1] = 0.0
-            target_vec[2] = 0.0
-            target_vec[3] = 0.10
+        target_vec[1] *= 0.2  # sadness
+        target_vec[2] *= 0.2  # anger
+        target_vec[3] *= 0.2  # fear
+        
+        target_vec[0] = min(target_vec[0] + 0.5, 1.0)  # joy
+        target_vec[4] = min(target_vec[4] + 0.4, 1.0)  # trust
+        
     elif mode == 'amplification':
-        max_val = max(target_vec)
-        if max_val > 0.01:
-            max_idx = target_vec.index(max_val)
-            target_vec[max_idx] = 1.0 
-            for i in range(len(target_vec)):
-                if i != max_idx: target_vec[i] = 0.0
-        else:
-            target_vec[0] = 1.0
+        target_vec[0] = min((target_vec[0] + 0.2) * 1.5, 1.0)  # joy
+        target_vec[4] = min((target_vec[4] + 0.2) * 1.5, 1.0)  # trust
+        
+    # maintain 모드일 경우 그대로
     return target_vec
 
 def _get_direction_weights(u_vec, mode):
@@ -90,8 +83,8 @@ class MovieEmotionRecommender:
             from datetime import timedelta
             
             recent_recs = DailyRecommended.objects.filter(
-                diary__user=user
-            ).order_by('-diary__created_at')[:5]
+            diary__user=user
+            ).prefetch_related('movies').order_by('-diary__created_at')[:5]  
             for rec in recent_recs:
                 for mv in rec.movies.all():
                     if getattr(mv, 'genre', None):
@@ -133,17 +126,21 @@ class MovieEmotionRecommender:
         w_vec = _get_direction_weights(u_vec, mode)
         
         radius_limit = 0.6 if mode == 'maintain' else (1.2 if mode == 'shift' else 0.8)
-        alpha = 0.5
+        if mode == 'maintain': 
+            alpha = 0.90
+        elif mode == 'amplification': 
+            alpha = 0.80
+        else: 
+            alpha = 0.30
+
         filtered_and_scored = []
         fallback_list = []
 
         # [1단계] 순수 감정 후보군 추출
         for movie in movie_data:
-            movie_id = str(movie.get('movie_id') or movie.get('tmdb_id'))
-            
-            # 🔥 (수정됨) 완전 배제(continue) 삭제! 일단 모든 영화의 점수를 정상 계산합니다.
-            
+            movie_id = str(movie.get('movie_id') or movie.get('tmdb_id'))      
             b_vec = [float(movie.get(k, 0.0) or 0.0) for k in ordered_keys]
+            
             if sum(b_vec) < 0.01:
                 raw_tags = movie.get('tags', [])
                 if isinstance(raw_tags, str):
@@ -163,7 +160,7 @@ class MovieEmotionRecommender:
             final_score = (emotion_score * 0.90) + ((1.0 - popularity_score) * 0.10)
             
             if movie.get('genre') in recent_genres:
-                final_score += 0.25
+                final_score += 0.05
 
             movie_info = {
                 'movie_id': int(movie_id) if movie_id.isdigit() else movie_id, 
@@ -204,26 +201,26 @@ class MovieEmotionRecommender:
                             has_effective_preferred_movie = True
                             break
 
-            # 💡 [books 방식 통일] 완전 배제 대신 정렬 시 강력한 패널티 부여!
             def get_preference_rank(item):
                 genres = item.get('genre', '')
+                pure_dist = item.get('pure_distance', 9.9)
+                final_score = item['score']
                 rank_modifier = 0
                 
                 if genres:
                     genre_list = [g.strip().lower() for g in genres.split(',')]
                     # 선호 장르 보너스 (-10점)
-                    if any(g in liked_movie_genres for g in genre_list) and has_effective_preferred_movie:
+                    if any(g in liked_movie_genres for g in genre_list) and pure_dist <= therapeutic_threshold:
                         rank_modifier -= 10
                     # 싫어하는 기피 장르 패널티 (+10점)
                     if any(g in disliked_movie_genres for g in genre_list):
                         rank_modifier += 10
                 
-                # 💡 유저가 싫어요 버튼을 누른 바로 그 작품 자체에 대한 패널티 (+15점)
-                # 완전 삭제하지 않고, 리스트의 가장 하위로 밀어냅니다.
+                # 유저가 싫어요 버튼을 누른 바로 그 작품 자체에 대한 패널티 (+15점)
                 if str(item.get('movie_id')) in map(str, disliked_ids):
                     rank_modifier += 15
 
-                return rank_modifier
+                return (rank_modifier, final_score)
 
             safe_pool.sort(key=get_preference_rank)
 

@@ -1,78 +1,10 @@
 import os
 import json
 import math
-
+from .recommend_movie import _get_target_emotion_vector, _get_direction_weights, _calculate_euclidean, _calculate_cosine, build_6d_emotion_vector
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH = os.path.join(BASE_DIR, 'emotion_tags.json')
 
-with open(JSON_PATH, 'r', encoding='utf-8') as f:
-    TAG_EMOTION_MAP = json.load(f)
-
-def build_6d_emotion_vector(tags):
-    ordered_keys = ['joy', 'sadness', 'anger', 'fear', 'trust', 'surprise']
-    total_vector = {key: 0.0 for key in ordered_keys}
-    matched_count = 0
-    for tag in tags:
-        tag = str(tag).lower().strip()
-        if tag in TAG_EMOTION_MAP:
-            matched_count += 1
-            tag_vec = TAG_EMOTION_MAP[tag]
-            for key in ordered_keys:
-                total_vector[key] += tag_vec.get(key, 0.0)
-    if matched_count == 0:
-        return [0.0] * 6
-    return [round(total_vector[key] / matched_count, 4) for key in ordered_keys]
-
-def _get_target_emotion_vector(u_vec, mode):
-    target_vec = list(u_vec)
-    if mode == 'shift':
-        # 💡 안전장치 적용
-        if u_vec[0] > 0.5 or u_vec[4] > 0.5:
-            target_vec[0] = max(u_vec[0], 0.75)
-            target_vec[4] = max(u_vec[4], 0.70)
-            target_vec[1] = 0.0
-            target_vec[2] = 0.0
-            target_vec[3] = 0.0
-        else:
-            target_vec[0] = 0.85
-            target_vec[4] = 0.75
-            target_vec[1] = 0.0
-            target_vec[2] = 0.0
-            target_vec[3] = 0.10
-    elif mode == 'amplification':
-        max_val = max(target_vec)
-        if max_val > 0.01:
-            max_idx = target_vec.index(max_val)
-            target_vec[max_idx] = 1.0 
-            for i in range(len(target_vec)):
-                if i != max_idx: target_vec[i] = 0.0
-        else:
-            target_vec[0] = 1.0
-    return target_vec
-
-def _get_direction_weights(u_vec, mode):
-    weights = [1.0] * 6
-    if mode == 'maintain': 
-        return weights
-    elif mode == 'shift':
-        target = _get_target_emotion_vector(u_vec, mode)
-        weights = [2.0 if t > 0.5 else 1.0 for t in target]
-    elif mode == 'amplification':
-        max_emotion_idx = u_vec.index(max(u_vec)) if max(u_vec) > 0.01 else 0
-        weights = [0.1] * 6
-        weights[max_emotion_idx] = 3.0
-    return weights
-
-def _calculate_euclidean(u_vec, b_vec, w_vec):
-    euclidean_dist = math.sqrt(sum(w * ((u - b) ** 2) for u, b, w in zip(u_vec, b_vec, w_vec)))
-    max_euclidean = math.sqrt(sum(w_vec)) 
-    if max_euclidean == 0: return 0.0
-    return euclidean_dist / max_euclidean
-
-def _calculate_cosine(u_vec, b_vec, u_norm):
-    b_norm = math.sqrt(sum(b ** 2 for b in b_vec)) or 1e-9
-    dot_product = sum(u * b for u, b in zip(u_vec, b_vec))
-    return 1.0 - (dot_product / (u_norm * b_norm))
 
 class MusicEmotionRecommender:
     def recommend_music(self, user_emotion, music_data, mode='maintain', top_n=3, user=None):
