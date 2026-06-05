@@ -51,9 +51,9 @@ def _get_direction_weights(u_vec, mode):
         target = _get_target_emotion_vector(u_vec, mode)
         weights = [2.0 if t > 0.5 else 1.0 for t in target]
     elif mode == 'amplification':
-        max_emotion_idx = u_vec.index(max(u_vec)) if max(u_vec) > 0.01 else 0
-        weights = [0.1] * 6
-        weights[max_emotion_idx] = 3.0
+        weights = [0.5] * 6
+        weights[0] = 3.0  # joy
+        weights[4] = 3.0  # trust
     return weights
 
 def _calculate_euclidean(u_vec, b_vec, w_vec):
