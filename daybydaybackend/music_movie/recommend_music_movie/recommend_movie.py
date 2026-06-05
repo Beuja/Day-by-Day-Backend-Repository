@@ -180,7 +180,7 @@ class MovieEmotionRecommender:
             safe_pool = filtered_and_scored[:pool_size]
             is_fallback = False
         else:
-            fallback_list.sort(key=lambda x: x[0]['score'])
+            fallback_list.sort(key=lambda x: x[1])
             safe_pool = [item[0] for item in fallback_list[:pool_size]]
             is_fallback = True
         
