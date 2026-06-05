@@ -232,10 +232,14 @@ def determine_auto_recommendation_mode(user, current_diary) -> str:
         joy_mean, _ = calc_mean_and_variance(joy_data)
         trust_mean, _ = calc_mean_and_variance(trust_data)
 
+        sadness_mean, _ = calc_mean_and_variance(neg_data['sadness'])
+        anger_mean, _ = calc_mean_and_variance(neg_data['anger'])
+        fear_mean, _ = calc_mean_and_variance(neg_data['fear'])
+
         positive_mean = joy_mean + trust_mean
         negative_mean = sadness_mean + anger_mean + fear_mean
 
-        if positive_mean >= 0.5 and positive_mean > negative_mean:
+        if positive_mean >= 0.5 and positive_mean > negative_mean * 0.9:
             return 'amplification'
             
     # 6. 기본 상태
