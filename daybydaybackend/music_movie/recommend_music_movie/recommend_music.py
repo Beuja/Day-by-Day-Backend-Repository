@@ -85,7 +85,6 @@ class MusicEmotionRecommender:
         for music in music_data:
             music_id = str(music.get('track_id') or music.get('id'))
             
-            # 🔥 완전 배제 삭제
                 
             b_vec = [float(music.get(k, 0.0) or 0.0) for k in ordered_keys]
             raw_tags = music.get('tags', [])
@@ -152,20 +151,21 @@ class MusicEmotionRecommender:
 
             # 💡 [books 방식 통일] 완전 배제 대신 패널티 부여!
             def get_preference_rank(item):
-                tags = item.get('tags', [])
-                rank_modifier = 0
-                tag_list = [str(g).lower().strip() for g in tags]
+                final_score = item.get('score', 0.0)
+    
+                # 장르 파싱 (구조에 맞춰 'genre' 또는 'tags' 사용)
+                tags = item.get('tags', '') 
+                tag_list = [g.strip().lower() for g in tags.split(',')] if tags else []
                 
-                if any(g in liked_music_tags for g in tag_list) and has_effective_preferred_music:
-                    rank_modifier -= 10
-                if any(g in disliked_music_tags for g in tag_list):
-                    rank_modifier += 10
+                # 1. 취향 가산점/패널티 설정
+                pref_score = 0
+                if any(g in liked_categories for g in tag_list):
+                    pref_score = -0.1
+                elif any(g in disliked_categories for g in tag_list):
+                    pref_score = 0.1
                 
-                # 싫어요 누른 특정 음악에 강력한 패널티 부여 (+15점)
-                if str(item.get('track_id')) in map(str, disliked_ids):
-                    rank_modifier += 15
-
-                return rank_modifier
+                # 2. 최종 정렬값 반환
+                return final_score + pref_score
 
             safe_pool.sort(key=get_preference_rank)
 

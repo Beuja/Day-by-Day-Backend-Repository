@@ -202,25 +202,20 @@ class MovieEmotionRecommender:
                             break
 
             def get_preference_rank(item):
-                genres = item.get('genre', '')
-                pure_dist = item.get('pure_distance', 9.9)
-                final_score = item['score']
-                rank_modifier = 0
-                
-                if genres:
-                    genre_list = [g.strip().lower() for g in genres.split(',')]
-                    # 선호 장르 보너스 (-10점)
-                    if any(g in liked_movie_genres for g in genre_list) and pure_dist <= therapeutic_threshold:
-                        rank_modifier -= 10
-                    # 싫어하는 기피 장르 패널티 (+10점)
-                    if any(g in disliked_movie_genres for g in genre_list):
-                        rank_modifier += 10
-                
-                # 유저가 싫어요 버튼을 누른 바로 그 작품 자체에 대한 패널티 (+15점)
-                if str(item.get('movie_id')) in map(str, disliked_ids):
-                    rank_modifier += 15
+                final_score = item.get('score', 0.0)
 
-                return (final_score, rank_modifier)
+                genres = item.get('genre', '') 
+                genre_list = [g.strip().lower() for g in genres.split(',')] if genres else []
+                
+                # 1. 취향 가산점/패널티 설정
+                pref_score = 0
+                if any(g in liked_categories for g in genre_list):
+                    pref_score = -0.1
+                elif any(g in disliked_categories for g in genre_list):
+                    pref_score = 0.1
+                
+                # 2. 최종 정렬값 반환
+                return final_score + pref_score
 
             safe_pool.sort(key=get_preference_rank)
 

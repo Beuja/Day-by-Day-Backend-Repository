@@ -139,17 +139,16 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
         # - 선호 장르가 있고 최소 치료 임계값을 통과한 경우에만 우선순위 상승 적용 (Bypass 방지)
         # - 기피 장르는 언제나 순위를 뒤로 밀어냄 (3일 임시 패널티)
         def get_preference_rank(item):
-            book = item[1]
-            final_score = item[0]
-            rank_modifier = 0
+            score, book, pure_dist = item
             category = getattr(book, 'category', None)
-            if category:
-                if category in liked_categories and item[2] <= therapeutic_threshold:
-                    rank_modifier -= 10  # 선호 장르는 앞으로 당김
-                if category in recently_disliked_categories:
-                    rank_modifier += 10  # 최근 기피 장르는 뒤로 밂
-            
-            return (final_score, rank_modifier) 
+        
+            pref_score = 0
+            if category in liked_categories:
+                pref_score = -0.1 
+            elif category in recently_disliked_categories:
+                pref_score = 0.1 # 패널티는 거리를 늘려 우선순위 하락
+                
+            return score + pref_score
 
         # Python의 stable sort 특성을 이용하여 감정 거리 순위를 최대한 보존하면서 취향 반영
         safe_pool.sort(key=get_preference_rank)
