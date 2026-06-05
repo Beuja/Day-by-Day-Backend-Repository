@@ -226,12 +226,16 @@ def determine_auto_recommendation_mode(user, current_diary) -> str:
 
     # 5. 긍정 정서의 지속 및 극대화(Amplification) 판정
     else:
-        # 오늘의 대표 감정이 기쁨이거나 신뢰일 때, 해당 가중치 데이터의 평균을 검사
-        target_key = 'joy' if current_emotion.primary_emotion == '기쁨' else 'trust'
-        target_data = [getattr(e, target_key, 0.0) or 0.0 for e in emotions]
-        target_mean, _ = calc_mean_and_variance(target_data)
-        
-        if target_mean >= 0.3:
+        joy_data = [e.joy or 0.0 for e in emotions]
+        trust_data = [e.trust or 0.0 for e in emotions]
+
+        joy_mean, _ = calc_mean_and_variance(joy_data)
+        trust_mean, _ = calc_mean_and_variance(trust_data)
+
+        positive_mean = joy_mean + trust_mean
+        negative_mean = sadness_mean + anger_mean + fear_mean
+
+        if positive_mean >= 0.5 and positive_mean > negative_mean:
             return 'amplification'
             
     # 6. 기본 상태
