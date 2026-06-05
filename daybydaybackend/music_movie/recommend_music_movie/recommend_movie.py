@@ -220,7 +220,7 @@ class MovieEmotionRecommender:
                 if str(item.get('movie_id')) in map(str, disliked_ids):
                     rank_modifier += 15
 
-                return (rank_modifier, final_score)
+                return (final_score, rank_modifier)
 
             safe_pool.sort(key=get_preference_rank)
 

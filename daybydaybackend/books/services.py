@@ -46,7 +46,7 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
 
     # 감정 범위 임계값
     if mode == 'maintain':
-        radius_limit = 0.4
+        radius_limit = 0.6
     elif mode == 'shift':
         radius_limit = 1.2
     elif mode == 'amplification':
@@ -78,7 +78,7 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
         if getattr(book, 'category', None) in penalty_categories:
             final_score += 0.05
         
-        # 임계값 내에 있는 콘텐츠만 filtered_and_scored에 추가 (순수 거리를 튜플에 포함시킴)
+        # 임계값 내에 있는 콘텐츠만 filtered_and_scored에 추가 
         if pure_distance <= radius_limit:
             filtered_and_scored.append((final_score, book, pure_distance)) 
 
@@ -148,7 +148,8 @@ def recommend_books(user_emotion:dict, mode: str = 'maintain', count: int = 3, u
                     rank_modifier -= 10  # 선호 장르는 앞으로 당김
                 if category in recently_disliked_categories:
                     rank_modifier += 10  # 최근 기피 장르는 뒤로 밂
-            return (rank_modifier, final_score)
+            
+            return (final_score, rank_modifier) 
 
         # Python의 stable sort 특성을 이용하여 감정 거리 순위를 최대한 보존하면서 취향 반영
         safe_pool.sort(key=get_preference_rank)
@@ -234,7 +235,6 @@ def get_user_weighted_emotion(user, target_datetime=None):
         return None
     
     # 상수에서 유저 variance 반영한 가중치로 변경
-    # WEIGHTS = [0.7, 0.2, 0.05, 0.02, 0.01, 0.01, 0.01]
     user_profile = getattr(user, 'userprofile', None)
     variance = getattr(user_profile, 'emotion_variance', 0.05) if user_profile else 0.05
 
