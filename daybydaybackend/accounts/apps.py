@@ -4,3 +4,6 @@ from django.apps import AppConfig
 class AccountsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'daybydaybackend.accounts'
+
+    def ready(self):
+        import daybydaybackend.accounts.signals
