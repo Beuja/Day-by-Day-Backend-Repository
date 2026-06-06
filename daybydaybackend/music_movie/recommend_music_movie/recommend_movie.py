@@ -209,9 +209,9 @@ class MovieEmotionRecommender:
                 
                 # 1. 취향 가산점/패널티 설정
                 pref_score = 0
-                if any(g in liked_categories for g in genre_list):
+                if any(g in liked_movie_genres for g in genre_list):
                     pref_score = -0.1
-                elif any(g in disliked_categories for g in genre_list):
+                elif any(g in disliked_movie_genres for g in genre_list):
                     pref_score = 0.1
                 
                 # 2. 최종 정렬값 반환
