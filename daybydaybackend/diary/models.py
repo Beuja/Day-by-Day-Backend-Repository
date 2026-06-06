@@ -89,4 +89,4 @@ class UserFeedback(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.username} - {self.feedback_type} - {self.content_type.model} ({self.object_id})"
+        return f"{self.user.username} - {self.feedback_type} - {self.content_type.model} ({self.object_id})"

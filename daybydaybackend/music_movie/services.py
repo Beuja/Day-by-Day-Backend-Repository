@@ -1,6 +1,7 @@
 import json
 import os
 import math
+
 from daybydaybackend.diary.models import Diary, DailyRecommended
 from daybydaybackend.music_movie.models import Music, Movie
 from .recommend_music_movie.recommend_music import MusicEmotionRecommender
@@ -74,12 +75,12 @@ def _attach_scores(instances, diary_obj, mode, is_movie=False):
         from .recommend_music_movie.recommend_music import _get_target_emotion_vector, _get_direction_weights, _calculate_euclidean, _calculate_cosine, build_6d_emotion_vector
     
     target_vec = _get_target_emotion_vector(u_vec, mode)
-    target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9
+    target_norm = math.sqrt(sum(t ** 2 for t in target_vec)) or 1e-9    
     w_vec = _get_direction_weights(u_vec, mode)
 
     if mode == 'maintain': alpha = 0.90
-    elif mode == 'amplification': alpha = 0.10
-    else: alpha = 0.50
+    elif mode == 'amplification': alpha = 0.80
+    else: alpha = 0.30
 
     for item in instances:
         b_vec = [
