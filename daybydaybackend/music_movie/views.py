@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 from daybydaybackend.diary.models import Diary, DailyRecommended
 from . import serializers
 from . import services
-from .serializers import MusicDailyRecommendedSerializer, MovieDailyRecommendedSerializer
+from .serializers import MusicResponseSerializer, MovieResponseSerializer
 from daybydaybackend.books.services import get_user_weighted_emotion
 
 music_recommendation_response_schema = openapi.Schema(
@@ -61,9 +61,7 @@ def recommend_music_view(request, diary_id):
     recommend_date = diary.created_at.date().strftime("%Y-%m-%d")
     
     if request.method == 'GET':
-        data = services.get_saved_music_metadata(diary)
-        serializer = MusicDailyRecommendedSerializer(data, many=True)
-        res_data = serializer.data
+        res_data = services.get_saved_music_metadata(diary)
         for item in res_data:
             item['diary_id'] = diary_id
             item['recommend_date'] = recommend_date
@@ -128,9 +126,7 @@ def recommend_movie_view(request, diary_id):
     recommend_date = diary.created_at.date().strftime("%Y-%m-%d")
 
     if request.method == 'GET':
-        data = services.get_saved_movie_metadata(diary)
-        serializer = MovieDailyRecommendedSerializer(data, many=True)
-        res_data = serializer.data
+        res_data = services.get_saved_movie_metadata(diary)
         for item in res_data:
             item['diary_id'] = diary_id
             item['recommend_date'] = recommend_date
