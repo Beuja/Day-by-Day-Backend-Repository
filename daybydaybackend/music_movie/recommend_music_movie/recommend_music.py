@@ -152,13 +152,8 @@ class MusicEmotionRecommender:
             def get_preference_rank(item):
                 final_score = item.get('score', 0.0)
     
-<<<<<<< HEAD
-                # 장르/태그 파싱
-                tags = item.get('tags', [])
-=======
                 # [수정] tags가 리스트인지 문자열인지 안전하게 파싱
                 tags = item.get('tags', []) 
->>>>>>> 156c9703e053d808ca71e5331844e96f4b02df2b
                 if isinstance(tags, str):
                     tag_list = [g.strip().lower() for g in tags.split(',') if g.strip()]
                 elif isinstance(tags, list):
