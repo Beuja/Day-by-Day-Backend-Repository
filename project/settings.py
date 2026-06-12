@@ -103,6 +103,9 @@ if IS_RENDER:
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+            'OPTIONS': {
+                'timeout': 20,  # 락 대기 시간을 20초로 증가 (기본값 5초)
+            }
         }
     }
 else:
@@ -111,6 +114,9 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+            'OPTIONS': {
+                'timeout': 20,  # 락 대기 시간을 20초로 증가 (기본값 5초)
+            }
         }
     }
 

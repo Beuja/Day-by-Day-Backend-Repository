@@ -282,13 +282,13 @@ def get_main_recommendations(request):
     for item in serialized_musics:
         item['diary_id'] = diary_id
         item['recommend_date'] = recommend_date
-        item['user_feedback'] = user_feedbacks.get(f"music_{item.get('id')}", None)
+        item['user_feedback'] = user_feedbacks.get(f"music_{item.get('track_id')}", None)
 
     serialized_movies = MovieResponseSerializer(movie_list, many=True).data
     for item in serialized_movies:
         item['diary_id'] = diary_id
         item['recommend_date'] = recommend_date
-        item['user_feedback'] = user_feedbacks.get(f"movie_{item.get('tmdb_id')}", None)
+        item['user_feedback'] = user_feedbacks.get(f"movie_{item.get('movie_id')}", None)
 
     if diaries.exists():
         daily_rec, created = DailyRecommended.objects.get_or_create(
@@ -650,7 +650,25 @@ def search_diary_by_date(request, date):
     
     recommendations = diary.recommendation.all()
 
-    response_data['recommendation'] = DailyRecommendedSerializer(recommendations, many=True).data
+    recommendations_data = DailyRecommendedSerializer(recommendations, many=True).data
+    
+    # 💡 [피드백 일치 패치] 메인 추천과 동일하게 일기 검색 상세에서도 좋아요/싫어요 데이터를 바인딩하여 반환합니다.
+    from daybydaybackend.diary.models import UserFeedback
+    user_feedbacks = {}
+    if request.user and request.user.is_authenticated:
+        feedbacks = UserFeedback.objects.filter(user=request.user)
+        for f in feedbacks:
+            user_feedbacks[f"{f.content_type.model}_{f.object_id}"] = f.feedback_type
+
+    for rec in recommendations_data:
+        for b in rec.get('books', []):
+            b['user_feedback'] = user_feedbacks.get(f"book_{b.get('isbn')}", None)
+        for m in rec.get('musics', []):
+            m['user_feedback'] = user_feedbacks.get(f"music_{m.get('track_id')}", None)
+        for mv in rec.get('movies', []):
+            mv['user_feedback'] = user_feedbacks.get(f"movie_{mv.get('movie_id')}", None)
+
+    response_data['recommendation'] = recommendations_data
 
     # 3. 결합된 딕셔너리를 통째로 반환
     return Response(response_data, status=status.HTTP_200_OK)

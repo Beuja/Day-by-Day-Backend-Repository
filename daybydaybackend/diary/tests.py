@@ -89,12 +89,12 @@ class EmotionAutoModeTestCase(TestCase):
         테스트 4: 오늘 대표 감정이 '기쁨'이고, 최근 5일간 joy의 평균이 0.3 이상으로 긍정이 지속될 때
         -> amplification 모드가 결정되는지 확인
         """
-        # 5일간의 기쁨 지수: [0.35, 0.40, 0.38, 0.42, 0.45] -> 평균: ~0.4
-        self.create_diary_with_emotion("기쁜 날 1", 4, {'joy': 0.35}, '기쁨')
-        self.create_diary_with_emotion("기쁜 날 2", 3, {'joy': 0.40}, '기쁨')
-        self.create_diary_with_emotion("기쁜 날 3", 2, {'joy': 0.38}, '기쁨')
-        self.create_diary_with_emotion("기쁜 날 4", 1, {'joy': 0.42}, '기쁨')
-        current_diary = self.create_diary_with_emotion("오늘 너무 행복하다", 0, {'joy': 0.45}, '기쁨')
+        # 5일간의 기쁨 지수: [0.55, 0.60, 0.58, 0.62, 0.65] -> 평균: ~0.6 (임계값 0.5 초과)
+        self.create_diary_with_emotion("기쁜 날 1", 4, {'joy': 0.55}, '기쁨')
+        self.create_diary_with_emotion("기쁜 날 2", 3, {'joy': 0.60}, '기쁨')
+        self.create_diary_with_emotion("기쁜 날 3", 2, {'joy': 0.58}, '기쁨')
+        self.create_diary_with_emotion("기쁜 날 4", 1, {'joy': 0.62}, '기쁨')
+        current_diary = self.create_diary_with_emotion("오늘 너무 행복하다", 0, {'joy': 0.65}, '기쁨')
 
         mode = determine_auto_recommendation_mode(self.user, current_diary)
         self.assertEqual(mode, 'amplification')

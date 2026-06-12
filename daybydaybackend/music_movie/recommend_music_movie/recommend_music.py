@@ -153,15 +153,20 @@ class MusicEmotionRecommender:
             def get_preference_rank(item):
                 final_score = item.get('score', 0.0)
     
-                # 장르 파싱 (구조에 맞춰 'genre' 또는 'tags' 사용)
-                tags = item.get('tags', '') 
-                tag_list = [g.strip().lower() for g in tags.split(',')] if tags else []
+                # 장르/태그 파싱
+                tags = item.get('tags', [])
+                if isinstance(tags, str):
+                    tag_list = [g.strip().lower() for g in tags.split(',')]
+                elif isinstance(tags, list):
+                    tag_list = [str(g).strip().lower() for g in tags]
+                else:
+                    tag_list = []
                 
                 # 1. 취향 가산점/패널티 설정
                 pref_score = 0
-                if any(g in liked_categories for g in tag_list):
+                if any(g in liked_music_tags for g in tag_list):
                     pref_score = -0.1
-                elif any(g in disliked_categories for g in tag_list):
+                elif any(g in disliked_music_tags for g in tag_list):
                     pref_score = 0.1
                 
                 # 2. 최종 정렬값 반환
