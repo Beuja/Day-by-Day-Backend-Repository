@@ -2,9 +2,9 @@ import os
 import json
 import math
 from .recommend_movie import _get_target_emotion_vector, _get_direction_weights, _calculate_euclidean, _calculate_cosine, build_6d_emotion_vector
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH = os.path.join(BASE_DIR, 'emotion_tags.json')
-
 
 class MusicEmotionRecommender:
     def recommend_music(self, user_emotion, music_data, mode='maintain', top_n=3, user=None):
@@ -84,7 +84,6 @@ class MusicEmotionRecommender:
         # [1단계] 순수 감정 후보군 추출
         for music in music_data:
             music_id = str(music.get('track_id') or music.get('id'))
-            
                 
             b_vec = [float(music.get(k, 0.0) or 0.0) for k in ordered_keys]
             raw_tags = music.get('tags', [])
@@ -153,8 +152,13 @@ class MusicEmotionRecommender:
             def get_preference_rank(item):
                 final_score = item.get('score', 0.0)
     
+<<<<<<< HEAD
                 # 장르/태그 파싱
                 tags = item.get('tags', [])
+=======
+                # [수정] tags가 리스트인지 문자열인지 안전하게 파싱
+                tags = item.get('tags', []) 
+>>>>>>> 156c9703e053d808ca71e5331844e96f4b02df2b
                 if isinstance(tags, str):
                     tag_list = [g.strip().lower() for g in tags.split(',') if g.strip()]
                 elif isinstance(tags, list):
@@ -163,6 +167,7 @@ class MusicEmotionRecommender:
                     tag_list = []
                 
                 # 1. 취향 가산점/패널티 설정
+                # [수정] liked_categories -> liked_music_tags 변수명 통일
                 pref_score = 0
                 if any(g in liked_music_tags for g in tag_list):
                     pref_score = -0.1
