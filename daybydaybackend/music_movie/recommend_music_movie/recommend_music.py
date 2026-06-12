@@ -153,11 +153,11 @@ class MusicEmotionRecommender:
                 final_score = item.get('score', 0.0)
     
                 # [수정] tags가 리스트인지 문자열인지 안전하게 파싱
-                tags = item.get('tags', []) 
-                if isinstance(tags, str):
-                    tag_list = [g.strip().lower() for g in tags.split(',')]
-                elif isinstance(tags, list):
-                    tag_list = [str(g).strip().lower() for g in tags]
+                raw_tags = item.get('tags', []) 
+                if isinstance(raw_tags, str):
+                    tag_list = [g.strip().lower() for g in raw_tags.split(',')]
+                elif isinstance(raw_tags, list):
+                    tag_list = [str(g).strip().lower() for g in row_tags]
                 else:
                     tag_list = []
                 
