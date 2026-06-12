@@ -156,7 +156,7 @@ class MusicEmotionRecommender:
                 # 장르/태그 파싱
                 tags = item.get('tags', [])
                 if isinstance(tags, str):
-                    tag_list = [g.strip().lower() for g in tags.split(',')]
+                    tag_list = [g.strip().lower() for g in tags.split(',') if g.strip()]
                 elif isinstance(tags, list):
                     tag_list = [str(g).strip().lower() for g in tags]
                 else:
