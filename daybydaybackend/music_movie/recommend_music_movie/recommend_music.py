@@ -157,7 +157,7 @@ class MusicEmotionRecommender:
                 if isinstance(raw_tags, str):
                     tag_list = [g.strip().lower() for g in raw_tags.split(',')]
                 elif isinstance(raw_tags, list):
-                    tag_list = [str(g).strip().lower() for g in row_tags]
+                    tag_list = [str(g).strip().lower() for g in raw_tags]
                 else:
                     tag_list = []
                 
