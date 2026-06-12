@@ -2,9 +2,9 @@ import os
 import json
 import math
 from .recommend_movie import _get_target_emotion_vector, _get_direction_weights, _calculate_euclidean, _calculate_cosine, build_6d_emotion_vector
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH = os.path.join(BASE_DIR, 'emotion_tags.json')
-
 
 class MusicEmotionRecommender:
     def recommend_music(self, user_emotion, music_data, mode='maintain', top_n=3, user=None):
@@ -84,7 +84,6 @@ class MusicEmotionRecommender:
         # [1단계] 순수 감정 후보군 추출
         for music in music_data:
             music_id = str(music.get('track_id') or music.get('id'))
-            
                 
             b_vec = [float(music.get(k, 0.0) or 0.0) for k in ordered_keys]
             raw_tags = music.get('tags', [])
@@ -153,15 +152,21 @@ class MusicEmotionRecommender:
             def get_preference_rank(item):
                 final_score = item.get('score', 0.0)
     
-                # 장르 파싱 (구조에 맞춰 'genre' 또는 'tags' 사용)
-                tags = item.get('tags', '') 
-                tag_list = [g.strip().lower() for g in tags.split(',')] if tags else []
+                # [수정] tags가 리스트인지 문자열인지 안전하게 파싱
+                tags = item.get('tags', []) 
+                if isinstance(tags, str):
+                    tag_list = [g.strip().lower() for g in tags.split(',') if g.strip()]
+                elif isinstance(tags, list):
+                    tag_list = [str(g).strip().lower() for g in tags]
+                else:
+                    tag_list = []
                 
                 # 1. 취향 가산점/패널티 설정
+                # [수정] liked_categories -> liked_music_tags 변수명 통일
                 pref_score = 0
-                if any(g in liked_categories for g in tag_list):
+                if any(g in liked_music_tags for g in tag_list):
                     pref_score = -0.1
-                elif any(g in disliked_categories for g in tag_list):
+                elif any(g in disliked_music_tags for g in tag_list):
                     pref_score = 0.1
                 
                 # 2. 최종 정렬값 반환
